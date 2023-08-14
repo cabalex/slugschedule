@@ -240,21 +240,25 @@ export default async function searchRMP(instructorName: string, classCode: strin
     }
 
     // This won't match the instructor 100% of the time but it's good enough...
-    let instructors = resp.data.data.newSearch.teachers.edges.map(x => x.node)
-        .sort((a, b) =>
+    let instructors = resp.data.data.newSearch.teachers.edges.map(x => x.node);
+
+    if (instructors.length === 0) return null;
+
+    let similarityScore = instructors.map((b) =>
             // Check if last name matches
-            (b.lastName.endsWith(query) ? 0.3 : -0.3) +
+            (b.lastName.endsWith(query) ? 1 : -10) +
             // Check if first initial matches
-            (b.firstName.startsWith(instructorName.split(",")[1][0]) ? 0.3 : -0.3) +
+            (b.firstName.startsWith(splitName[1][0]) ? 1 : -1) +
             // Check if this instructor has taught courses like this
-            (b.courseCodes.map(x => x.courseName.replace(/([0-9 ]+.+)|(AND.+)/gm, "").includes(className.replace(/([0-9 ])|(AND.+)/gm, ""))) ? 0.3 : -0.3) +
+            (b.courseCodes.map(x => x.courseName.replace(/([0-9 ]+.+)|(AND.+)/gm, "")).includes(className.replace(/([0-9 ]+.+)|(AND.+)/gm, "")) ? 1 : -1) +
             // Check if this instructor has taught this course
-            (b.courseCodes.map(x => x.courseName).includes(className)) ? 0.3 : -0.3
+            (b.courseCodes.map(x => x.courseName).includes(className) ? 5 : -1)
         );
     
-    if (instructors.length === 0) return null;
+    // get the index of the instructor with the highest similarity score
+    let index = similarityScore.indexOf(Math.max(...similarityScore));
     
-    let instructor = instructors[0];
+    let instructor = instructors[index];
 
     let relatedReviews: InstructorRating[] = [];
     let otherReviews: InstructorRating[] = [];
