@@ -38,9 +38,9 @@ jobs:
     - name: Commit to base branch
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        file_pattern: 'db.yaucsccs'
+        file_pattern: './public/db/db.yaucsccs'
         commit_message: Routine DB Update
-        commit_author: Author <actions@github.com>
+        commit_author: GitHub Actions Bot <actions@github.com>
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
@@ -69,7 +69,7 @@ jobs:
     - name: Commit to sub branch
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        file_pattern: 'db.yaucsccs'
+        file_pattern: '*.yaucsccs'
         commit_message: Routine DB Update
-        commit_author: Author <actions@github.com>
+        commit_author: GitHub Actions Bot <actions@github.com>
         branch: gh-pages
