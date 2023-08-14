@@ -49,7 +49,7 @@
             <span style="font-weight: bold">{code}</span>
             <span>{item.name}</span>
         </h2>
-        <button class="starBtn" on:click={toggleStar}>
+        <button class="roundBtn" on:click={toggleStar}>
             {#if $starredClasses.includes(item.number)}
                 <Star />
             {:else}
@@ -148,23 +148,6 @@
         -webkit-line-clamp: 2;
         line-height: 1.25; /* fallback */
         max-height: 3;
-    }
-    .starBtn {
-        z-index: 2;
-        line-height: 0;
-        padding: 10px;
-        font-size: 30px;
-        border-radius: 100%;
-        background-color: transparent;
-    }
-    .starBtn:hover {
-        background-color: #555;
-        border-color: #888;
-    }
-    .starBtn:focus-visible, .starBtn:focus {
-        background-color: #777;
-        border-color: #999;
-        outline: none;
     }
     .body {
         flex-grow: 1;

@@ -10,7 +10,7 @@
   import GeChip from "../Chips/GEChip.svelte";
   import GraduateChip from "../Chips/GraduateChip.svelte";
 
-    let items = [];
+
     
     function filterItems(items: any[], filters: any) {
         return items.filter(x => {
@@ -43,6 +43,9 @@
             return true;
         })
     }
+
+    let items = [];
+
     $: {
         if ($listMode === "all") {
             items = filterItems($db.classes, $searchFilters);
@@ -118,5 +121,11 @@
     span {
         padding: 10px;
         text-align: center;
+    }
+    @media screen and (max-width: 700px) {
+        .listPanel {
+            width: 100%;
+            height: calc(100% - 50px);
+        }
     }
 </style>

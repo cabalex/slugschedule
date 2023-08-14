@@ -58,12 +58,12 @@
         text-align: right;
     }
     span {
-        width: 25px;
+        width: 22px;
     }
     .waitlist span {
         font-size: 10px;
         line-height: 10px;
-        width: 25px;
+        flex-shrink: 0;
     }
     .bar {
         width: calc(100% - 10px);

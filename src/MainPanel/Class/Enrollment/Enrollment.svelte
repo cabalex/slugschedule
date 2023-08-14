@@ -79,35 +79,33 @@
 </script>
 
 <div class="enrollment">
-    <div class="enrolled">
-        {#if large}
-        <div class="text">
-            <h1 style="display: flex; gap: 20px; align-items: center">
-                <span class="classStatus" class:open={availability.status === ClassStatus.Open} class:waitlist={availability.status === ClassStatus.Waitlist} class:closed={availability.status === ClassStatus.Closed} />
-                {#if availability.status === ClassStatus.Closed}
-                    Closed
-                {:else if availability.capacity <= availability.enrolled}
-                    Full
-                {:else}
-                    {availability.capacity - availability.enrolled} spots remaining
-                {/if}
-            </h1>
-            {#if availability.status === ClassStatus.Waitlist}
-            <h1>{availability.waitlist} on waitlist</h1>
+    {#if large}
+    <div class="text">
+        <h1 style="display: flex; gap: 20px; align-items: center">
+            <span class="classStatus" class:open={availability.status === ClassStatus.Open} class:waitlist={availability.status === ClassStatus.Waitlist} class:closed={availability.status === ClassStatus.Closed} />
+            {#if availability.status === ClassStatus.Closed}
+                Closed
+            {:else if availability.capacity <= availability.enrolled}
+                Full
+            {:else}
+                {availability.capacity - availability.enrolled} spots remaining
             {/if}
-        </div>
+        </h1>
+        {#if availability.status === ClassStatus.Waitlist}
+        <h1>{availability.waitlist} on waitlist</h1>
         {/if}
-        <Line
-            data={data}
-            width={large ? 600 : 300}
-            height={large ? 300 : 300}
-            options={options}
-        />
     </div>
+    {/if}
+    <Line
+        data={data}
+        width={large ? 600 : 300}
+        height={large ? 300 : 300}
+        options={options}
+    />
 </div>
 
 <style>
-    .enrolled, .waitlist {
+    .enrollment {
         display: flex;
         flex-direction: row;
         gap: 10px;
@@ -146,5 +144,15 @@
     .classStatus.closed {
         background-color: var(--closed);
         border: 5px solid var(--closed-dark);
+    }
+    @media screen and (max-width: 700px) {
+        .enrollment {
+            flex-direction: column;
+            height: auto;
+            width: 100%;
+        }
+        .text h1 {
+            font-size: 2em;
+        }
     }
 </style>
