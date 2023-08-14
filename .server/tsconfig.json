@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"target": "es2018",
+		"experimentalDecorators": true,
+		"noImplicitAny": false,
+		"allowJs": true,
+		"resolveJsonModule": true,
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"outDir": "dist",
+		"baseUrl": ".",
+		"paths": {
+	    	"*": [
+				"node_modules/*",
+				"src/types/*"
+	    	]
+		},
+		"types" : ["node"],
+		"typeRoots": [
+	    	"node_modules/@types"
+		],
+		"lib": [
+			"es2018",
+			"dom"
+		]
+	},
+	"include": [
+		"src/**/*",
+	]
+}

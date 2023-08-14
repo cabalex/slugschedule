@@ -1,0 +1,152 @@
+<script lang="ts">
+    import Fuse from 'fuse.js'
+    import { db, focusedClass } from '../../mainStore';
+    import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
+    import Magnify from "svelte-material-icons/Magnify.svelte";
+
+    let searchElem;
+    let focused = false;
+    export let onSearchClicked = (item) => {};
+
+    const fuse = new Fuse($db.classes, {
+        keys: ['name', 'code', 'description', 'details.instructionMode'],
+        threshold: 0.3
+    });
+
+    let focus = (e) => { focused = true; e.stopPropagation(); }
+    let unfocus = (e) => { focused = false; searchElem.value = ""; results = null; e.stopPropagation(); }
+
+    let results = null;
+    let timeout = null;
+    function search(e) {
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            results = e.target.value !== "" ? fuse.search(e.target.value) : null;
+        }, 500);
+    }
+
+    $: {
+        if (searchElem && searchElem.value === "") results = null;
+    }
+
+    function focusClass(item, e) {
+        focused = false;
+        onSearchClicked(item);
+        $focusedClass = item;
+        e.stopPropagation();
+    }
+
+    $: if (focused) {
+        searchElem.focus();
+    }
+</script>
+
+<div class="spacer">
+    <div class="searchOuter" class:focused={focused}>
+        <div class="search" on:click={focus} on:keypress={focus}>
+            {#if focused}
+                <span on:click={unfocus}>
+                    <ArrowLeft size="1.5em" />
+                </span>
+            {:else}
+                <Magnify size="1.5em" />
+            {/if}
+            <input type="text" placeholder="Search classes" on:keyup={search} bind:this={searchElem} />
+        </div>
+        {#if results !== null}
+            <div class="results">
+                {#each results as result}
+                <div class="resultItem" on:click={focusClass.bind(null, result.item)}>
+                    <span>{result.item.code}</span>
+                    <h2>{result.item.name}</h2>
+                </div>
+                {/each}
+            </div>
+        {:else}
+            <!-- results splash -->
+            <p>Search by name ("Biology"), class ID ("CHEM 01A"), description...</p>
+        {/if}
+    </div>
+</div>
+
+<svelte:body on:click={() => focused = false} on:keypress={() => focused = false} />
+
+<style>
+    .spacer {
+        width: 100%;
+        height: 84px;
+        position: relative;
+    }
+    .searchOuter {
+        position: absolute;
+        left: 0;
+        top: 0;
+        overflow: hidden;
+        width: calc(100% - 40px);
+        height: 54px;
+        padding: 10px 20px;
+        border-radius: 26px;
+        transition: height 0.1s ease-in-out;
+    }
+    .searchOuter p {
+        color: black;
+    }
+    .search {
+        color: black;
+        background-color: #eee;
+        margin: auto;
+        border-radius: 26px;
+        padding: 15px 20px;
+        user-select: none;
+        cursor: text;
+
+        display: flex;
+        flex-direction: row;
+        transition: border-radius 0.1s ease-in-out;
+    }
+    .results {
+        overflow: auto;
+        height: calc(100% - 50px);
+    }
+    .resultItem {
+        height: 70px;
+        color: black;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+        user-select: none;
+    }
+    .resultItem h2 {
+        margin: 0;
+        line-height: 1em;
+        font-size: 1.2em;
+    }
+    .search input {
+        font-size: 18px;
+        font-family: unset;
+        background-color: unset;
+        color: black;
+        border: none;
+        padding: 0;
+        flex-grow: 1;
+        margin-left: 10px;
+        outline: none;
+    }
+    .search span {
+        line-height: 0;
+        cursor: pointer;
+    }
+
+    .searchOuter.focused {
+        z-index: 20;
+        background-color: #eee;
+        height: 50vh;
+        max-height: calc(100vh - 20px);
+    }
+    .results::-webkit-scrollbar {
+        display: none;
+    }
+    .searchOuter.focused .search {
+        border-radius: 0px;
+        border-bottom: 1px solid #999;
+    }
+</style>
