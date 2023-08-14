@@ -28,12 +28,12 @@ jobs:
         node-version: 16.x
     
     - name: Install NPM packages
-      working-directory: ./server
+      working-directory: ./.server
       run: npm ci
     
     - name: Run update script
-      run: npm run dev
-      working-directory: ./server
+      run: npm run db-update
+      working-directory: ./.server
 
     - name: Commit to base branch
       uses: stefanzweifel/git-auto-commit-action@v4
