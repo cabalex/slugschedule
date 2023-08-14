@@ -31,7 +31,7 @@
         >
             <span>{availability.waitlist}</span>
             <div class="bar">
-                <div class="fill" style={`background-color: ${color}; width: ${availability.waitlist / (availability.waitlistCapacity || availability.capacity) * 100}%`} />
+                <div class="fill" style={`background-color: ${color.replace(")", "-dark)")}; width: ${availability.waitlist / (availability.waitlistCapacity || availability.capacity) * 100}%`} />
             </div>
             <span>{availability.waitlistCapacity}</span>
         </div>
