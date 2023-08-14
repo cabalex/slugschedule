@@ -6,11 +6,12 @@ const SCHOOL_ID = "U2Nob29sLTEwNzg=";
 
 export default async function searchRMP(instructorName: string, classCode: string): Promise<Instructor|null> {
     // UCSC class search doesn't include spaces
-    let query = instructorName.split(",")[0];
+    let splitName = instructorName.split(",");
+    let query = splitName[0];
     let className = classCode.split(" - ")[0].replace(" ", "");
 
     if (query.includes(" ")) {
-        query = query.split(" ").pop() || "";
+        query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1] : "");
     }
 
     let resp = await axios.post("https://www.ratemyprofessors.com/graphql",
