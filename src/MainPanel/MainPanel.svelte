@@ -10,7 +10,7 @@
     }
 </script>
 
-<main bind:this={mainElem}>
+<main bind:this={mainElem} class:focused={$focusedClass}>
     {#if $focusedClass}
         {#key $focusedClass.number}
             <Class item={$focusedClass} />
@@ -60,5 +60,20 @@
     }
     a {
         line-height: 2em;
+    }
+    @media screen and (max-width: 700px) {
+        main {
+            position: fixed;
+            left: 100%;
+            top: 0;
+            width: calc(100% - 40px);
+            height: 100%;
+            margin: 0;
+            border-radius: 0;
+            transition: left 0.1s ease-out;
+        }
+        main.focused {
+            left: 0;
+        }
     }
 </style>

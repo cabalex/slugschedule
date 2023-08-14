@@ -38,9 +38,10 @@
     text-align:center;
     position: absolute;
     font-size: 17px;
-    top: 75px;
+    top: 90px;
     line-height: 20px;
-    width: 100%;
+    margin: 0 10px;
+    width: calc(100% - 20px);
 }
 
 svg {

@@ -45,7 +45,7 @@
     bottom = 0
     height_map = []
 
-    if (itemsLength == 0) {
+    if (itemsLength <= 1) {
       start = 0
       end = 0
       return

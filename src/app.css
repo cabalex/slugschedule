@@ -66,6 +66,24 @@ h1 {
   background-color: #8d6a00;
 }
 
+.roundBtn {
+  z-index: 2;
+  line-height: 0;
+  padding: 10px;
+  font-size: 30px;
+  border-radius: 100%;
+  background-color: transparent;
+}
+.roundBtn:hover {
+  background-color: #555;
+  border-color: #888;
+}
+.roundBtn:focus-visible, .roundBtn:focus {
+  background-color: #777;
+  border-color: #999;
+  outline: none;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -85,19 +103,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-::-webkit-scrollbar-track {
-  background: #333;
-}
-::-webkit-scrollbar-track:hover {
-  background: #444;
-}
-::-webkit-scrollbar-thumb {
-  background: #ccc;
-}
-::-webkit-scrollbar-thumb {
-  background: #eee;
+
+
+@media screen and (min-width: 700px) {
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #333;
+  }
+  ::-webkit-scrollbar-track:hover {
+    background: #444;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #ccc;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #eee;
+  }
 }

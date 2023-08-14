@@ -7,9 +7,10 @@
     import HandCoin from "svelte-material-icons/HandCoin.svelte";
     import School from "svelte-material-icons/School.svelte";
     import OpenInNew from "svelte-material-icons/OpenInNew.svelte";
+    import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
 
     import type { Class } from "../../../.server/db/DB";
-    import { home, db } from "../../mainStore";
+    import { home, db, focusedClass } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
@@ -142,25 +143,27 @@
             </span>
         </div>
         {#if item.instructor.id && item.instructor.id !== "-1"}
-        <DonutChart
-            color={rmpScoreColor(item.instructor.avgRating)}
-            number={item.instructor.avgRating}
-            of={5}
-            label="QUALITY"
-        />
-        <DonutChart
-            color="white"
-            number={item.instructor.avgDifficulty}
-            of={5}
-            label="DIFFICULTY"
-        />
-        <DonutChart
-            color={rmpScoreColor(item.instructor.wouldTakeAgainPercent / 20)}
-            number={item.instructor.wouldTakeAgainPercent}
-            of={100}
-            type="percent"
-            label="WOULD TAKE AGAIN"
-        />
+        <div class="donuts">
+            <DonutChart
+                color={rmpScoreColor(item.instructor.avgRating)}
+                number={item.instructor.avgRating}
+                of={5}
+                label="QUALITY"
+            />
+            <DonutChart
+                color="white"
+                number={item.instructor.avgDifficulty}
+                of={5}
+                label="DIFFICULTY"
+            />
+            <DonutChart
+                color={rmpScoreColor(item.instructor.wouldTakeAgainPercent / 20)}
+                number={item.instructor.wouldTakeAgainPercent}
+                of={100}
+                type="percent"
+                label="WOULD TAKE AGAIN"
+            />
+        </div>
         {/if}
     </header>
     {#if item.instructor.reviews && item.instructor.reviews.length > 0}
@@ -183,6 +186,14 @@
         </a>
     {/if}
 </div>
+{#if window.innerWidth < 700}
+<header class="mobileHeader">
+    <button class="roundBtn" on:click={() => $focusedClass = null}>
+        <ArrowLeft />
+    </button>
+    <h2>{item.code}</h2>
+</header>
+{/if}
 
 <style>
     .class {
@@ -211,6 +222,11 @@
         background-color: #555;
         padding: 10px;
         border-radius: 10px;
+    }
+    .donuts {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
     }
     .instructor header .name {
         flex-grow: 1;
@@ -272,5 +288,48 @@
     h1 {
         font-size: 2.5em;
         margin-bottom: 5px;
+    }
+    @media screen and (max-width: 700px) {
+        .class {
+            flex-direction: column;
+        }
+        .classInfo {
+            width: 100%;
+        }
+        header.mobileHeader {
+            position: sticky;
+            bottom: 30px;
+            z-index: 10;
+            margin-top: 40px;
+            width: 100%;
+            background-color: #111;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+        }
+        aside {
+            width: 100%;
+        }
+        .fact {
+            display: inline-flex;
+        }
+        .instructor header .name {
+            text-align: center !important;
+            margin-bottom: 10px;
+        }
+        .name h3 {
+            margin: 0;
+        }
+        .instructor header {
+            flex-direction: column;
+        }
+        .donuts {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
     }
 </style>
