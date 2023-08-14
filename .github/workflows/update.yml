@@ -46,7 +46,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: database
-        path: ./app/public/db/db.yaucsccs
+        path: ./public/db/db.yaucsccs
   
   deploy:
     name: Deploy
