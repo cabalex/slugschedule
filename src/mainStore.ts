@@ -3,7 +3,7 @@ import { readable, writable, get } from 'svelte/store';
 
 export let db = readable(null, (set) => {
     new Promise(async () => {
-        let resp = await fetch('/db/db.yaucsccs');
+        let resp = await fetch('./db/db.yaucsccs');
         let arrayBuffer = await resp.arrayBuffer();
         set(DB.import(arrayBuffer));
     })
