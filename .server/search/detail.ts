@@ -83,7 +83,8 @@ export default async function getClassDetails(classUrl: string, existingRMPInfo?
     // associated discussion sections or labs
     let associatedClasses: AssociatedClass[] = [];
     if ($(`.panel.panel-default.row:nth-child(${i})`).text().includes("Associated Discussion Sections or Labs")) {
-        associatedClasses = $('.panel.panel-default.row:nth-child(6) > .panel-body > .row')
+        console.log("has associated")
+        associatedClasses = $(`.panel.panel-default.row:nth-child(${i}) > .panel-body > .row`)
             .map((i, el) => {
                 let [numberAndCode, dayAndTime, instructor, locationText, enrolledText, waitText, discardedStatus] = $(el).find('div')
                     .map((i, el) => $(el).text().trim());

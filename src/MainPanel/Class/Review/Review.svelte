@@ -2,6 +2,7 @@
     import Heart from "svelte-material-icons/Heart.svelte";
     import HeartBroken from "svelte-material-icons/HeartBroken.svelte";
     import Dumbbell from "svelte-material-icons/Dumbbell.svelte";
+    import Monitor from "svelte-material-icons/Monitor.svelte";
     import { rmpScoreColor } from "../../../ListPanel/ClassItem/ClassItem.svelte";
 
     export let review;
@@ -24,10 +25,15 @@
     </aside>
     <div class="body">
         <header>
-            <h3>{review.class}</h3>
+            <h3>
+                {review.class}
+                {#if review.online}
+                <Monitor />
+                {/if}
+            </h3>
             <h3>{new Date(review.postedAt).toLocaleDateString()}</h3>
         </header>
-        {review.comment.replace(/&quot;/gm, "\"")}
+        {review.comment.replace(/&quot;/gm, "\"").replace(/&amp;/gm, "&")}
         {#if review.tags}
             <div class="tags">
                 {#each review.tags.split("--") as tag}
@@ -51,6 +57,13 @@
     }
     .body {
         flex-grow: 1;
+    }
+    h3 {
+        margin: 12px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
     }
     aside {
         flex-shrink: 0;
