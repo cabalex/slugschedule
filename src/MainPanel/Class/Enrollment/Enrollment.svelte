@@ -118,6 +118,10 @@
         background-color: #555;
         padding: 10px;
         border-radius: 10px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     .text h1 {
         margin: 10px;
