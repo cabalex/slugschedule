@@ -12,45 +12,45 @@
 
     let items = [];
     
-    function filterItems(items: any[]) {
+    function filterItems(items: any[], filters: any) {
         return items.filter(x => {
-            if ($searchFilters.department.length > 0) {
-                return $searchFilters.department.includes(x.code.split(" ")[0]);
+            if (filters.department.length > 0) {
+                return filters.department.includes(x.code.split(" ")[0]);
             }
             return true;
         }).filter(x => {
-            if ($searchFilters.instructionMode.length > 0) {
-                return $searchFilters.instructionMode.includes(x.details.instructionMode);
+            if (filters.instructionMode.length > 0) {
+                return filters.instructionMode.includes(x.details.instructionMode);
             }
             return true;
         }).filter(x => {
-            if ($searchFilters.status.length > 0) {
-                return $searchFilters.status.includes(x.availability.status);
+            if (filters.status.length > 0) {
+                return filters.status.includes(x.availability.status);
             }
             return true;
         }).filter(x => {
-            if ($searchFilters.ges.length > 0) {
-                if ($searchFilters.ges.includes("AnyGE") && x.details.generalEducation.length > 0 && x.details.generalEducation[0] !== "") {
+            if (filters.ges.length > 0) {
+                if (filters.ges.includes("AnyGE") && x.details.generalEducation.length > 0 && x.details.generalEducation[0] !== "") {
                     return true;
                 }
-                return $searchFilters.ges.some(ge => x.details.generalEducation.includes(ge));
+                return filters.ges.some(ge => x.details.generalEducation.includes(ge));
             }
             return true;
         }).filter(x => {
-            if ($searchFilters.undergraduate !== null) {
-                return $searchFilters.undergraduate === x.details.undergraduate;
+            if (filters.undergraduate !== null) {
+                return filters.undergraduate === x.details.undergraduate;
             }
             return true;
         })
     }
     $: {
         if ($listMode === "all") {
-            items = filterItems($db.classes);
+            items = filterItems($db.classes, $searchFilters);
         }
     }
     $: {
         if ($listMode === "starred") {
-            items = filterItems($starredClasses.map(x => $db.classes.find(c => c.number === x)).filter(x => x))
+            items = filterItems($starredClasses.map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters)
         }
     }
     $: filtered = Object.values($searchFilters).some((v) => v instanceof Array ? v.length : v !== null);
