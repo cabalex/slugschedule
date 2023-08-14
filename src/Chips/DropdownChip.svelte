@@ -75,10 +75,12 @@
         z-index: 10;
         background-color: #222;
         width: 300px;
-        top: 100%;
+        top: calc(100% + 2px);
         left: 0;
         max-height: 500px;
         overflow-y: auto;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     .option {
         padding: 10px;
@@ -92,5 +94,14 @@
     .chip > span {
         display: inline-block;
         line-height: 0;
+    }
+    @media screen and (max-width: 700px) {
+        .options {
+            position: fixed;
+            left: 0;
+            top: unset;
+            transform: translateY(10px);
+            width: 100%;
+        }
     }
 </style>

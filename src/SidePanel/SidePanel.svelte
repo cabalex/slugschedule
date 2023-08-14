@@ -29,8 +29,9 @@
     }
 </script>
 <aside>
+    <span class="grower mobile" />
     <button class="logo" on:click={() => focusedClass.set(null)}>
-        YA<br /><span style="color: var(--primary);">UCSC</span><br />CS
+        YA<span style="color: var(--primary); display: block">UCSC</span>CS
     </button>
     <button title="Starred classes" on:click={() => $listMode = "starred"} class="iconBtn" class:active={$listMode === "starred"}>
         <Star size="2em" />
@@ -57,8 +58,8 @@
     {/each}
     -->
 
-    <span style="flex-grow: 1" />
-    <span style="text-align: center">{term} ({$db.term})</span>
+    <span class="grower" />
+    <span class="term" style="text-align: center">{term} ({$db.term})</span>
 </aside>
 
 <style>
@@ -98,6 +99,9 @@
     .iconBtn.active {
         color: var(--primary);
     }
+    .grower:not(.mobile) {
+        flex-grow: 1;
+    }
     .indicator {
         position: absolute;
         left: 0;
@@ -128,5 +132,33 @@
         font-size: 25px;
         display: block;
         line-height: 25px;
+    }
+    @media screen and (max-width: 700px) {
+        aside {
+            position: fixed;
+            bottom: 0;
+            flex-direction: row;
+            width: 100%;
+            height: 50px;
+            padding: 0;
+            align-content: center;
+        }
+        .logo {
+            width: 120px !important;
+            background-color: transparent !important;
+        }
+        .logo span {
+            display: inline-block !important;
+        }
+        aside > * {
+            height: 40px !important;
+        }
+        .grower.mobile {
+            flex-grow: 9;
+        }
+        .term {
+            line-height: 40px;
+            margin-right: 5px;
+        }
     }
 </style>
