@@ -1,0 +1,75 @@
+name: "Update DB"
+on:
+  schedule:
+  - cron: "38 4 * * *"
+
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'this checkbox does nothing'
+        required: false
+        type: boolean
+
+
+jobs:
+  update:
+    name: Update
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: Install Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.x
+    
+    - name: Install NPM packages
+      working-directory: ./server
+      run: npm ci
+    
+    - name: Run update script
+      run: npm run dev
+      working-directory: ./server
+
+    - name: Commit to base branch
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        file_pattern: 'db.yaucsccs'
+        commit_message: Routine DB Update
+        commit_author: Author <actions@github.com>
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: database
+        path: ./app/public/db/db.yaucsccs
+  
+  deploy:
+    name: Deploy
+    needs: update
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout branch
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: database
+        path: ./db
+    
+    - name: Commit to sub branch
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        file_pattern: 'db.yaucsccs'
+        commit_message: Routine DB Update
+        commit_author: Author <actions@github.com>
+        branch: gh-pages

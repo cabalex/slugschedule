@@ -1,0 +1,96 @@
+<script lang="ts">
+    import MenuDown from "svelte-material-icons/MenuDown.svelte";
+    import Check from "svelte-material-icons/Check.svelte";
+    import { fly } from "svelte/transition";
+
+    export let options = {};
+    export let label = "Label";
+    export let multiple = false;
+    export let onChange = (value: string[]) => {};
+
+    function selectOption(option) {
+
+        if (multiple) {
+            if (value.includes(option)) {
+                value = value.filter(v => v !== option);
+            } else {
+                value = [...value, option];
+            }
+        } else {
+            if (value.includes(option)) {
+                value = [];
+            } else {
+                value = [option];
+            }
+            open = false;
+        }
+        onChange(value);
+    }
+
+    let open = false;
+    export let value = [];
+
+    function toggle(e) {
+        if (open) {
+            clickOut();
+        } else {
+            open = true;
+        }
+    }
+
+    function clickOut(e?) {
+        if (e && e.target.closest(`.chip.${label}`)) return;
+        open = false;
+    }
+</script>
+
+<div class="chip {label}" class:active={value.length} on:click={toggle}>
+    {#if value.length === 0}
+    {label}
+    {:else if value.length === 1}
+    {value[0]}
+    {:else}
+    {value.length} selected
+    {/if}
+    <span style={open ? "transform: rotate(180deg)" : ""}>
+        <MenuDown />
+    </span>
+    {#if open}
+    <div transition:fly={{duration: 100, y: -50}} class="options" on:click={(e) => e.stopPropagation()}>
+        {#each Object.keys(options) as option}
+            <div class="option" class:selected={value.includes(option)} on:click={selectOption.bind(null, option)}>
+                <Check />
+                {options[option]}
+            </div>
+        {/each}
+    </div>
+    {/if}
+</div>
+
+<svelte:body on:click={clickOut} />
+
+<style>
+    .options {
+        position: absolute;
+        z-index: 10;
+        background-color: #222;
+        width: 300px;
+        top: 100%;
+        left: 0;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    .option {
+        padding: 10px;
+    }
+    :global(.option:not(.selected) svg) {
+        opacity: 0;
+    }
+    .option.selected {
+        background-color: #444;
+    }
+    .chip > span {
+        display: inline-block;
+        line-height: 0;
+    }
+</style>

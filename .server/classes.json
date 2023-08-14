@@ -1,0 +1,202 @@
+[
+    {
+        "code": "AM 10 - 01",
+        "name": "Math Methods I",
+        "number": 11235,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 154,
+            "capacity": 160
+        },
+        "meetingInfo": {
+            "location": "LEC: Media Theater M110",
+            "dayAndTime": "MWF 12:00PM-01:05PM"
+        },
+        "instructor": {
+            "name": "Jackson,J."
+        }
+    },
+    {
+        "code": "AM 11A - 01",
+        "name": "Math Methd for Econ",
+        "number": 11234,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 49,
+            "capacity": 110
+        },
+        "meetingInfo": {
+            "location": "LEC: Merrill Acad 102",
+            "dayAndTime": "MWF 10:40AM-11:45AM"
+        },
+        "instructor": {
+            "name": "Katznelson,J.R."
+        }
+    },
+    {
+        "code": "AM 11B - 01",
+        "name": "Math Methds Econ II",
+        "number": 11232,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 77,
+            "capacity": 210
+        },
+        "meetingInfo": {
+            "location": "LEC: ClassroomUnit 002",
+            "dayAndTime": "MWF 01:20PM-02:25PM"
+        },
+        "instructor": {
+            "name": "Katznelson,J.R."
+        }
+    },
+    {
+        "code": "AM 30 - 01",
+        "name": "SOE Calculus III",
+        "number": 11231,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 68,
+            "capacity": 70
+        },
+        "meetingInfo": {
+            "location": "LEC: Steven Acad 175",
+            "dayAndTime": "TuTh 03:20PM-04:55PM"
+        },
+        "instructor": {
+            "name": "Lee,D."
+        }
+    },
+    {
+        "code": "AM 100 - 01",
+        "name": "Math Methods III",
+        "number": 10474,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 1,
+            "enrolled": 30,
+            "capacity": 30
+        },
+        "meetingInfo": {
+            "location": "LEC: Earth&Marine B214",
+            "dayAndTime": "TuTh 09:50AM-11:25AM"
+        },
+        "instructor": {
+            "name": "Wang,H."
+        }
+    },
+    {
+        "code": "AM 107 - 01",
+        "name": "IntroFluidDynamics",
+        "number": 12450,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 21,
+            "capacity": 30
+        },
+        "meetingInfo": {
+            "location": "LEC: Engineer 2 194",
+            "dayAndTime": "TuTh 11:40AM-01:15PM"
+        },
+        "instructor": {
+            "name": "Brummell,N.H."
+        }
+    },
+    {
+        "code": "AM 114 - 01",
+        "name": "Intro Dynam Systems",
+        "number": 10775,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 1,
+            "enrolled": 39,
+            "capacity": 80
+        },
+        "meetingInfo": {
+            "location": "LEC: N. Sci Annex 101",
+            "dayAndTime": "TuTh 01:30PM-03:05PM"
+        },
+        "instructor": {
+            "name": "Venturi,D."
+        }
+    },
+    {
+        "code": "AM 129 - 01",
+        "name": "Foundtns Sci Comput",
+        "number": 11067,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 1,
+            "enrolled": 44,
+            "capacity": 44
+        },
+        "meetingInfo": {
+            "location": "LEC: Porter Acad 148",
+            "dayAndTime": "MWF 12:00PM-01:05PM"
+        },
+        "instructor": {
+            "name": "May,I."
+        }
+    },
+    {
+        "code": "AM 214 - 01",
+        "name": "Applied Dynamic Sys",
+        "number": 10776,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 39,
+            "capacity": 80
+        },
+        "meetingInfo": {
+            "location": "LEC: N. Sci Annex 101",
+            "dayAndTime": "TuTh 01:30PM-03:05PM"
+        },
+        "instructor": {
+            "name": "Venturi,D."
+        }
+    },
+    {
+        "code": "AM 217 - 01",
+        "name": "Intro Fluid Dynamics",
+        "number": 12451,
+        "details": {
+            "instructionMode": "In Person"
+        },
+        "availability": {
+            "status": 0,
+            "enrolled": 21,
+            "capacity": 30
+        },
+        "meetingInfo": {
+            "location": "LEC: Engineer 2 194",
+            "dayAndTime": "TuTh 11:40AM-01:15PM"
+        },
+        "instructor": {
+            "name": "Brummell,N.H."
+        }
+    }
+]

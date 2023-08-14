@@ -1,0 +1,64 @@
+<script lang="ts">
+    import { db, focusedClass, home } from "../mainStore";
+    import Class from "./Class/Class.svelte";
+
+    let mainElem;
+
+    // scroll to top once new class is clicked
+    $: if ($focusedClass) {
+        mainElem.scrollTop = 0;
+    }
+</script>
+
+<main bind:this={mainElem}>
+    {#if $focusedClass}
+        {#key $focusedClass.number}
+            <Class item={$focusedClass} />
+        {/key}
+    {:else}
+        <h1>Yet Another UCSC Class Schedule</h1>
+        Select a class to see more details about it. You can also search or use the dropdowns to filter your results.<br />
+
+        <h2>Home</h2>
+        For accurate walking estimates, I live at <select bind:value={$home}>
+            <option>Cowell College</option>
+            <option>Stevenson College</option>
+            <option>Crown College</option>
+            <option>Merrill College</option>
+            <option>Porter College</option>
+            <option>Kresge College</option>
+            <option>Oakes College</option>
+            <option>Rachel Carson College</option>
+            <option>College Nine</option>
+            <option>John R. Lewis College</option>
+        </select>
+
+        <h2>Quick Links</h2>
+        <a href="https://my.ucsc.edu" target="_blank">MyUCSC</a> <br />
+        <a href="https://ucsc.instructure.com" target="_blank">Canvas</a> <br />
+        <a href="https://advising.ucsc.edu/gettingstartedinthemajor/frosh/index.html" targeT="_blank">Getting Started In Your Major</a> <br />
+        <a href="https://registrar.ucsc.edu/enrollment/general-education-requirements.html" target="_blank">General Education Requirements</a>
+        
+        <p>Created with 💛 by <a href="https://cabalex.github.io">@cabalex</a>. <a href="https://github.com/cabalex/yaucsccs">View source here</a>.</p>
+        <p>Data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
+        {/if}
+</main>
+
+<style>
+    main {
+        flex-grow: 1;
+        width: calc(100% - 60px);
+        height: calc(100% - 50px);
+        margin: 10px 10px 0 0;
+        padding: 20px;
+        border-radius: 10px 10px 0 0;
+        background-color: #333;
+        overflow: auto;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    a {
+        line-height: 2em;
+    }
+</style>
