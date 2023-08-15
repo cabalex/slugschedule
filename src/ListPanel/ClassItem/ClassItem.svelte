@@ -38,7 +38,7 @@
 
 <div
     class="classItem"
-    class:focused={$focusedClass?.code === item.code}
+    class:focused={$focusedClass !== "home" && $focusedClass?.code === item.code}
     class:open={item.availability.status === ClassStatus.Open}
     class:waitlist={item.availability.status === ClassStatus.Waitlist}
     class:closed={item.availability.status === ClassStatus.Closed}

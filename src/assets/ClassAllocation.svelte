@@ -17,7 +17,9 @@
 </script>
 
 <div class="classAllocation">
-    {#if availability.capacity !== 0}
+    {#if availability.capacity === 0 && availability.enrolled === 0}
+        <span class="cancelled">Class Cancelled</span>
+    {:else}
         <div class="barRow enrolled">
             <span>{availability.enrolled}</span>
             <div class="bar">
@@ -35,8 +37,6 @@
             </div>
             <span>{availability.waitlistCapacity}</span>
         </div>
-    {:else}
-    <span class="cancelled">Class Cancelled</span>
     {/if}
 </div>
 

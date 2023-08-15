@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { db, focusedClass } from "../mainStore";
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
     import Clock from "svelte-material-icons/Clock.svelte";
     import Account from "svelte-material-icons/Account.svelte";
@@ -40,7 +39,7 @@
 </div>
   
 <style>
-    h3, h4 {
+    h3 {
         margin: 0;
     }
     .associatedClass {

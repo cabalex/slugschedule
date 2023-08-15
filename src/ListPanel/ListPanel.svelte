@@ -9,6 +9,7 @@
     import StatusChip from "../Chips/StatusChip.svelte";
   import GeChip from "../Chips/GEChip.svelte";
   import GraduateChip from "../Chips/GraduateChip.svelte";
+  import { tick } from "svelte";
 
 
     
@@ -67,7 +68,12 @@
     }
 
     let scrollToIndex = null;
-    function scrollOnSearch(item) {
+    async function scrollOnSearch(item) {
+        if ($listMode === "starred") {
+            $listMode = "all";
+            await tick();
+        }
+        
         let index = items.findIndex((c) => c.number === item.number);
         if (scrollToIndex && $focusedClass && index) {
             scrollToIndex(index);
