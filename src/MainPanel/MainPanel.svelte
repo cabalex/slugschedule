@@ -1,4 +1,5 @@
 <script lang="ts">
+    import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import { db, focusedClass, home } from "../mainStore";
     import Class from "./Class/Class.svelte";
 
@@ -11,11 +12,17 @@
 </script>
 
 <main bind:this={mainElem} class:focused={$focusedClass}>
-    {#if $focusedClass}
+    {#if $focusedClass && $focusedClass !== "home"}
         {#key $focusedClass.number}
             <Class item={$focusedClass} />
         {/key}
     {:else}
+        <header class="mobileHeader">
+            <button class="roundBtn" on:click={() => $focusedClass = null}>
+                <ArrowLeft />
+            </button>
+            <h2>Home</h2>
+        </header>
         <h1>Yet Another UCSC Class Schedule</h1>
         Select a class to see more details about it. You can also search or use the dropdowns to filter your results.<br />
 
@@ -74,6 +81,10 @@
         }
         main.focused {
             left: 0;
+        }
+        .mobileHeader {
+            top: 0;
+            bottom: unset !important;
         }
     }
 </style>

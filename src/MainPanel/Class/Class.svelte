@@ -59,7 +59,7 @@
         <p class="notes">{item.classNotes}</p>
         {/if}
         <h3>Enrollment</h3>
-        {#if item.availability.capacity === 0}
+        {#if item.availability.capacity === 0 && item.availability.enrolled === 0}
             Class Cancelled
         {:else}
             <Enrollment number={item.number} availability={item.availability} />
@@ -186,14 +186,12 @@
         </a>
     {/if}
 </div>
-{#if window.innerWidth < 700}
 <header class="mobileHeader">
     <button class="roundBtn" on:click={() => $focusedClass = null}>
         <ArrowLeft />
     </button>
     <h2>{item.code}</h2>
 </header>
-{/if}
 
 <style>
     .class {
@@ -295,21 +293,6 @@
         }
         .classInfo {
             width: 100%;
-        }
-        header.mobileHeader {
-            position: sticky;
-            bottom: 30px;
-            z-index: 10;
-            margin-top: 40px;
-            width: 100%;
-            background-color: #111;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-
-            display: flex;
-            flex-direction: row;
-            gap: 10px;
-            align-items: center;
         }
         aside {
             width: 100%;

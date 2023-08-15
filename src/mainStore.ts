@@ -11,14 +11,14 @@ export let db = readable(null, (set) => {
     return () => {}
 })
 
-export let focusedClass = writable<Class|null>(null);
+export let focusedClass = writable<Class|"home"|null>(null);
 export let home = writable<string|null>("Porter College");
 export let starredClasses = writable<number[]>(localStorage.getItem("starredClasses") ? JSON.parse(localStorage.getItem("starredClasses")) : []);
 export let classHistory = writable<Class[]>([]);
 export let listMode = writable<"starred"|"all">(get(starredClasses).length ? "starred" : "all");
 
 focusedClass.subscribe((value) => {
-    if (value) {
+    if (value && value !== "home") {
         classHistory.update(h => [
             value, ...h.filter(id => id.number !== value.number)
         ].slice(0, 10))

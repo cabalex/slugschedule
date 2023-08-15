@@ -30,7 +30,7 @@
 </script>
 <aside>
     <span class="grower mobile" />
-    <button class="logo" on:click={() => focusedClass.set(null)}>
+    <button class="logo" on:click={() => $focusedClass = "home"}>
         YA<span style="color: var(--primary); display: block">UCSC</span>CS
     </button>
     <button title="Starred classes" on:click={() => $listMode = "starred"} class="iconBtn" class:active={$listMode === "starred"}>
@@ -154,7 +154,7 @@
             height: 40px !important;
         }
         .grower.mobile {
-            flex-grow: 9;
+            flex-grow: 2;
         }
         .term {
             line-height: 40px;
