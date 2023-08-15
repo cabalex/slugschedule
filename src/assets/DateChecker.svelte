@@ -46,6 +46,18 @@
             }
             return false;
         }
+        checkVicinity(a: MeetingInfos, margin: number) {
+            for (let i = 0; i < this.infos.length; i++) {
+                for (let j = 0; j < a.infos.length; j++) {
+                    if (this.infos[i].days.some(x => a.infos[j].days.includes(x))) {
+                        if (this.infos[i].startTime < a.infos[j].endTime + margin && this.infos[i].endTime > a.infos[j].startTime - margin) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 </script>
 <script lang="ts">
@@ -56,25 +68,32 @@
     export let onlyShowConflict = false;
     export let meetingInfos: Array<{dayAndTime: string; location: string; dates: string}>;
 
-    let conflict = false;
+    let conflict: false|"close"|true = false;
     $: infoObject = MeetingInfos.parse(meetingInfos);
     $: {
         let classes = $scheduledClasses.map(x => $db.getClassByNumber(x)).filter(x => x.number !== number);
         if (classes.some(x => MeetingInfos.parse(x.meetingInfos || [x.meetingInfo]).checkOverlap(infoObject))) {
             conflict = true;
+        } else if (classes.some(x => MeetingInfos.parse(x.meetingInfos || [x.meetingInfo]).checkVicinity(infoObject, 1000 * 60 * 30))) {
+            conflict = "close";
         } else {
             conflict = false;
         }
     }
 </script>
 
-{#if conflict}
+{#if conflict === true}
     <Clock color="red" />
     <span title="This time conflicts with one or more classes in your schedule." style="color: red">
         {meetingInfos.map(x => x.dayAndTime).join(", ")}
     </span>
+{:else if conflict === "close"}
+    <Clock color="orange" />
+    <span title="This time is close to another class on your schedule (<30 min). You may have trouble commuting." style="color: orange">
+        {meetingInfos.map(x => x.dayAndTime).join(", ")}
+    </span>
 {:else if (!onlyShowConflict)}
-    <Clock color={conflict ? "red" : undefined} />
+    <Clock />
     <span>
         {meetingInfos.map(x => x.dayAndTime).join(", ")}
     </span>

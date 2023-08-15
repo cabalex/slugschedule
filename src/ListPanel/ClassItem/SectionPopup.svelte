@@ -16,6 +16,10 @@
 <div class="modal" transition:fade={{duration: 100}} on:click={close}>
     <div class="modalInner" on:click={(e) => e.stopPropagation()}>
         <h2>This class has discussion sections or associated classes.<br /> Would you like to take one?</h2>
+        {#if item.enrollmentRequirements}
+        <h3>Enrollment Requirements</h3>
+        {/if}
+        <p>{item.enrollmentRequirements}</p>
         <div class="associatedClasses">
             {#each item.associatedClasses as associatedClass}
                 <AssociatedClass item={associatedClass} onClick={selectSection.bind(null, associatedClass)} />
@@ -42,15 +46,12 @@
     }
     .modalInner {
         max-width: 800px;
-        height: 80%;
+        max-height: 90%;
+        overflow: auto;
 
         background-color: #333;
         border-radius: 10px;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        padding: 10px;
     }
     h2 {
         text-align: center;
