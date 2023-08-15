@@ -117,6 +117,21 @@ export default class DB {
         return [...this.history.keys()].sort((a, b) => b - a)[0];
     }
 
+    getClassByNumber(num: number) {
+        for (let i = 0; i < this.classes.length; i++) {
+            if (this.classes[i].number === num) return this.classes[i];
+            if (this.classes[i].associatedClasses) {
+                for (let j = 0; j < this.classes[i].associatedClasses.length; j++) {
+                    if (this.classes[i].associatedClasses[j].number === num)
+                        return {
+                            ...this.classes[i].associatedClasses[j],
+                            rootClass: this.classes[i]
+                        }
+                }
+            }
+        }
+    }
+
     takeSnapshot() {
         let time = Date.now();
         let records: HistoryRecord[] = [];

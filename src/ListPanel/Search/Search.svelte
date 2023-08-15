@@ -1,8 +1,11 @@
 <script lang="ts">
     import Fuse from 'fuse.js'
-    import { db, focusedClass } from '../../mainStore';
+    import { db, focusedClass, searchFilters, listMode } from '../../mainStore';
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
+    import Close from "svelte-material-icons/Close.svelte";
     import Magnify from "svelte-material-icons/Magnify.svelte";
+    import ClassStatusIcon from '../../assets/ClassStatusIcon.svelte';
+  import DateChecker from '../../assets/DateChecker.svelte';
 
     let searchElem;
     let focused = false;
@@ -20,6 +23,13 @@
     let timeout = null;
     function search(e) {
         if (timeout) clearTimeout(timeout);
+        if (e.key == "Enter") {
+            focused = false;
+            $searchFilters[$listMode].searchResults = e.target.value !== "" ?
+                {query: e.target.value, results: fuse.search(e.target.value)} :
+                null;
+            return;
+        }
         timeout = setTimeout(() => {
             results = e.target.value !== "" ? fuse.search(e.target.value) : null;
         }, 500);
@@ -27,6 +37,15 @@
 
     $: {
         if (searchElem && searchElem.value === "") results = null;
+    }
+    $: {
+        if ($searchFilters[$listMode].searchResults === null) {
+            results = null;
+            if (searchElem) searchElem.value = "";
+        } else {
+            results = $searchFilters[$listMode].searchResults.results;
+            if (searchElem) searchElem.value = $searchFilters[$listMode].searchResults.query;
+        }
     }
 
     function focusClass(item, e) {
@@ -51,20 +70,29 @@
             {:else}
                 <Magnify size="1.5em" />
             {/if}
-            <input type="text" placeholder="Search classes" on:keyup={search} bind:this={searchElem} />
+            <input type="text" placeholder={$listMode === "all" ? "Search classes" : "Search starred classes"} on:keyup={search} bind:this={searchElem} />
+            {#if searchElem?.value}
+                <span on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}}>
+                    <Close size="1.5em" />
+                </span>
+            {/if}
         </div>
         {#if results !== null}
             <div class="results">
                 {#each results as result}
                 <div class="resultItem" on:click={focusClass.bind(null, result.item)}>
-                    <span>{result.item.code}</span>
-                    <h2>{result.item.name}</h2>
+                    <ClassStatusIcon status={result.item.availability.status} />
+                    <div class="text">
+                        <span>{result.item.code}</span>
+                        <h2>{result.item.name}</h2>
+                        <DateChecker onlyShowConflict={true} number={result.item.number} meetingInfos={result.item.meetingInfos} />
+                    </div>
                 </div>
                 {/each}
             </div>
         {:else}
             <!-- results splash -->
-            <p>Search by name ("Biology"), class ID ("CHEM 01A"), description...</p>
+            <p>Search by name ("Biology"), class ID ("CHEM 1A"), description...</p>
         {/if}
     </div>
 </div>
@@ -82,11 +110,12 @@
         left: 0;
         top: 0;
         overflow: hidden;
+        clip-path: inset(10px);
         width: calc(100% - 40px);
         height: 54px;
         padding: 10px 20px;
         border-radius: 26px;
-        transition: height 0.1s ease-in-out;
+        transition: height 0.1s ease-in-out, clip-path 0.1s ease-in-out, background-color 0.1s ease-in-out;
     }
     .searchOuter p {
         color: black;
@@ -114,6 +143,11 @@
         border-bottom: 1px solid #ccc;
         cursor: pointer;
         user-select: none;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
     }
     .resultItem h2 {
         margin: 0;
@@ -137,6 +171,7 @@
     }
 
     .searchOuter.focused {
+        clip-path: inset(0);
         z-index: 20;
         background-color: #eee;
         height: 50vh;
