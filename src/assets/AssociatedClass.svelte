@@ -1,31 +1,31 @@
 <script lang="ts">
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
-    import Clock from "svelte-material-icons/Clock.svelte";
     import Account from "svelte-material-icons/Account.svelte";
     import Enrollment from "../MainPanel/Class/Enrollment/Enrollment.svelte";
-  import { slide } from "svelte/transition";
+    import { slide } from "svelte/transition";
+    import DateChecker from "./DateChecker.svelte";
 
     export let item;
+    export let onClick: null|Function = null;
 
     let showEnrollment = false;
     let color = item.availability.enrolled / item.availability.capacity * 100 === 100 ? "var(--closed)" : "white";
 </script>
   
-<div class="associatedClass">
+<div class="associatedClass" class:clickable={onClick} on:click={() => onClick ? onClick() : ""}>
     <h3>{item.code} <span class="number">#{item.number}</span></h3>
     <div class="fact">
         <MapMarker />
         {item.meetingInfo.location}
     </div>
     <div class="fact">
-        <Clock />
-        {item.meetingInfo.dayAndTime}
+        <DateChecker number={item.number} meetingInfos={[item.meetingInfo]} />
     </div>
     <div class="fact">
         <Account />
         {item.meetingInfo.instructor}
     </div>
-    <div style="cursor: pointer; user-select: none" on:click={() => showEnrollment = !showEnrollment}>
+    <div style="cursor: {onClick ? 'normal' : 'pointer'}; user-select: none" on:click={() => showEnrollment = onClick ? false : !showEnrollment}>
         <div class="bar">
             <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
         </div>
@@ -41,6 +41,10 @@
 <style>
     h3 {
         margin: 0;
+    }
+    .clickable {
+        user-select: none;
+        cursor: pointer;
     }
     .associatedClass {
         background-color: #222;

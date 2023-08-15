@@ -2,7 +2,7 @@
     import Restart from "svelte-material-icons/Restart.svelte";
     import Search from "./Search/Search.svelte";
     import VirtualList from "../VirtualList/VirtualList.svelte";
-    import { db, focusedClass, listMode, searchFilters, starredClasses } from "../mainStore";
+    import { db, focusedClass, listMode, scheduledClasses, searchFilters, starredClasses } from "../mainStore";
     import ClassItem from "./ClassItem/ClassItem.svelte";
     import DepartmentChip from "../Chips/DepartmentChip.svelte";
     import OnlineChip from "../Chips/OnlineChip.svelte";
@@ -47,24 +47,40 @@
 
     let items = [];
 
+    // These are all separated into their own $ blocks since they can conflict with one another
+    // (e.g. adding a starred class would reload the "starred" $ block, but not the "all" $ block)
     $: {
         if ($listMode === "all") {
-            items = filterItems($db.classes, $searchFilters);
+            items = filterItems($db.classes, $searchFilters[$listMode]);
         }
     }
     $: {
-        if ($listMode === "starred" || $listMode === "scheduler") {
-            items = filterItems($starredClasses.map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters)
+        if ($listMode === "starred") {
+            items = filterItems($starredClasses.map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters[$listMode])
         }
     }
-    $: filtered = Object.values($searchFilters).some((v) => v instanceof Array ? v.length : v !== null);
+    $: {
+        if ($listMode === "scheduler") {
+            // it is possible to have a scheduled class that isn't starred, so make sure it's unschedulable
+            // remove duplicates too
+            items = filterItems([...new Set([...$starredClasses, ...$scheduledClasses])].map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters[$listMode])
+        }
+    }
+    $: {
+        if ($searchFilters[$listMode].searchResults !== null) {
+            items = filterItems($searchFilters[$listMode].searchResults.results.map(x => x.item), $searchFilters[$listMode])
+                .filter(x => $listMode !== "all" ? $starredClasses.includes(x.number) : true)
+        }
+    }
+    $: filtered = Object.values($searchFilters[$listMode]).some((v) => v instanceof Array ? v.length : v !== null);
 
     function resetFilters() {
-        $searchFilters.department = [];
-        $searchFilters.instructionMode = [];
-        $searchFilters.status = [];
-        $searchFilters.ges = [];
-        $searchFilters.undergraduate = null;
+        $searchFilters[$listMode].department = [];
+        $searchFilters[$listMode].instructionMode = [];
+        $searchFilters[$listMode].status = [];
+        $searchFilters[$listMode].ges = [];
+        $searchFilters[$listMode].undergraduate = null;
+        $searchFilters[$listMode].searchResults = null;
     }
 
     let scrollToIndex = null;
@@ -97,8 +113,10 @@
         <VirtualList bind:scrollToIndex={scrollToIndex} items={items} let:item>
             <ClassItem item={item} />
         </VirtualList>
-    {:else if $listMode !== "all" && $starredClasses.length === 0}
+    {:else if $listMode === "starred" && $starredClasses.length === 0}
         <span>You haven't starred any classes yet.</span>
+    {:else if $listMode === "scheduler"}
+        <span>To add classes to the scheduler, you must star them first.<br />Find what you're interested in taking!</span>
     {:else}
         <span>No results...</span>
     {/if}

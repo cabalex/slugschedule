@@ -1,6 +1,6 @@
 <script lang="ts">
     import DropdownChip from "./DropdownChip.svelte";
-    import { searchFilters } from "../mainStore";
+    import { searchFilters, listMode } from "../mainStore";
     
     const opts = {
         "AnyGE": "Any GE",
@@ -33,4 +33,4 @@
     }
 </script>
 
-<DropdownChip multiple={true} label="GEs" options={opts} bind:value={$searchFilters.ges} />
+<DropdownChip multiple={true} label="GEs" options={opts} bind:value={$searchFilters[$listMode].ges} />

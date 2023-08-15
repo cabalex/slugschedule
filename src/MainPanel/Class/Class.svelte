@@ -1,16 +1,17 @@
 <script lang="ts">
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
     import Monitor from "svelte-material-icons/Monitor.svelte";
-    import Clock from "svelte-material-icons/Clock.svelte";
     import CalendarRange from "svelte-material-icons/CalendarRange.svelte";
     import ClipboardCheck from "svelte-material-icons/ClipboardCheck.svelte";
     import HandCoin from "svelte-material-icons/HandCoin.svelte";
     import School from "svelte-material-icons/School.svelte";
     import OpenInNew from "svelte-material-icons/OpenInNew.svelte";
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
+    import Star from "svelte-material-icons/Star.svelte";
+    import StarOutline from "svelte-material-icons/StarOutline.svelte";
 
     import type { Class } from "../../../.server/db/DB";
-    import { home, db, focusedClass } from "../../mainStore";
+    import { home, db, focusedClass, starredClasses } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
@@ -21,6 +22,14 @@
 
     export let item: Class;
 
+    function toggleStar(e) {
+        e.stopPropagation();
+        if ($starredClasses.includes(item.number)) {
+            $starredClasses = $starredClasses.filter(x => x !== item.number);
+        } else {
+            $starredClasses = [...$starredClasses, item.number];
+        }
+    }
     
     $: place =
         item.meetingInfos.length &&
@@ -35,12 +44,23 @@
 
 <div class="class">
     <div class="classInfo">
-        <h2>
-            {item.code} <span class="number">#{item.number}</span>
-        </h2>
-        <h1>
-            {item.name}
-        </h1>
+        <header class="title">
+            <button class="roundBtn" on:click={toggleStar}>
+                    {#if $starredClasses.includes(item.number)}
+                        <Star />
+                    {:else}
+                        <StarOutline />
+                    {/if}
+            </button>
+            <div class="text">
+                <h2>
+                    {item.code} <span class="number">#{item.number}</span>
+                </h2>
+                <h1>
+                    {item.name}
+                </h1>
+            </div>
+        </header>
         <p class="description">{item.description}</p>
         {#if item.combinedSections.length}
         <h3>Combined sections with</h3>
@@ -109,7 +129,6 @@
         {/each}
         {#if item.meetingInfos.some(x => x.dayAndTime)}
         <div class="fact">
-            <Clock />
             <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
         </div>
         {/if}
@@ -206,6 +225,12 @@
     }
     .classInfo {
         flex-grow: 1;
+    }
+    header.title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
     }
     .combinedSections, .associatedClasses {
         display: flex;
