@@ -16,10 +16,10 @@
 <div class="modal" transition:fade={{duration: 100}} on:click={close}>
     <div class="modalInner" on:click={(e) => e.stopPropagation()}>
         <h2>This class has discussion sections or associated classes.<br /> Would you like to take one?</h2>
-        {#if item.enrollmentRequirements}
-        <h3>Enrollment Requirements</h3>
+        {#if item.classNotes}
+        <h3>Class Notes</h3>
         {/if}
-        <p>{item.enrollmentRequirements}</p>
+        <p>{item.classNotes}</p>
         <div class="associatedClasses">
             {#each item.associatedClasses as associatedClass}
                 <AssociatedClass item={associatedClass} onClick={selectSection.bind(null, associatedClass)} />
