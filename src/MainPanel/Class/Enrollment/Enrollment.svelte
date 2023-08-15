@@ -18,6 +18,19 @@
         color: "white",
         backgroundColor: "#111",
         borderColor: "white",
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            tooltip: {
+                mode: 'index',
+                intersect: false
+            },
+            verticalLiner: {}
+        },
+        hover: {
+            mode: 'index',
+            intersect: false
+        },
         scales: {
             x: {
                 type: 'time',
@@ -58,6 +71,14 @@
                 fill: false,
                 borderColor: 'orange',
                 tension: 0.1
+            },
+            {
+                label: 'Capacity',
+                data: [],
+                backgroundColor: 'rgb(192, 192, 192)',
+                fillColor: 'red',
+                borderColor: 'rgb(192, 192, 192)',
+                tension: 0.1
             }
         ]
     }
@@ -69,6 +90,7 @@
             waitlistInLastDay = 0;
             data.datasets[0].data = [];
             data.datasets[1].data = [];
+            data.datasets[2].data = [];
             let values = [...$db.history.keys()].sort((a, b) => a - b);
             let lastRecord = null;
             for (let i = 0; i < values.length; i++) {
@@ -83,6 +105,10 @@
                             x: new Date(values[i - 1]),
                             y: lastRecord?.waitlist
                         })
+                        data.datasets[2].data.push({
+                            x: new Date(values[i - 1]),
+                            y: lastRecord?.capacity
+                        })
                     }
                     lastRecord = $db.history.get(values[i]).find((v) => v.classNumber == number);
                     data.datasets[0].data.push({
@@ -93,6 +119,10 @@
                         x: new Date(values[i]),
                         y: lastRecord?.waitlist
                     });
+                    data.datasets[2].data.push({
+                        x: new Date(values[i]),
+                        y: lastRecord?.capacity
+                    })
 
                     if (data.datasets[0].data.length > 1 && Math.abs(Date.now() - values[i]) < 24 * 60 * 60 * 1000) {
                         enrolledInLastDay += data.datasets[0].data[data.datasets[0].data.length - 1].y - data.datasets[0].data[data.datasets[0].data.length - 2].y
@@ -102,6 +132,7 @@
             }
             data.datasets[0].data.push({x: new Date($db.lastUpdate), y: availability.enrolled});
             data.datasets[1].data.push({x: new Date($db.lastUpdate), y: availability.waitlist});
+            data.datasets[2].data.push({x: new Date($db.lastUpdate), y: availability.capacity});
         }
     }
 </script>
@@ -140,12 +171,35 @@
         {/if}
     </div>
     {/if}
-    <Line
-        data={data}
-        width={large ? 600 : 300}
-        height={large ? 300 : 300}
-        options={options}
-    />
+    <div class="chart">
+        <Line
+            data={data}
+            width={large ? 600 : 300}
+            height={large ? 300 : 300}
+            options={options}
+            plugins={[
+                {
+                    id: 'verticalLiner',
+                    afterDraw: chart => {
+                        // https://stackoverflow.com/questions/72998998/how-to-make-vertical-line-when-hovering-cursor-chart-js
+                        if (chart.tooltip?._active?.length) {
+                        let x = chart.tooltip._active[0].element.x;
+                        let yAxis = chart.scales.y;
+                        let ctx = chart.ctx;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.moveTo(x, yAxis.top);
+                        ctx.lineTo(x, yAxis.bottom);
+                        ctx.lineWidth = 2;
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                        ctx.stroke();
+                        ctx.restore(); 
+                        }
+                    }
+                }
+            ]}
+        />
+    </div>
 </div>
 
 <style>
@@ -156,6 +210,16 @@
         height: 300px;
         width: 100%;
         margin-bottom: 10px;
+        overflow: hidden;
+        max-height: 300px;
+    }
+    .enrollment .chart {
+        width: 100%;
+    }
+    :global(.enrollment canvas) {
+        position: relative;
+        max-height: 100% !important;
+        max-width: 100% !important;
     }
     .text {
         flex-grow: 1;
@@ -179,11 +243,15 @@
         display: block;
         margin: 0;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1600px) {
         .enrollment {
             flex-direction: column;
             height: auto;
             width: 100%;
+            max-height: 400px;
+        }
+        :global(.enrollment canvas) {
+            max-height: 200px !important;
         }
         .text h1 {
             font-size: 2em;
