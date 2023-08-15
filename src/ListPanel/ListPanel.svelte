@@ -7,9 +7,9 @@
     import DepartmentChip from "../Chips/DepartmentChip.svelte";
     import OnlineChip from "../Chips/OnlineChip.svelte";
     import StatusChip from "../Chips/StatusChip.svelte";
-  import GeChip from "../Chips/GEChip.svelte";
-  import GraduateChip from "../Chips/GraduateChip.svelte";
-  import { tick } from "svelte";
+    import GeChip from "../Chips/GEChip.svelte";
+    import GraduateChip from "../Chips/GraduateChip.svelte";
+    import { tick } from "svelte";
 
 
     
@@ -53,7 +53,7 @@
         }
     }
     $: {
-        if ($listMode === "starred") {
+        if ($listMode === "starred" || $listMode === "scheduler") {
             items = filterItems($starredClasses.map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters)
         }
     }
@@ -69,7 +69,7 @@
 
     let scrollToIndex = null;
     async function scrollOnSearch(item) {
-        if ($listMode === "starred") {
+        if ($listMode === "starred" || $listMode === "scheduler") {
             $listMode = "all";
             await tick();
         }
@@ -97,7 +97,7 @@
         <VirtualList bind:scrollToIndex={scrollToIndex} items={items} let:item>
             <ClassItem item={item} />
         </VirtualList>
-    {:else if $listMode === "starred" && $starredClasses.length === 0}
+    {:else if $listMode !== "all" && $starredClasses.length === 0}
         <span>You haven't starred any classes yet.</span>
     {:else}
         <span>No results...</span>

@@ -16,18 +16,20 @@
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
     import Review from "./Review/Review.svelte";
     import Enrollment from "./Enrollment/Enrollment.svelte";
-  import AssociatedClass from "../../assets/AssociatedClass.svelte";
+    import AssociatedClass from "../../assets/AssociatedClass.svelte";
+    import DateChecker from "../../assets/DateChecker.svelte";
 
     export let item: Class;
 
     
     $: place =
-        item.meetingInfo.location &&
-        item.meetingInfo.location !== "Online" &&
-        item.meetingInfo.location !== "N/A" &&
-        item.meetingInfo.location !== "Remote Instruction" &&
-        !item.meetingInfo.location.includes("TBD") ?
-        encodeURIComponent("Santa Cruz " + item.meetingInfo.location.split(" ").slice(0, -1).join(" ")) :
+        item.meetingInfos.length &&
+        item.meetingInfos[0].location &&
+        item.meetingInfos[0].location !== "Online" &&
+        item.meetingInfos[0].location !== "N/A" &&
+        item.meetingInfos[0].location !== "Remote Instruction" &&
+        !item.meetingInfos[0].location.includes("TBD") ?
+        encodeURIComponent("Santa Cruz " + item.meetingInfos[0].location.split(" ").slice(0, -1).join(" ")) :
         null;
 </script>
 
@@ -96,17 +98,19 @@
             <OpenInNew />
         </a>
         <i>Due to security, to add to cart you must be logged in through MyUCSC, then copy and paste the link in a new tab.</i>
-        <div class="fact">
-            {#if item.meetingInfo.location === "Online" || item.meetingInfo.location === "Remote Instruction"}
-                <Monitor /> {item.details.instructionMode}
-            {:else}
-                <MapMarker /> {item.meetingInfo.location}
-            {/if}
-        </div>
-        {#if item.meetingInfo.dayAndTime}
+        {#each item.meetingInfos as meetingInfo}
+            <div class="fact">
+                {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
+                    <Monitor /> {item.details.instructionMode}
+                {:else}
+                    <MapMarker /> {meetingInfo.location}
+                {/if}
+            </div>
+        {/each}
+        {#if item.meetingInfos.some(x => x.dayAndTime)}
         <div class="fact">
             <Clock />
-            {item.meetingInfo.dayAndTime}
+            <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
         </div>
         {/if}
         <div class="fact">
@@ -125,7 +129,7 @@
         </div>
         <div class="fact">
             <CalendarRange />
-            {item.meetingInfo.dates}
+            {[...new Set(item.meetingInfos.map(x => x.dates))].join(", ")}
         </div>
     </aside>
 </div>
