@@ -6,119 +6,119 @@ import { Class, ClassStatus, InstructionMode, Instructor } from "../db/DB";
 const ENDPOINT = "https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php";
 const CURRENT_TERM = 2238;
 
-enum Subject {
-    "ANTH",
-    "APLX",
-    "AM",
-    "ARBC",
-    "ART",
-    "ARTG",
-    "ASTR",
-    "BIOC",
-    "BIOL",
-    "BIOE",
-    "BME",
-    "CRSN",
-    "CHEM",
-    "CHIN",
-    "CSP",
-    "CLNI",
-    "CMMU",
-    "CMPM",
-    "CSE",
-    "COWL",
-    "CRES",
-    "CRWN",
-    "DANM",
-    "EART",
-    "ECON",
-    "EDUC",
-    "ECE",
-    "ESCI",
-    "ENVS",
-    "FMST",
-    "FILM",
-    "FREN",
-    "GAME",
-    "GERM",
-    "GCH",
-    "GRAD",
-    "GREE",
-    "HEBR",
-    "HIS",
-    "HAVC",
-    "HISC",
-    "HCI",
-    "HUMN",
-    "ITAL",
-    "JAPN",
-    "JRLC",
-    "KRSG",
-    "LAAD",
-    "LATN",
-    "LALS",
-    "LGST",
-    "LING",
-    "LIT",
-    "MATH",
-    "MERR",
-    "METX",
-    "MUSC",
-    "NLP",
-    "OAKS",
-    "OCEA",
-    "PERS",
-    "PHIL",
-    "PBS",
-    "PHYE",
-    "PHYS",
-    "POLI",
-    "PRTR",
-    "PORT",
-    "PSYC",
-    "SCIC",
-    "SOCD",
-    "SOCY",
-    "SPAN",
-    "SPHS",
-    "STAT",
-    "STEV",
-    "TIM",
-    "THEA",
-    "UCDC",
-    "VAST",
+type Subject =
+    "ANTH" |
+    "APLX" |
+    "AM" |
+    "ARBC" |
+    "ART" |
+    "ARTG" |
+    "ASTR" |
+    "BIOC" |
+    "BIOL" |
+    "BIOE" |
+    "BME" |
+    "CRSN" |
+    "CHEM" |
+    "CHIN" |
+    "CSP" |
+    "CLNI" |
+    "CMMU" |
+    "CMPM" |
+    "CSE" |
+    "COWL" |
+    "CRES" |
+    "CRWN" |
+    "DANM" |
+    "EART" |
+    "ECON" |
+    "EDUC" |
+    "ECE" |
+    "ESCI" |
+    "ENVS" |
+    "FMST" |
+    "FILM" |
+    "FREN" |
+    "GAME" |
+    "GERM" |
+    "GCH" |
+    "GRAD" |
+    "GREE" |
+    "HEBR" |
+    "HIS" |
+    "HAVC" |
+    "HISC" |
+    "HCI" |
+    "HUMN" |
+    "ITAL" |
+    "JAPN" |
+    "JRLC" |
+    "KRSG" |
+    "LAAD" |
+    "LATN" |
+    "LALS" |
+    "LGST" |
+    "LING" |
+    "LIT" |
+    "MATH" |
+    "MERR" |
+    "METX" |
+    "MUSC" |
+    "NLP" |
+    "OAKS" |
+    "OCEA" |
+    "PERS" |
+    "PHIL" |
+    "PBS" |
+    "PHYE" |
+    "PHYS" |
+    "POLI" |
+    "PRTR" |
+    "PORT" |
+    "PSYC" |
+    "SCIC" |
+    "SOCD" |
+    "SOCY" |
+    "SPAN" |
+    "SPHS" |
+    "STAT" |
+    "STEV" |
+    "TIM" |
+    "THEA" |
+    "UCDC" |
+    "VAST" |
     "WRIT"
-}
 
-enum GE {
-    "A",
-    "C",
-    "C1",
-    "C2",
-    "CC",
-    "E",
-    "ER",
-    "IH",
-    "IM",
-    "IN",
-    "IS",
-    "MF",
-    "PE-E",
-    "PE-H",
-    "PE-T",
-    "PR-C",
-    "PR-E",
-    "PR-S",
-    "Q",
-    "SI",
-    "SR",
-    "TA",
-    "TH",
-    "TN",
-    "TS",
-    "W",
+
+type GE = 
+    "A" |
+    "C" |
+    "C1" |
+    "C2" |
+    "CC" |
+    "E" |
+    "ER" |
+    "IH" |
+    "IM" |
+    "IN" |
+    "IS" |
+    "MF" |
+    "PE-E" |
+    "PE-H" |
+    "PE-T" |
+    "PR-C" |
+    "PR-E" |
+    "PR-S" |
+    "Q" |
+    "SI" |
+    "SR" |
+    "TA" |
+    "TH" |
+    "TN" |
+    "TS" |
+    "W" |
     "AnyGE"
-}
+
 enum MeetingTimes {
     "Morning" = "Morning",
     "Afternoon" = "Afternoon",

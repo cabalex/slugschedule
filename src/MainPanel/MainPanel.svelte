@@ -1,18 +1,21 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
-    import { db, focusedClass, home } from "../mainStore";
+    import { db, focusedClass, home, listMode } from "../mainStore";
     import Class from "./Class/Class.svelte";
+    import Scheduler from "./Scheduler/Scheduler.svelte";
 
     let mainElem;
 
     // scroll to top once new class is clicked
-    $: if ($focusedClass) {
+    $: if ($focusedClass && $listMode !== "scheduler") {
         mainElem.scrollTop = 0;
     }
 </script>
 
 <main bind:this={mainElem} class:focused={$focusedClass}>
-    {#if $focusedClass && $focusedClass !== "home"}
+    {#if $listMode === "scheduler"}
+        <Scheduler />
+    {:else if $focusedClass && $focusedClass !== "home"}
         {#key $focusedClass.number}
             <Class item={$focusedClass} />
         {/key}

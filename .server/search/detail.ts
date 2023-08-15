@@ -73,10 +73,16 @@ export default async function getClassDetails(classUrl: string, existingRMPInfo?
     }
     
     // meeting info
-    let dayAndTime = "", location = "", instructor = "", dates = "", start = "", end = "";
+    let meetingInfos: any = [];
     if ($(`.panel.panel-default.row:nth-child(${i})`).text().includes("Meeting Information")) {
-        [dayAndTime, location, instructor, dates] = $(`.panel.panel-default.row:nth-child(${i}) td`)
-            .map((i, el) => $(el).text().trim());
+        meetingInfos = $(`.panel.panel-default.row:nth-child(${i}) tr`).map(
+            (i, el) => {
+                let [dayAndTime, location, instructor, dates] = $(el).find('td').map((i, el) => $(el).text().trim());
+                return {
+                    dayAndTime, location, instructor, dates
+                }
+            }
+        ).toArray().slice(1);
         i++;
     }
 
@@ -114,8 +120,8 @@ export default async function getClassDetails(classUrl: string, existingRMPInfo?
     }
     
     let rateMyProfessor = existingRMPInfo; 
-    if (instructor && instructor !== "Staff" && !existingRMPInfo)
-        rateMyProfessor = await searchRMP(instructor, code) as any;
+    if (meetingInfos[0] && meetingInfos[0].instructor && meetingInfos[0].instructor !== "Staff" && !existingRMPInfo)
+        rateMyProfessor = await searchRMP(meetingInfos[0].instructor, code) as any;
 
     return {
         code,
@@ -136,15 +142,11 @@ export default async function getClassDetails(classUrl: string, existingRMPInfo?
             waitlist: waitlist as number,
             waitlistCapacity: waitlistCapacity as number
         },
-        meetingInfo: {
-            dayAndTime,
-            location,
-            dates
-        },
+        meetingInfos: meetingInfos.map(x => {return {dayAndTime: x.dayAndTime, location: x.location, dates: x.dates}}),
         combinedSections,
         instructor: {
             ...rateMyProfessor as any,
-            name: instructor
+            name: meetingInfos.length ? meetingInfos[0].instructor : ""
         },
         description,
         enrollmentRequirements,
