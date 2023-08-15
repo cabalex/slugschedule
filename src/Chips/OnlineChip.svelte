@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { searchFilters } from "../mainStore";
+  import { searchFilters, listMode } from "../mainStore";
   import DropdownChip from "./DropdownChip.svelte";
 
     const opts = {
@@ -8,13 +8,6 @@
         "Asynchronous Online": "Asynchronous Online",
         "Synchronous Online": "Synchronous Online",
     }
-
-    function onChange(value) {
-        searchFilters.update((filters) => {
-            filters.instructionMode = value;
-            return filters;
-        })
-    }
 </script>
 
-<DropdownChip multiple={true} label="Mode" options={opts} bind:value={$searchFilters.instructionMode} />
+<DropdownChip multiple={true} label="Mode" options={opts} bind:value={$searchFilters[$listMode].instructionMode} />
