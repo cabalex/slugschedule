@@ -9,7 +9,7 @@
 
     function onChange(value) {
         searchFilters.update((filters) => {
-            filters.undergraduate = value.includes("Undergrad");
+            filters[$listMode].undergraduate = value.includes("Undergrad");
             return filters;
         })
     }
