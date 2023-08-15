@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { ClassStatus } from "../../.server/db/DB";
-    import { searchFilters } from "../mainStore";
+    import { ClassStatus } from "../../.server/db/DB";
+    import { searchFilters, listMode } from "../mainStore";
     import DropdownChip from "./DropdownChip.svelte";
   
     const opts = {
@@ -11,7 +11,7 @@
 
     function onChange(value) {
         searchFilters.update((filters) => {
-            filters.status = value.map(
+            filters[$listMode].status = value.map(
                 x => x === "Closed" ? ClassStatus.Closed :
                 x === "Open" ? ClassStatus.Open :
                 ClassStatus.Waitlist
@@ -20,7 +20,7 @@
         })
     }
 
-    let values = $searchFilters.status.map(
+    let values = $searchFilters[$listMode].status.map(
         x => x === ClassStatus.Closed ? "Closed" :
         x === ClassStatus.Open ? "Open" :
         "Waitlist"
@@ -30,7 +30,7 @@
         values = [];
     }
     $: {
-        if ($searchFilters.status.length === 0) {
+        if ($searchFilters[$listMode].status.length === 0) {
             clearValues();
         }
     }

@@ -34,13 +34,35 @@ interface SearchFilters {
     instructionMode: string[],
     status: ClassStatus[],
     ges: string[],
-    undergraduate: boolean|null
+    undergraduate: boolean|null,
+    searchResults: {query: string, results: any[]}|null;
 }
 
-export let searchFilters = writable<SearchFilters>({
-    department: [],
-    instructionMode: [],
-    status: [],
-    ges: [],
-    undergraduate: null
-})
+export let searchFilters = writable<{[key: string]: SearchFilters}>(
+    {
+        "all": {
+            department: [],
+            instructionMode: [],
+            status: [],
+            ges: [],
+            undergraduate: null,
+            searchResults: null
+        },
+        "starred": {
+            department: [],
+            instructionMode: [],
+            status: [],
+            ges: [],
+            undergraduate: null,
+            searchResults: null
+        },
+        "scheduler": {
+            department: [],
+            instructionMode: [],
+            status: [],
+            ges: [],
+            undergraduate: null,
+            searchResults: null
+        }
+    }
+)

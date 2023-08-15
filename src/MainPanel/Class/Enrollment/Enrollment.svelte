@@ -6,6 +6,7 @@
     import 'chartjs-adapter-moment';
     import { db } from "../../../mainStore";
     import { ClassStatus } from '../../../../.server/db/DB';
+  import ClassStatusIcon from "../../../assets/ClassStatusIcon.svelte";
 
     export let availability;
     export let number;
@@ -64,6 +65,8 @@
     let waitlistInLastDay = 0;
     $: {
         if ($db) {
+            enrolledInLastDay = 0;
+            waitlistInLastDay = 0;
             data.datasets[0].data = [];
             data.datasets[1].data = [];
             let values = [...$db.history.keys()].sort((a, b) => a - b);
@@ -107,7 +110,7 @@
     {#if large}
     <div class="text">
         <h1 style="display: flex; gap: 20px; align-items: center">
-            <span class="classStatus" class:open={availability.status === ClassStatus.Open} class:waitlist={availability.status === ClassStatus.Waitlist} class:closed={availability.status === ClassStatus.Closed} />
+            <ClassStatusIcon status={availability.status} />
             {#if availability.status === ClassStatus.Closed}
                 Closed
             {:else if availability.capacity <= availability.enrolled}
@@ -175,29 +178,6 @@
     .trend > div > span {
         display: block;
         margin: 0;
-    }
-    .classStatus {
-        width: 0.8em;
-        height: 0.8em;
-        line-height: 0;
-        display: inline-block;
-        margin: 0;
-        flex-shrink: 0;
-    }
-    .classStatus.open {
-        background-color: var(--success);
-        border: 5px solid var(--success-dark);
-        border-radius: 100%;
-    }
-    .classStatus.waitlist {
-        background-color: var(--waitlist);
-        border: 5px solid var(--waitlist-dark);
-        /* triangle */
-        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-    }
-    .classStatus.closed {
-        background-color: var(--closed);
-        border: 5px solid var(--closed-dark);
     }
     @media screen and (max-width: 700px) {
         .enrollment {

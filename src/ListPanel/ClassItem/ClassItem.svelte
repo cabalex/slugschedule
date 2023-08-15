@@ -12,17 +12,18 @@
     import Minus from "svelte-material-icons/Minus.svelte";
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
     import Monitor from "svelte-material-icons/Monitor.svelte";
-    import Clock from "svelte-material-icons/Clock.svelte";
     import Account from "svelte-material-icons/Account.svelte";
 
     import { db, focusedClass, listMode, scheduledClasses, starredClasses } from "../../mainStore";
     import { ClassStatus, type Class } from "../../../.server/db/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
-  import DateChecker from "../../assets/DateChecker.svelte";
+    import DateChecker from "../../assets/DateChecker.svelte";
+  import SectionPopup from "./SectionPopup.svelte";
 
     export let item: Class;
 
     let code = item.code;
+    let showSectionPopup = false;
     $: {
         if ($db.classes.map(x => x.name).filter(x => x.includes(item.code.split(" - ")[0])).length < 1) {
             code = item.code.split(" - ")[0];
@@ -41,16 +42,21 @@
     function toggleScheduled(e) {
         e.stopPropagation();
         if ($scheduledClasses.includes(item.number)) {
-            $scheduledClasses = $scheduledClasses.filter(x => x !== item.number);
+            $scheduledClasses = $scheduledClasses.filter(x => ![item.number, ...item.associatedClasses.map(y => y.number)].includes(x));
         } else {
             $scheduledClasses = [...$scheduledClasses, item.number];
+            if (item.associatedClasses.length) showSectionPopup = true;
         }
     }
 </script>
 
+{#if showSectionPopup}
+<SectionPopup item={item} close={() => showSectionPopup = false} />
+{/if}
+
 <div
     class="classItem"
-    class:focused={$focusedClass !== "home" && $focusedClass?.code === item.code}
+    class:focused={$focusedClass !== "home" && $listMode !== "scheduler" && $focusedClass?.code === item.code}
     class:open={item.availability.status === ClassStatus.Open}
     class:waitlist={item.availability.status === ClassStatus.Waitlist}
     class:closed={item.availability.status === ClassStatus.Closed}
@@ -92,7 +98,6 @@
         {/if}
         {#if item.meetingInfos.some(x => x.dayAndTime && x.dayAndTime !== "Cancelled")}
         <div class="dayAndTime">
-            <Clock />
             <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
         </div>
         {/if}

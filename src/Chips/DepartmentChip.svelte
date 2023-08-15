@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { searchFilters } from "../mainStore";
+    import { searchFilters, listMode } from "../mainStore";
     import DropdownChip from "./DropdownChip.svelte";
 
     const depts = {
@@ -87,4 +87,4 @@
     }
 </script>
 
-<DropdownChip multiple={true} bind:value={$searchFilters.department} label="Dept" options={depts} />
+<DropdownChip multiple={true} bind:value={$searchFilters[$listMode].department} label="Dept" options={depts} />
