@@ -63,6 +63,8 @@ async function main() {
                 comparingClass.availability.capacity !== dbClass.availability.capacity,
                 // or the class is no longer open (something might happen with waitlist) ...
                 comparingClass.availability.status === ClassStatus.Waitlist,
+                // or the class has associated classes (something might update in one of them)
+                dbClass.associatedClasses.length > 0,
                 // or the class has changed ...
                 comparingClass.availability.status !== dbClass.availability.status,
                 // or the staff changes
@@ -74,6 +76,8 @@ async function main() {
                 changed = true;
                 if (subscribed.every((s, i) => i === 1 ? true : !s)) {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (waitlisting)`);
+                } else if (dbClass.associatedClasses.length > 0) {
+                    console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (associated classes)`);
                 } else {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (something's changed)`);
                 }
