@@ -31,14 +31,14 @@
         }
     }
     
+    let location = item.meetingInfos.length ? item.meetingInfos[0].location : null;
     $: place =
-        item.meetingInfos.length &&
-        item.meetingInfos[0].location &&
-        item.meetingInfos[0].location !== "Online" &&
-        item.meetingInfos[0].location !== "N/A" &&
-        item.meetingInfos[0].location !== "Remote Instruction" &&
-        !item.meetingInfos[0].location.includes("TBD") ?
-        encodeURIComponent("Santa Cruz " + item.meetingInfos[0].location.split(" ").slice(0, -1).join(" ")) :
+        location &&
+        location !== "Online" &&
+        location !== "N/A" &&
+        location !== "Remote Instruction" &&
+        !location.includes("TBD") ?
+        encodeURIComponent("Santa Cruz " + location.split(" ").slice(0, -1).join(" ")) :
         null;
 </script>
 
@@ -119,7 +119,11 @@
         </a>
         <i>Due to security, to add to cart you must be logged in through MyUCSC, then copy and paste the link in a new tab.</i>
         {#each item.meetingInfos as meetingInfo}
-            <div class="fact">
+            <div
+                class="fact"
+                class:clickable={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction"}
+                on:click={() => meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction" ? {} : location = meetingInfo.location}
+            >
                 {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
                     <Monitor /> {item.details.instructionMode}
                 {:else}
@@ -275,6 +279,9 @@
         align-items: center;
         justify-content: center;
     }
+    .clickable {
+        cursor: pointer;
+    }
     a {
         width: 100%;
         background-color: #111;
@@ -316,7 +323,7 @@
         font-size: 2.5em;
         margin-bottom: 5px;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1400px) {
         .class {
             flex-direction: column;
         }
