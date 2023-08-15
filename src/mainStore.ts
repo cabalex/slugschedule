@@ -14,19 +14,18 @@ export let db = readable(null, (set) => {
 export let focusedClass = writable<Class|"home"|null>(null);
 export let home = writable<string|null>("Porter College");
 export let starredClasses = writable<number[]>(localStorage.getItem("starredClasses") ? JSON.parse(localStorage.getItem("starredClasses")) : []);
-export let classHistory = writable<Class[]>([]);
-export let listMode = writable<"starred"|"all">(get(starredClasses).length ? "starred" : "all");
-
-focusedClass.subscribe((value) => {
-    if (value && value !== "home") {
-        classHistory.update(h => [
-            value, ...h.filter(id => id.number !== value.number)
-        ].slice(0, 10))
-    }
-})
+export let scheduledClasses = writable<number[]>(localStorage.getItem("scheduledClasses") ? JSON.parse(localStorage.getItem("scheduledClasses")) : []);
+export let listMode = writable<"scheduler"|"starred"|"all">(
+    get(scheduledClasses).length ? "scheduler" :
+    get(starredClasses).length ? "starred" : "all"
+);
 
 starredClasses.subscribe((value) => {
     localStorage.setItem("starredClasses", JSON.stringify(value));
+})
+
+scheduledClasses.subscribe((value) => {
+    localStorage.setItem("scheduledClasses", JSON.stringify(value));
 })
 
 

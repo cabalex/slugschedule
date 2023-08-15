@@ -8,14 +8,17 @@
 <script lang="ts">
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
+    import Plus from "svelte-material-icons/Plus.svelte";
+    import Minus from "svelte-material-icons/Minus.svelte";
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
     import Monitor from "svelte-material-icons/Monitor.svelte";
     import Clock from "svelte-material-icons/Clock.svelte";
     import Account from "svelte-material-icons/Account.svelte";
 
-    import { db, focusedClass, starredClasses } from "../../mainStore";
+    import { db, focusedClass, listMode, scheduledClasses, starredClasses } from "../../mainStore";
     import { ClassStatus, type Class } from "../../../.server/db/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
+  import DateChecker from "../../assets/DateChecker.svelte";
 
     export let item: Class;
 
@@ -34,6 +37,15 @@
             $starredClasses = [...$starredClasses, item.number];
         }
     }
+
+    function toggleScheduled(e) {
+        e.stopPropagation();
+        if ($scheduledClasses.includes(item.number)) {
+            $scheduledClasses = $scheduledClasses.filter(x => x !== item.number);
+        } else {
+            $scheduledClasses = [...$scheduledClasses, item.number];
+        }
+    }
 </script>
 
 <div
@@ -49,33 +61,43 @@
             <span style="font-weight: bold">{code}</span>
             <span>{item.name}</span>
         </h2>
-        <button class="roundBtn" on:click={toggleStar}>
-            {#if $starredClasses.includes(item.number)}
-                <Star />
+        <button class="roundBtn" on:click={$listMode === "scheduler" ? toggleScheduled : toggleStar}>
+            {#if $listMode === "scheduler"}
+                {#if $scheduledClasses.includes(item.number)}
+                    <Minus />
+                {:else}
+                    <Plus />
+                {/if}
             {:else}
-                <StarOutline />
+                {#if $starredClasses.includes(item.number)}
+                    <Star />
+                {:else}
+                    <StarOutline />
+                {/if}
             {/if}
         </button>
     </div>
     <div class="body">
-        {#if item.meetingInfo.location && item.meetingInfo.location !== "N/A"}
-        <div class="location">
-            {#if item.meetingInfo.location === "Online" || item.meetingInfo.location === "Remote Instruction"}
-            <Monitor />
-            {:else}
-            <MapMarker />
-            {/if}
-            {item.meetingInfo.location}
-        </div>
+        {#if item.meetingInfos.some(x => x.location && x.location !== "N/A")}
+        {#each item.meetingInfos as meetingInfo}
+            <div class="location">
+                {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
+                <Monitor />
+                {:else}
+                <MapMarker />
+                {/if}
+                {meetingInfo.location}
+            </div>
+        {/each}
         {/if}
-        {#if item.meetingInfo.dayAndTime && item.meetingInfo.dayAndTime !== "Cancelled"}
+        {#if item.meetingInfos.some(x => x.dayAndTime && x.dayAndTime !== "Cancelled")}
         <div class="dayAndTime">
             <Clock />
-            {item.meetingInfo.dayAndTime}
+            <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
         </div>
         {/if}
         {#if item.instructor.name && item.instructor.name !== "N/A"}
-        <div class="dayAndTime">
+        <div class="instructor">
             <Account />
             {item.instructor.name}
             {#if item.instructor.id && item.instructor.id !== "-1" && item.instructor.numRatings > 0}

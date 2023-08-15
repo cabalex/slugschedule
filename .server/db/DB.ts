@@ -25,11 +25,11 @@ export interface Class {
         waitlistCapacity: number;
     }
     combinedSections: Array<number>;
-    meetingInfo: {
+    meetingInfos: Array<{
         dayAndTime: string;
         location: string;
         dates: string;
-    }
+    }>
     instructor: Instructor,
     description: string;
     enrollmentRequirements: string;
@@ -103,7 +103,7 @@ function concat(...bufs: ArrayBuffer[]) {
 }
 
 export default class DB {
-    version = 1;
+    version = 2;
     term: number;
     classes: Class[] = [];
     // each snapshot has its own time and array of records
@@ -224,9 +224,15 @@ export default class DB {
             buf = concat(buf, packValue(c.availability.capacity));
             buf = concat(buf, packValue(c.availability.waitlist));
             buf = concat(buf, packValue(c.availability.waitlistCapacity));
-            buf = concat(buf, packValue(c.meetingInfo.dayAndTime));
-            buf = concat(buf, packValue(c.meetingInfo.location));
-            buf = concat(buf, packValue(c.meetingInfo.dates));
+
+            // Meeting info
+            buf = concat(buf, packValue(c.meetingInfos.length));
+            for (let m of c.meetingInfos) {
+                buf = concat(buf, packValue(m.dayAndTime));
+                buf = concat(buf, packValue(m.location));
+                buf = concat(buf, packValue(m.dates));
+            }
+
             buf = concat(buf, packValue(c.description));
             buf = concat(buf, packValue(c.enrollmentRequirements));
             buf = concat(buf, packValue(c.classNotes));
@@ -367,11 +373,20 @@ export default class DB {
                     waitlist: unpackValue("number"),
                     waitlistCapacity: unpackValue("number")
                 },
-                meetingInfo: {
-                    dayAndTime: unpackValue("string"),
-                    location: unpackValue("string"),
-                    dates: unpackValue("string")
-                },
+                // Meeting info turned into an array in v2
+                meetingInfos: version === 1 ?
+                        [{
+                            dayAndTime: unpackValue("string"),
+                            location: unpackValue("string"),
+                            dates: unpackValue("string")
+                        }] :
+                        new Array(unpackValue("number")).fill(null).map(x => {
+                            return {
+                                dayAndTime: unpackValue("string"),
+                                location: unpackValue("string"),
+                                dates: unpackValue("string")
+                            }
+                        }),
                 description: unpackValue("string"),
                 enrollmentRequirements: unpackValue("string"),
                 classNotes: unpackValue("string"),
@@ -443,7 +458,7 @@ export default class DB {
         }
 
         let db = new DB(term);
-        db.version = version;
+        db.version = 2;
         db.classes = classes;
 
         // history
