@@ -1,4 +1,5 @@
 <script lang="ts">
+    import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import { tick } from "svelte";
     import { MeetingInfos } from "../../assets/DateChecker.svelte";
     import { db, focusedClass, listMode, scheduledClasses } from "../../mainStore";
@@ -63,13 +64,15 @@
         {/each}
     </div>
     <table>
-        <tr>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </tr>
+        </thead>
         <tr>
             {#each days as day}
                 <td>
@@ -103,6 +106,12 @@
         </span>
     {/each}
 </li>
+<header class="mobileHeader">
+    <button class="roundBtn" on:click={() => $focusedClass = null}>
+        <ArrowLeft />
+    </button>
+    <h2>Scheduler</h2>
+</header>
 
 <style>
     h2, h3 {
@@ -118,8 +127,8 @@
     }
     .times {
         flex-shrink: 0;
-        margin-top: 12px;
-        margin-bottom: 6px;
+        padding-top: 12px;
+        padding-bottom: 6px;
         background-color: #111;
 
         display: flex;
@@ -186,9 +195,39 @@
         margin: 0;
         width: 100%;
     }
+    li {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        margin-bottom: 50px;
+    }
     .classNumber {
         padding: 5px;
         margin: 5px;
         border-radius: 5px;
+    }
+    @media screen and (max-width: 900px) {
+        h2:not(.mobileHeader h2) {
+            display: none;
+        }
+        .mobileHeader {
+            margin: 20px;
+            width: calc(100% - 40px);
+        }
+        .times {
+            background-color: #444;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            box-shadow: 0 0 10px black;
+        }
+        .schedulerBody {
+            overflow: auto;
+        }
+        table {
+            width: 500px;
+            flex-shrink: 0;
+            overflow: auto;
+        }
     }
 </style>

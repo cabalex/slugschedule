@@ -63,7 +63,9 @@
         if ($listMode === "scheduler") {
             // it is possible to have a scheduled class that isn't starred, so make sure it's unschedulable
             // remove duplicates too
-            items = filterItems([...new Set([...$starredClasses, ...$scheduledClasses])].map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters[$listMode])
+            let newItems = filterItems([...new Set([...$scheduledClasses, ...$starredClasses])].map(x => $db.classes.find(c => c.number === x)).filter(x => x), $searchFilters[$listMode]);
+            // however we only want to reload the list when it changes, or weird things occur
+            if (newItems.length !== items.length) items = newItems;
         }
     }
     $: {
