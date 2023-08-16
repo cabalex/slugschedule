@@ -48,6 +48,13 @@
             if (item.associatedClasses.length) showSectionPopup = true;
         }
     }
+
+    function focusClass() {
+        if (window.innerWidth > 700 && $listMode === "scheduler") {
+            $listMode = "starred";
+        }
+        $focusedClass = item;
+    }
 </script>
 
 {#if showSectionPopup}
@@ -60,7 +67,7 @@
     class:open={item.availability.status === ClassStatus.Open}
     class:waitlist={item.availability.status === ClassStatus.Waitlist}
     class:closed={item.availability.status === ClassStatus.Closed}
-    on:click={() => focusedClass.set(item)}
+    on:click={focusClass}
 >
     <div class="topBar">
         <h2 title={`${code} - ${item.name}`}>

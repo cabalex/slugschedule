@@ -223,6 +223,7 @@
     }
     .text {
         flex-grow: 1;
+        flex-shrink: 0;
         background-color: #555;
         padding: 10px;
         border-radius: 10px;
