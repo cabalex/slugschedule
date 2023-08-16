@@ -81,7 +81,7 @@ async function main() {
                 changed = true;
                 if (subscribed.every((s, i) => i === 1 ? true : !s)) {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (waitlisting)`);
-                } else if (dbClass.associatedClasses.length > 0) {
+                } else if (dbClass && dbClass.associatedClasses.length > 0) {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (associated classes)`);
                 } else {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (something's changed)`);
