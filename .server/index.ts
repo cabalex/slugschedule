@@ -56,20 +56,25 @@ async function main() {
                 // don't need to fetch for this, but it's still a change
                 changed = true;
                 db.classes[dbClassIndex].availability.enrolled = comparingClass.availability.enrolled;
+            } else if (dbClass) {
+
             }
 
-            let subscribed = [
-                // if capacity changes...
-                comparingClass.availability.capacity !== dbClass.availability.capacity,
-                // or the class is no longer open (something might happen with waitlist) ...
-                comparingClass.availability.status === ClassStatus.Waitlist,
-                // or the class has associated classes (something might update in one of them)
-                dbClass.associatedClasses.length > 0,
-                // or the class has changed ...
-                comparingClass.availability.status !== dbClass.availability.status,
-                // or the staff changes
-                comparingClass.instructor.name !== dbClass.instructor.name
-            ]
+            let subscribed = [true];
+            if (dbClass) {
+                subscribed = [
+                    // if capacity changes...
+                    comparingClass.availability.capacity !== dbClass?.availability.capacity,
+                    // or the class is no longer open (something might happen with waitlist) ...
+                    comparingClass.availability.status === ClassStatus.Waitlist,
+                    // or the class has associated classes (something might update in one of them)
+                    dbClass?.associatedClasses.length > 0,
+                    // or the class has changed ...
+                    comparingClass.availability.status !== dbClass.availability.status,
+                    // or the staff changes
+                    comparingClass.instructor.name !== dbClass.instructor.name
+                ]
+            }
 
             if (!dbClass || subscribed.some(s => s)) {
                 // update the class
