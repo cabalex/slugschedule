@@ -12,7 +12,7 @@
     }
 </script>
 
-<main bind:this={mainElem} class:focused={$focusedClass}>
+<main bind:this={mainElem} class:focused={$focusedClass} class:scheduler={$listMode === "scheduler"}>
     {#if $listMode === "scheduler"}
         <Scheduler />
     {:else if $focusedClass && $focusedClass !== "home"}
@@ -81,6 +81,10 @@
             margin: 0;
             border-radius: 0;
             transition: left 0.1s ease-out;
+        }
+        .scheduler {
+            width: 100%;
+            padding: 0;
         }
         main.focused {
             left: 0;
