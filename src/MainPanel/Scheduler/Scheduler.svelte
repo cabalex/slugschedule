@@ -1,6 +1,6 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
-    import { tick } from "svelte";
+    import { tick, onMount, onDestroy } from "svelte";
     import { MeetingInfos } from "../../assets/DateChecker.svelte";
     import { db, focusedClass, listMode, scheduledClasses } from "../../mainStore";
 
@@ -24,8 +24,11 @@
         }
     }
 
-    const top = new Date("1/1/1970 08:00 AM").getTime();
-    const bottom = new Date("1/1/1970 11:00 PM").getTime();
+    const topDate = new Date("1/1/1970 08:00 AM");
+    const bottomDate = new Date("1/1/1970 11:00 PM");
+
+    const top = topDate.getTime();
+    const bottom = bottomDate.getTime();
 
     let days = [
         [], [], [], [], []
@@ -51,6 +54,16 @@
         // update state
         days = [...days];
     }
+
+    // Update the current time every minute
+    let nowInterval;
+    let nowTime = new Date();
+
+    onMount(() => {
+        setInterval(() => nowTime = new Date(), 1000 * 60);
+    })
+
+    onDestroy(() => clearInterval(nowInterval))
 </script>
 
 <h2>Scheduler</h2>
@@ -74,7 +87,7 @@
             </tr>
         </thead>
         <tr>
-            {#each days as day}
+            {#each days as day, i}
                 <td>
                     {#each day as event}
                     <div
@@ -90,6 +103,13 @@
                         <p class="time">{new Date(event.endTime).toLocaleTimeString().replace(":00 ", " ")}</p>
                     </div>
                     {/each}
+                    {#if nowTime.getDay() - 1 === i}
+                    <!-- for some reason I need to add an additional hour here?? -->
+                    <div
+                        class="now"
+                        style={`top: ${((((nowTime.getHours() + topDate.getHours()) * 60) + nowTime.getMinutes()) * 60 * 1000 - top) / (bottom - top) * 100}%;`}
+                    />
+                    {/if}
                 </td>
             {/each}
         </tr>
@@ -171,7 +191,7 @@
         border: 2px solid #ccc;
         position: relative;
     }
-    .event {
+    .event, .now {
         background-color: red;
         position: absolute;
         left: 0;
@@ -186,6 +206,21 @@
     .event h3 {
         flex-shrink: 2;
         overflow: hidden;
+    }
+    .now {
+        pointer-events: none;
+        width: 100%;
+        height: 4px;
+    }
+    .now:before {
+        content: "";
+        position: absolute;
+        left: -6px;
+        top: -4px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: red;
     }
     .time {
         color: black;
