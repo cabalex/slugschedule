@@ -78,7 +78,7 @@
     .grower:not(.mobile) {
         flex-grow: 1;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1000px) {
         aside {
             position: fixed;
             bottom: 0;
