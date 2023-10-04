@@ -208,7 +208,7 @@
         border-radius: 0px;
         border-bottom: 1px solid #999;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1000px) {
         .searchOuter.focused {
             height: calc(100vh - 70px);
             border-radius: 0px;

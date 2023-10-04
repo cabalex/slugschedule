@@ -148,7 +148,7 @@
         padding: 10px;
         text-align: center;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1000px) {
         .listPanel {
             width: 100%;
             height: calc(100% - 50px);

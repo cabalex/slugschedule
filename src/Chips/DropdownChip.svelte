@@ -95,7 +95,7 @@
         display: inline-block;
         line-height: 0;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1000px) {
         .options {
             position: fixed;
             left: 0;

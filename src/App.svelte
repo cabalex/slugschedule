@@ -22,7 +22,7 @@
     flex-direction: row;
     width: 100%;
   }
-  @media screen and (max-width: 700px) {
+  @media screen and (max-width: 1000px) {
     div {
       flex-direction: column;
     }
