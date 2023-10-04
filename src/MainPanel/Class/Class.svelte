@@ -109,15 +109,20 @@
                 title="Location"
                 style="height:300px;width:100%;border:0;"
                 frameborder="0"
-                src={`https://www.google.com/maps/embed/v1/view?q=${place}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8`}
+                src={`https://www.google.com/maps/embed/v1/place?q=${place}&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8`}
             />
             {/if}
         {/if}
-        <a class="addToCartBtn" target="_blank" rel="noopener noreferrer" href={"https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php?action=detail&class_data=" + btoa(`a:2:{s:5:":STRM";s:4:"${$db.term}";s:10:":CLASS_NBR";s:5:"${item.number}";}7`)}>
-            View / Add to cart
+        <a
+            class="addToCartBtn"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={!place ? "margin-top: 5px" : ""}
+            href={"https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php?action=detail&class_data=" + btoa(`a:2:{s:5:":STRM";s:4:"${$db.term}";s:10:":CLASS_NBR";s:5:"${item.number}";}7`)}
+        >
+            View in Class Search
             <OpenInNew />
         </a>
-        <i>Due to security, to add to cart you must be logged in through MyUCSC, then copy and paste the link in a new tab.</i>
         {#each item.meetingInfos as meetingInfo}
             <div
                 class="fact"
@@ -272,7 +277,8 @@
         background-color: #555;
     }
     .addToCartBtn {
-        width: 100%;
+        width: calc(100% - 20px);
+        transform: translateY(-5px); /* remove space above */
         border-radius: 0;
         display: flex;
         gap: 10px;
