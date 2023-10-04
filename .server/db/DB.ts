@@ -102,6 +102,9 @@ function concat(...bufs: ArrayBuffer[]) {
     return buf.buffer;
 }
 
+// This is a really quick and dirty way to compress things into a
+// custom byte format. This class is used in both the backend and frontend
+// so that both sides can unpack/repack it.
 export default class DB {
     version = 2;
     term: number;

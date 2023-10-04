@@ -1,17 +1,8 @@
 <script lang="ts">
-    import History from "svelte-material-icons/History.svelte";
     import Star from "svelte-material-icons/Star.svelte";
     import Magnify from "svelte-material-icons/Magnify.svelte";
     import Calendar from "svelte-material-icons/Calendar.svelte";
     import { db, focusedClass, listMode } from "../mainStore";
-
-    const terms = {
-        "2228": "Fall 2022",
-        "2230": "Winter 2022",
-        "2232": "Spring 2023",
-        "2234": "Summer 2023",
-        "2238": "Fall 2023",
-    }
 
     let term = "Unknown"
     switch($db.term % 10) {
@@ -31,7 +22,7 @@
 </script>
 <aside>
     <span class="grower mobile" />
-    <button class="logo" on:click={() => $focusedClass = "home"}>
+    <button class="logo" on:click={() => { $focusedClass = "home"; $listMode = "all"}}>
         YA<span style="color: var(--primary); display: block">UCSC</span>CS
     </button>
     <button title="Search classes" on:click={() => $listMode = "all"} class="iconBtn" class:active={$listMode === "all"}>

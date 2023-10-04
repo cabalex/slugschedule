@@ -40,11 +40,11 @@ async function main() {
     console.log("Reaching out to full catalog...")
     let classes = (await search({term, results: 2000}));
 
-    if (existsSync("../public/db/db.yaucsccs")) {
+    if (existsSync(`../public/db/${term}.yaucsccs`)) {
         // update database
         console.log("updating the database...");
         let tempDB = new DB(term);
-        let db = DB.import(readFileSync(__dirname + "/../public/db/db.yaucsccs").buffer);
+        let db = DB.import(readFileSync(__dirname + `/../public/db/${term}.yaucsccs`).buffer);
         let changed = false;
         
         for (let i = 0; i < classes.length; i++) {
@@ -106,7 +106,7 @@ async function main() {
 
         if (changed) {
             console.log("writing changes to database...");
-            writeFileSync(__dirname + "/../public/db/db.yaucsccs", Buffer.from(db.export()));
+            writeFileSync(__dirname + `/../public/db/${term}.yaucsccs`, Buffer.from(db.export()));
         } else {
             console.log("no changes detected");
         }
@@ -133,7 +133,7 @@ async function main() {
         let db = new DB(term);
         db.classes = detailedClasses;
 
-        writeFileSync(__dirname + "/../public/db/db.yaucsccs", Buffer.from(db.export()));
+        writeFileSync(__dirname + `/../public/db/${term}.yaucsccs`, Buffer.from(db.export()));
     }
 }
 

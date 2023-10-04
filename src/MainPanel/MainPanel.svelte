@@ -28,9 +28,11 @@
         </header>
         <h1>Yet Another UCSC Class Schedule</h1>
         Select a class to see more details about it. You can also search or use the dropdowns to filter your results.<br />
+        Need more help? <a href="https://github.com/cabalex/yaucsccs/wiki/Usage-Guide" target="_blank" rel="noopener noreferrer">See the Usage Guide</a>.<br />
 
         <h2>Home</h2>
         For accurate walking estimates, I live at <select bind:value={$home}>
+            <option value="">Off campus</option>
             <option>Cowell College</option>
             <option>Stevenson College</option>
             <option>Crown College</option>

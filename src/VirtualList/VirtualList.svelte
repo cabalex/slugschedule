@@ -25,7 +25,10 @@
 	let bottom = 0;
 	let average_height;
 
-	$: visible = items.slice(start, end).map((data, i) => {
+	// Bug where sometimes no classes would be visible... this doesn't fix the
+	// underlying problem but makes it not appear in the dashboard anymore...
+	// (start and end would be zero)
+	$: visible = items.slice(start, Math.max(4, end)).map((data, i) => {
 		return { index: i + start, data };
 	});
 
