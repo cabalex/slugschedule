@@ -2,6 +2,7 @@
     "name": "Yet Another UCSC Class Schedule",
     "short_name": "YAUCSCCS",
     "start_url": "./",
+    "scope": ".",
     "display": "standalone",
     "icons": [
       {
