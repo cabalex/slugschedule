@@ -73,7 +73,7 @@
     a {
         line-height: 2em;
     }
-    @media screen and (max-width: 700px) {
+    @media screen and (max-width: 1000px) {
         main {
             position: fixed;
             left: 100%;

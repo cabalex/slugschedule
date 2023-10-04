@@ -19,6 +19,7 @@
     import Enrollment from "./Enrollment/Enrollment.svelte";
     import AssociatedClass from "../../assets/AssociatedClass.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
+    import CopyClassNumber from "../../assets/CopyClassNumber.svelte";
 
     export let item: Class;
 
@@ -54,7 +55,7 @@
             </button>
             <div class="text">
                 <h2>
-                    {item.code} <span class="number">#{item.number}</span>
+                    {item.code} <CopyClassNumber number={item.number} />
                 </h2>
                 <h1>
                     {item.name}
