@@ -4,15 +4,16 @@
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import Close from "svelte-material-icons/Close.svelte";
     import Magnify from "svelte-material-icons/Magnify.svelte";
+    import Account from "svelte-material-icons/Account.svelte";
     import ClassStatusIcon from '../../assets/ClassStatusIcon.svelte';
-  import DateChecker from '../../assets/DateChecker.svelte';
+    import DateChecker from '../../assets/DateChecker.svelte';
 
     let searchElem;
     let focused = false;
     export let onSearchClicked = (item) => {};
 
     const fuse = new Fuse($db.classes, {
-        keys: ['name', 'code', 'description', 'details.instructionMode'],
+        keys: ['name', 'code', 'number', 'description', 'details.instructionMode', 'instructor.name'],
         threshold: 0.3
     });
 
@@ -83,7 +84,16 @@
                 <div class="resultItem" on:click={focusClass.bind(null, result.item)}>
                     <ClassStatusIcon status={result.item.availability.status} />
                     <div class="text">
-                        <span>{result.item.code}</span>
+                        <span class="resultCode">
+                            {result.item.code}
+
+                            {#if searchElem?.value && result.item.instructor.name.toLowerCase().includes(searchElem?.value.toLowerCase())}
+                            <Account size="1.2em" /> {result.item.instructor.name}
+                            {/if}
+                            {#if searchElem?.value && result.item.number.toString().includes(searchElem?.value)}
+                            <span style="color: #888">#{result.item.number}</span>
+                            {/if}
+                        </span>
                         <h2>{result.item.name}</h2>
                         <DateChecker onlyShowConflict={true} number={result.item.number} meetingInfos={result.item.meetingInfos} />
                     </div>
@@ -138,7 +148,7 @@
         height: calc(100% - 50px);
     }
     .resultItem {
-        height: 70px;
+        height: 80px;
         color: black;
         border-bottom: 1px solid #ccc;
         cursor: pointer;
@@ -148,6 +158,14 @@
         flex-direction: row;
         align-items: center;
         gap: 10px;
+    }
+    .resultItem .resultCode {
+        display: flex;
+        gap: 2px;
+        align-items: center;
+    }
+    :global(.resultItem .resultCode svg) {
+        margin-left: 5px;
     }
     .resultItem h2 {
         margin: 0;
@@ -178,7 +196,13 @@
         max-height: calc(100vh - 20px);
     }
     .results::-webkit-scrollbar {
-        display: none;
+        width: 5px;
+    }
+    .results::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    .results::-webkit-scrollbar-thumb {
+        background-color: #ccc;
     }
     .searchOuter.focused .search {
         border-radius: 0px;

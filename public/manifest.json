@@ -1,0 +1,20 @@
+{
+    "name": "Yet Another UCSC Class Schedule",
+    "short_name": "YAUCSCCS",
+    "start_url": "./yaucsccs",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "icons/192.png",
+        "type": "image/png",
+        "purpose": "any maskable",
+        "sizes": "192x192"
+      },
+      {
+        "src": "icons/92.png",
+        "type": "image/png",
+        "sizes": "92x92"
+      }
+    ]
+  }
+  
