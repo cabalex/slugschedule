@@ -9,6 +9,7 @@
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
+    import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
 
     import type { Class } from "../../../.server/db/DB";
     import { home, db, focusedClass, starredClasses } from "../../mainStore";
@@ -20,6 +21,7 @@
     import AssociatedClass from "../../assets/AssociatedClass.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
     import CopyClassNumber from "../../assets/CopyClassNumber.svelte";
+  import ShareModal from "../../assets/ShareModal.svelte";
 
     export let item: Class;
 
@@ -32,6 +34,7 @@
         }
     }
     
+    let shareOpen = false;
     let location = item.meetingInfos.length ? item.meetingInfos[0].location : null;
     $: place =
         location &&
@@ -46,13 +49,25 @@
 <div class="class">
     <div class="classInfo">
         <header class="title">
-            <button class="roundBtn" on:click={toggleStar}>
-                    {#if $starredClasses.includes(item.number)}
-                        <Star />
-                    {:else}
-                        <StarOutline />
-                    {/if}
-            </button>
+            <div class="actionColumn">
+                <button class="roundBtn" title="Star this class for later" on:click={toggleStar}>
+                        {#if $starredClasses.includes(item.number)}
+                            <Star />
+                        {:else}
+                            <StarOutline />
+                        {/if}
+                </button>
+                <button class="roundBtn" title="Share this class" on:click={() => shareOpen = true}>
+                    <ShareVariant />
+                </button>
+                {#if shareOpen}
+                <ShareModal
+                    url={`${document.location.origin}?class=${item.number}`}
+                    headerText="Share this class"
+                    onClose={() => shareOpen = false}
+                />
+                {/if}
+            </div>
             <div class="text">
                 <h2>
                     {item.code} <CopyClassNumber number={item.number} />
@@ -241,6 +256,10 @@
         flex-direction: row;
         align-items: center;
         gap: 10px;
+    }
+    .actionColumn {
+        display: flex;
+        flex-direction: column;
     }
     .combinedSections, .associatedClasses {
         display: flex;

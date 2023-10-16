@@ -15,7 +15,7 @@
 
 <div class="modal" transition:fade={{duration: 100}} on:click={close}>
     <div class="modalInner" on:click={(e) => e.stopPropagation()}>
-        <h2>This class has discussion sections or associated classes.<br /> Would you like to take one?</h2>
+        <h2>This class has associated classes. Would you like to take one?</h2>
         {#if item.classNotes}
         <h3>Class Notes</h3>
         {/if}
@@ -54,8 +54,18 @@
         padding: 10px;
     }
     h2 {
+        margin: 20px;
         text-align: center;
-        margin: 10px;
+    }
+    h3 {
+        margin: 0 20px;
+        text-align: center;
+        margin-bottom: 0px;
+    }
+    p {
+        text-align: center;
+        margin: 5px 30px;
+        margin-bottom: 30px;
     }
     .associatedClasses {
         display: flex;
@@ -65,5 +75,6 @@
     }
     button {
         margin: 20px;
+        float: right;
     }
 </style>

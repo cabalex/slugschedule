@@ -48,10 +48,12 @@ export let db = readable(null, (set) => {
         if (cachedArrayBuffer) {
             console.log("Using cached database...");
             let cachedDB = DB.import(cachedArrayBuffer);
+            evaluateURLParams(cachedDB);
             set(cachedDB);
 
-            if (cachedDB.lastUpdate - Date.now() < 1000 * 60 * 60) {
+            if (Date.now() - cachedDB.lastUpdate < 1000 * 60 * 60) {
                 // Database is younger than an hour, so don't bother updating
+                console.log("Ignoring update")
                 return;
             }
         }
@@ -63,16 +65,58 @@ export let db = readable(null, (set) => {
         await db.put("db", arrayBuffer, TERM)
         
         console.log("Updated to newest version!");
-        set(DB.import(arrayBuffer));
+        let newDB = DB.import(arrayBuffer);
+        evaluateURLParams(newDB);
+        set(newDB);
     })
 
     return () => {}
 })
 
+// get schedule from URL using database before it's actually loaded
+function evaluateURLParams(db: any) {
+    // must run first since it checks and changes the default view
+    if (document.location.search.includes("class=") && get(focusedClass) === null) {
+        let classNumber = parseInt(
+            document.location.search
+            .split("class=")[1]
+            .split("&")[0]
+            );
+        
+        if (classNumber && db.getClassByNumber(classNumber)) {
+            listMode.set("all");
+            focusedClass.set(db.getClassByNumber(classNumber));
+        }
+    }
+    
+    if (document.location.search.includes("scheduler=")) {
+        let classes = document.location.search
+            .split("scheduler=")[1]
+            .split("&")[0]
+            .split(",")
+            .map(x => parseInt(x))
+            .filter(x => x && db.getClassByNumber(x))
+        
+        if (classes.length > 0) {
+            listMode.set("scheduler");
+            scheduledClasses.set(classes);
+            localStorage.setItem("scheduledClasses", JSON.stringify(classes));
+        }
+    }
+}
+
 export let focusedClass = writable<Class|"home"|null>(null);
 export let home = writable<string|null>(localStorage.getItem("home") === null ? "Porter College" : localStorage.getItem("home"));
-export let starredClasses = writable<number[]>(localStorage.getItem("starredClasses") ? JSON.parse(localStorage.getItem("starredClasses")) : []);
-export let scheduledClasses = writable<number[]>(localStorage.getItem("scheduledClasses") ? JSON.parse(localStorage.getItem("scheduledClasses")) : []);
+export let starredClasses = writable<number[]>(
+    localStorage.getItem("starredClasses") ?
+    JSON.parse(localStorage.getItem("starredClasses")) :
+    []
+);
+export let scheduledClasses = writable<number[]>(
+    localStorage.getItem("scheduledClasses") ?
+    JSON.parse(localStorage.getItem("scheduledClasses")) :
+    []
+);
 export let listMode = writable<"scheduler"|"starred"|"all">(
     get(scheduledClasses).length ? "scheduler" :
     get(starredClasses).length ? "starred" : "all"
