@@ -77,7 +77,7 @@
 </h2>
 {#if shareOpen}
     <ShareModal
-        url={`${document.location.origin}?scheduler=${$scheduledClasses.join(",")}`}
+        url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}`}
         headerText="Share this schedule"
         onClose={() => shareOpen = false}
     />
