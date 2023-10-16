@@ -7,7 +7,7 @@
     let mainElem;
 
     // scroll to top once new class is clicked
-    $: if ($focusedClass && $listMode !== "scheduler") {
+    $: if (mainElem && $focusedClass && $listMode !== "scheduler") {
         mainElem.scrollTop = 0;
     }
 </script>
