@@ -1,8 +1,13 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
+    import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
     import { tick, onMount, onDestroy } from "svelte";
     import { MeetingInfos } from "../../assets/DateChecker.svelte";
     import { db, focusedClass, listMode, scheduledClasses } from "../../mainStore";
+    import ClassNumber from "./ClassNumber.svelte";
+    import ShareModal from "../../assets/ShareModal.svelte";
+
+    let shareOpen = false;
 
     async function focusClass(event) {
         $listMode = "all";
@@ -60,13 +65,23 @@
     let nowTime = new Date();
 
     onMount(() => {
-        setInterval(() => nowTime = new Date(), 1000 * 60);
+        setInterval(() => nowTime = new Date(), 1000);
     })
 
     onDestroy(() => clearInterval(nowInterval))
 </script>
 
-<h2>Scheduler</h2>
+<h2 class="title">
+    Scheduler
+    <button class="roundBtn" on:click={() => shareOpen = true}><ShareVariant /></button>
+</h2>
+{#if shareOpen}
+    <ShareModal
+        url={`${document.location.origin}?scheduler=${$scheduledClasses.join(",")}`}
+        headerText="Share this schedule"
+        onClose={() => shareOpen = false}
+    />
+{/if}
 <div class="schedulerBody">
     <div class="times">
         {#each [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22] as hour}
@@ -115,15 +130,10 @@
         </tr>
     </table>
 </div>
-<p>This schedule is made out of these Class Numbers:</p>
-<li style="list-style: none">
+<p style="margin: 10px">This schedule is made out of these Class Numbers (click to copy):</p>
+<li style="list-style: none; margin: 0 10px">
     {#each $scheduledClasses as classNumber}
-        <span
-            class="classNumber"
-            style={`background-color: hsla(${classNumber % 360}, 25%, 40%, 1)`}
-        >
-            {classNumber} ({$db.getClassByNumber(classNumber).code})
-        </span>
+        <ClassNumber number={classNumber} />
     {/each}
 </li>
 <header class="mobileHeader">
@@ -138,6 +148,15 @@
         width: 100%;
         margin: 0;
         text-align: center;
+    }
+    .title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: calc(100% - 50px);
+        margin-left: 50px;
+
     }
     .schedulerBody {
         display: flex;
@@ -236,15 +255,7 @@
         flex-wrap: wrap;
         margin-bottom: 50px;
     }
-    .classNumber {
-        padding: 5px;
-        margin: 5px;
-        border-radius: 5px;
-    }
     @media screen and (max-width: 900px) {
-        h2:not(.mobileHeader h2) {
-            display: none;
-        }
         .mobileHeader {
             margin: 20px;
             width: calc(100% - 40px);
@@ -258,6 +269,9 @@
         }
         .schedulerBody {
             overflow: auto;
+        }
+        th {
+            min-width: 25vw;
         }
         table {
             width: 500px;

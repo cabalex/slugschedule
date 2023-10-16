@@ -18,7 +18,7 @@
     import { ClassStatus, type Class } from "../../../.server/db/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
-  import SectionPopup from "./SectionPopup.svelte";
+    import SectionPopup from "./SectionPopup.svelte";
 
     export let item: Class;
 
@@ -50,8 +50,14 @@
     }
 
     function focusClass() {
-        if (window.innerWidth > 700 && $listMode === "scheduler") {
-            $listMode = "starred";
+        if (window.innerWidth > 1000 && $listMode === "scheduler" ) {
+            if ($starredClasses.includes(item.number)) {
+                $listMode = "starred";
+            } else {
+                // if the class isn't starred, it won't show up in the starred list...
+                // so go to the main course search instead
+                $listMode = "all";
+            }
         }
         $focusedClass = item;
     }
