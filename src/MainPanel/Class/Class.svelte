@@ -62,7 +62,7 @@
                 </button>
                 {#if shareOpen}
                 <ShareModal
-                    url={`${document.location.origin}?class=${item.number}`}
+                    url={`${document.location.origin}${document.location.pathname}?class=${item.number}`}
                     headerText="Share this class"
                     onClose={() => shareOpen = false}
                 />
