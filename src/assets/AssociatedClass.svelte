@@ -12,7 +12,11 @@
     let color = item.availability.enrolled / item.availability.capacity * 100 === 100 ? "var(--closed)" : "white";
 </script>
   
-<div class="associatedClass" class:clickable={onClick} on:click={() => onClick ? onClick() : ""}>
+<div class="associatedClass"
+    class:cancelled={item.meetingInfo.dayAndTime.includes("Cancelled") || item.meetingInfo.dayAndTime === ""}
+    class:clickable={onClick}
+    on:click={() => onClick ? onClick() : ""}
+>
     <h3>{item.code} <span class="number">#{item.number}</span></h3>
     <div class="fact">
         <MapMarker />
@@ -41,6 +45,10 @@
 <style>
     h3 {
         margin: 0;
+    }
+    .cancelled {
+        pointer-events: none;
+        opacity: 0.5;
     }
     .clickable {
         user-select: none;
