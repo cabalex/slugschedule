@@ -28,5 +28,6 @@
         padding: 5px;
         margin: 5px;
         border-radius: 5px;
+        user-select: none;
     }
 </style>

@@ -134,6 +134,11 @@ home.subscribe((value) => {
     localStorage.setItem("home", value);
 })
 
+db.subscribe((value) => {
+    // @ts-ignore
+    window.db = value;
+})
+
 interface SearchFilters {
     department: string[],
     instructionMode: string[],
@@ -141,6 +146,7 @@ interface SearchFilters {
     ges: string[],
     undergraduate: boolean|null,
     searchResults: {query: string, results: any[]}|null;
+    sortMode: {value: string, fn: Function}|null;
 }
 
 export let searchFilters = writable<{[key: string]: SearchFilters}>(
@@ -151,7 +157,8 @@ export let searchFilters = writable<{[key: string]: SearchFilters}>(
             status: [],
             ges: [],
             undergraduate: null,
-            searchResults: null
+            searchResults: null,
+            sortMode: null
         },
         "starred": {
             department: [],
@@ -159,7 +166,8 @@ export let searchFilters = writable<{[key: string]: SearchFilters}>(
             status: [],
             ges: [],
             undergraduate: null,
-            searchResults: null
+            searchResults: null,
+            sortMode: null
         },
         "scheduler": {
             department: [],
@@ -167,7 +175,8 @@ export let searchFilters = writable<{[key: string]: SearchFilters}>(
             status: [],
             ges: [],
             undergraduate: null,
-            searchResults: null
+            searchResults: null,
+            sortMode: null
         }
     }
 )
