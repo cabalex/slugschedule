@@ -9,6 +9,7 @@
     import StatusChip from "../Chips/StatusChip.svelte";
     import GeChip from "../Chips/GEChip.svelte";
     import GraduateChip from "../Chips/GraduateChip.svelte";
+    import SortChip from "../Chips/SortChip.svelte";
     import { tick } from "svelte";
 
 
