@@ -14,7 +14,7 @@
 
     
     function filterItems(items: any[], filters: any) {
-        return items.filter(x => {
+        let newItems = items.filter(x => {
             if (filters.department.length > 0) {
                 return filters.department.includes(x.code.split(" ")[0]);
             }
@@ -43,6 +43,12 @@
             }
             return true;
         })
+
+        if (filters.sortMode) {
+            newItems = newItems.sort(filters.sortMode.fn);
+        }
+
+        return newItems;
     }
 
     let items = [];
@@ -83,6 +89,7 @@
         $searchFilters[$listMode].ges = [];
         $searchFilters[$listMode].undergraduate = null;
         $searchFilters[$listMode].searchResults = null;
+        $searchFilters[$listMode].sortMode = null;
     }
 
     let scrollToIndex = null;
@@ -107,6 +114,7 @@
         <StatusChip />
         <GeChip />
         <GraduateChip />
+        <SortChip />
         {#if filtered}
             <button class="chip" on:click={resetFilters}><Restart size="1.5em" /></button>
         {/if}
