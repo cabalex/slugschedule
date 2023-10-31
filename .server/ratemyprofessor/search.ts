@@ -1,5 +1,6 @@
-import axios from "axios";
+
 import { Instructor, TeacherRating as InstructorRating } from "../db/DB";
+import { POST } from "../search/retryableSearch";
 
 const SCHOOL_ID = "U2Nob29sLTEwNzg=";
 
@@ -14,7 +15,7 @@ export default async function searchRMP(instructorName: string, classCode: strin
         query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1] : "");
     }
 
-    let resp = await axios.post("https://www.ratemyprofessors.com/graphql",
+    let resp = await POST("https://www.ratemyprofessors.com/graphql",
         {
             query: `query NewSearchTeachersQuery(
                 $query: TeacherSearchQuery!

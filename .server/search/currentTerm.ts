@@ -1,8 +1,8 @@
-import axios from 'axios';
 import * as cheerio from 'cheerio';
+import { GET } from './retryableSearch';
 
 export default async function getCurrentTerm() {
-    let resp = await axios.get("https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php");
+    let resp = await GET("https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php");
 
     if (resp.status != 200) throw new Error("Could not get current term");
 
