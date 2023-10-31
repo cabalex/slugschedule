@@ -1,12 +1,12 @@
-import axios from "axios";
 import * as cheerio from 'cheerio';
 import searchRMP from "../ratemyprofessor/search";
-import { AssociatedClass, Class, ClassStatus, InstructionMode, Instructor } from "../db/DB";
+import { AssociatedClass, Class, ClassStatus, InstructionMode } from "../db/DB";
+import { GET } from "./retryableSearch";
 
 
 
 export default async function getClassDetails(classUrl: string, existingRMPInfo?: any): Promise<Class> {
-    let resp = await axios.get(classUrl);
+    let resp = await GET(classUrl);
 
     if (resp.status !== 200) {
         throw new Error("Could not get class details");

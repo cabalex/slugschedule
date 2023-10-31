@@ -1,7 +1,7 @@
-import axios from "axios";
 import * as cheerio from 'cheerio';
 import getClassDetails from "./detail";
 import { Class, ClassStatus, InstructionMode, Instructor } from "../db/DB";
+import { POST } from "./retryableSearch";
 
 const ENDPOINT = "https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php";
 const CURRENT_TERM = 2238;
@@ -242,7 +242,7 @@ export default async function search(
         formData["rec_dur"] = opts.results;
     }
 
-    let resp = await axios.post(ENDPOINT, formData, {
+    let resp = await POST(ENDPOINT, formData, {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
         }
