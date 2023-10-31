@@ -32,12 +32,12 @@ async function backoffRetryer<T>(fn: () => Promise<T>, index?: number): Promise<
 
 async function main() {
     // Fix axios instances
-    axios.defaults.timeout = 30000;
+    axios.defaults.timeout = 15000;
     axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
 
 
     let term = await getCurrentTerm();
-    console.log("Reaching out to full catalog...")
+    console.log(`Reaching out to full catalog for term ${term}...`)
     let classes = (await search({term, results: 2000}));
 
     if (existsSync(`../public/db/${term}.yaucsccs`)) {
