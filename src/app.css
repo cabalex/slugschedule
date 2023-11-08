@@ -84,6 +84,31 @@ h1 {
   outline: none;
 }
 
+.dangerBtn {
+  background-color: darkred;
+  line-height: 0;
+  border: none;
+}
+.dangerBtn:hover {
+  background-color: red;
+}
+
+.borderBtn {
+  background-color: transparent;
+  border-color: grey;
+}
+
+.borderBtn:hover {
+  background-color: #333;
+}
+
+hr {
+  width: 100%;
+  border-color: #777;
+  border-style: solid;
+  border-radius: 2px;
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -93,7 +118,7 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.1s, background-color 0.1s;
 }
 button:hover {
   border-color: #646cff;

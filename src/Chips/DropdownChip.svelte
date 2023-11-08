@@ -27,6 +27,18 @@
         onChange(value);
     }
 
+    let chipElem;
+    let height = 0;
+
+    $: {
+        if (open) {
+            let bounds = chipElem.getBoundingClientRect();
+
+            // get the height of the options menu by checking the bounds
+            height = Math.min(500, window.innerHeight - bounds.bottom - 10);
+        }
+    }
+
     let open = false;
     export let value = [];
 
@@ -39,12 +51,17 @@
     }
 
     function clickOut(e?) {
-        if (e && e.target.closest(`.chip.${label}`)) return;
+        if (e && e.target.closest(`.chip.${label.replaceAll(".", "")}`)) return;
         open = false;
     }
 </script>
 
-<div class="chip {label}" class:active={value.length} on:click={toggle}>
+<div
+    bind:this={chipElem}
+    class="chip {label.replaceAll(".", "")}"
+    class:active={value.length}
+    on:click={toggle}
+>
     {#if value.length === 0}
     {label}
     {:else if value.length === 1}
@@ -56,7 +73,12 @@
         <MenuDown />
     </span>
     {#if open}
-    <div transition:fly={{duration: 100, y: -50}} class="options" on:click={(e) => e.stopPropagation()}>
+    <div
+        style={`max-height: ${height}px`}
+        transition:fly={{duration: 100, y: -50}}
+        class="options"
+        on:click={(e) => e.stopPropagation()}
+    >
         {#each Object.keys(options) as option}
             <div class="option" class:selected={value.includes(option)} on:click={selectOption.bind(null, option)}>
                 <Check />
@@ -83,7 +105,11 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
     .option {
+        text-align: left;
         padding: 10px;
+    }
+    .option:hover {
+        background-color: #333;
     }
     :global(.option:not(.selected) svg) {
         opacity: 0;

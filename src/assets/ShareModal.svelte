@@ -6,7 +6,7 @@
     import ContentCopy from "svelte-material-icons/ContentCopy.svelte";
     import TrayArrowUp from "svelte-material-icons/TrayArrowUp.svelte";
 
-    export let url = "https://abcdef.com";
+    export let url = "https://example.com";
     export let headerText = "Share this URL";
     export let onClose = () => {};
 

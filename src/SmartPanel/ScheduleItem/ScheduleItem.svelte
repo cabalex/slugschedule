@@ -14,66 +14,26 @@
     import Monitor from "svelte-material-icons/Monitor.svelte";
     import Account from "svelte-material-icons/Account.svelte";
 
-    import { db, detectTerm, focusedClass, listMode, scheduledClasses, starredClasses, term } from "../../mainStore";
+    import { db, focusedClass, listMode, smartClasses, starredClasses } from "../../mainStore";
     import { ClassStatus, type Class } from "../../../.server/db/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
-    import SectionPopup from "./SectionPopup.svelte";
 
-    export let item: Class;
+    export let item: number[];
 
-    let code = item.code;
-    let showSectionPopup = false;
-    $: {
-        if ($db.classes.map(x => x.name).filter(x => x.includes(item.code.split(" - ")[0])).length < 1) {
-            code = item.code.split(" - ")[0];
-        }
+    $: classes = item.map(x => $db.getClassByNumber(x));
+
+    function focusSchedule() {
+        $scheduledClasses = item;
     }
 
-    function toggleStar(e) {
-        e.stopPropagation();
-        if ($starredClasses.includes(item.number)) {
-            $starredClasses = $starredClasses.filter(x => x !== item.number);
-        } else {
-            $starredClasses = [...$starredClasses, item.number];
-        }
-    }
-
-    function toggleScheduled(e) {
-        e.stopPropagation();
-        if ($scheduledClasses.includes(item.number)) {
-            $scheduledClasses = $scheduledClasses.filter(x => ![item.number, ...item.associatedClasses.map(y => y.number)].includes(x));
-        } else {
-            $scheduledClasses = [...$scheduledClasses, item.number];
-            if (item.associatedClasses.length) showSectionPopup = true;
-        }
-    }
-
-    function focusClass() {
-        if ($listMode === "scheduler") {
-            if ($starredClasses.includes(item.number)) {
-                $listMode = "starred";
-            } else {
-                // if the class isn't starred, it won't show up in the starred list...
-                // so go to the main course search instead
-                $listMode = "all";
-            }
-        }
-        $focusedClass = item;
+    function addToSchedule() {
+        $scheduledClasses = [...item];
     }
 </script>
-
-{#if showSectionPopup}
-<SectionPopup item={item} close={() => showSectionPopup = false} />
-{/if}
-
 <div
     class="classItem"
-    class:small={detectTerm() !== $db.term}
-    class:focused={$focusedClass !== "home" && $listMode !== "scheduler" && $focusedClass?.code === item.code}
-    class:open={item.availability.status === ClassStatus.Open}
-    class:waitlist={item.availability.status === ClassStatus.Waitlist}
-    class:closed={item.availability.status === ClassStatus.Closed}
+    class:focused={$smartClasses.every(x => item.includes(x))}
     on:click={focusClass}
 >
     <div class="topBar">
@@ -81,7 +41,7 @@
             <span style="font-weight: bold">{code}</span>
             <span>{item.name}</span>
         </h2>
-        <button class="roundBtn" on:click={$listMode === "scheduler" ? toggleScheduled : toggleStar}>
+        <button class="roundBtn" on:click={addToSchedule}>
             {#if $listMode === "scheduler"}
                 {#if $scheduledClasses.includes(item.number)}
                     <Minus />
@@ -131,9 +91,7 @@
         </div>
         {/if}
     </div>
-    {#if detectTerm() === $db.term}
     <ClassAllocation availability={item.availability} />
-    {/if}
 </div>
 
 <style>
@@ -149,12 +107,6 @@
 
         display: flex;
         flex-direction: column;
-    }
-    .classItem.small {
-        height: 160px;
-    }
-    .classItem.small .topBar:before {
-        background-color: #444 !important;
     }
     .classItem.focused {
         outline: 2px solid grey;

@@ -1,36 +1,27 @@
+<script lang="ts" context="module">
+    // Export to be used in other files
+    export const opts = {
+        "AnyGE": "Any GE",
+        "C": "C Composition",
+        "CC": "CC Cross-Cultural Analysis",
+        "ER": "ER Ethnicity and Race",
+        "IM": "IM Interpreting Arts and Media",
+        "MF": "MF Mathematical and Formal Reasoning",
+        "PE-E": "PE-E Perspectives (Environmental Awareness)",
+        "PE-H": "PE-H Perspectives (Human Behavior)",
+        "PE-T": "PE-T Perspectives (Technology and Society)",
+        "PR-C": "PR-C Practice (Collaborative Endeavor)",
+        "PR-E": "PR-E Practice (Creative Process)",
+        "PR-S": "PR-S Practice (Service Learning)",
+        "SI": "SI Scientific Inquiry",
+        "SR": "SR Statistical Reasoning",
+        "TA": "TA Textual Analysis"
+    }
+</script>
 <script lang="ts">
     import DropdownChip from "./DropdownChip.svelte";
     import { searchFilters, listMode } from "../mainStore";
-    
-    const opts = {
-        "AnyGE": "Any GE",
-        "A": "A",
-        "C": "C",
-        "C1": "C1",
-        "C2": "C2",
-        "CC": "CC",
-        "E": "E",
-        "ER": "ER",
-        "IH": "IH",
-        "IM": "IM",
-        "IN": "IN",
-        "IS": "IS",
-        "MF": "MF",
-        "PE-E": "PE-E",
-        "PE-H": "PE-H",
-        "PE-T": "PE-T",
-        "PR-C": "PR-C",
-        "PR-E": "PR-E",
-        "PR-S": "PR-S",
-        "Q": "Q",
-        "SI": "SI",
-        "SR": "SR",
-        "TA": "TA",
-        "TH": "TH",
-        "TN": "TN",
-        "TS": "TS",
-        "W": "W"
-    }
+
 </script>
 
 <DropdownChip multiple={true} label="GEs" options={opts} bind:value={$searchFilters[$listMode].ges} />

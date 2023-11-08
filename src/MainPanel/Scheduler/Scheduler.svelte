@@ -3,7 +3,7 @@
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
     import { tick, onMount, onDestroy } from "svelte";
     import { MeetingInfos } from "../../assets/DateChecker.svelte";
-    import { db, focusedClass, listMode, scheduledClasses } from "../../mainStore";
+    import { db, focusedClass, listMode, scheduledClasses, smartClasses } from "../../mainStore";
     import ClassNumber from "./ClassNumber.svelte";
     import ShareModal from "../../assets/ShareModal.svelte";
 
@@ -42,7 +42,8 @@
         days = [
             [], [], [], [], []
         ];
-        for (let scheduledClassNumber of $scheduledClasses) {
+        let classes = $listMode === "smart" ? $smartClasses : $scheduledClasses;
+        for (let scheduledClassNumber of classes) {
             let scheduledClass = $db.getClassByNumber(scheduledClassNumber);
             let meetingInfos = MeetingInfos.parse(scheduledClass.meetingInfos || [scheduledClass.meetingInfo]);
             for (let i = 0; i < meetingInfos.infos.length; i++) {
@@ -72,12 +73,16 @@
 </script>
 
 <h2 class="title">
+    {#if $listMode === "smart"}
+    Smart Scheduler
+    {:else}
     Scheduler
+    {/if}
     <button class="roundBtn" on:click={() => shareOpen = true}><ShareVariant /></button>
 </h2>
 {#if shareOpen}
     <ShareModal
-        url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}`}
+        url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
         headerText="Share this schedule"
         onClose={() => shareOpen = false}
     />
