@@ -12,7 +12,7 @@
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
 
     import type { Class } from "../../../.server/db/DB";
-    import { home, db, focusedClass, starredClasses } from "../../mainStore";
+    import { home, db, focusedClass, starredClasses, detectTerm } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
@@ -62,7 +62,7 @@
                 </button>
                 {#if shareOpen}
                 <ShareModal
-                    url={`${document.location.origin}${document.location.pathname}?class=${item.number}`}
+                    url={`${document.location.origin}${document.location.pathname}?class=${item.number}&term=${$db.term}`}
                     headerText="Share this class"
                     onClose={() => shareOpen = false}
                 />
@@ -96,7 +96,7 @@
         <h3>Notes</h3>
         <p class="notes">{item.classNotes}</p>
         {/if}
-        <h3>Enrollment</h3>
+        <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
         {#if item.availability.capacity === 0 && item.availability.enrolled === 0}
             Class Cancelled
         {:else}

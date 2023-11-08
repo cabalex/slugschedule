@@ -14,7 +14,7 @@
     import Monitor from "svelte-material-icons/Monitor.svelte";
     import Account from "svelte-material-icons/Account.svelte";
 
-    import { db, focusedClass, listMode, scheduledClasses, starredClasses } from "../../mainStore";
+    import { db, detectTerm, focusedClass, listMode, scheduledClasses, starredClasses, term } from "../../mainStore";
     import { ClassStatus, type Class } from "../../../.server/db/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
@@ -50,7 +50,7 @@
     }
 
     function focusClass() {
-        if (window.innerWidth > 1000 && $listMode === "scheduler" ) {
+        if ($listMode === "scheduler") {
             if ($starredClasses.includes(item.number)) {
                 $listMode = "starred";
             } else {
@@ -69,6 +69,7 @@
 
 <div
     class="classItem"
+    class:small={detectTerm() !== $db.term}
     class:focused={$focusedClass !== "home" && $listMode !== "scheduler" && $focusedClass?.code === item.code}
     class:open={item.availability.status === ClassStatus.Open}
     class:waitlist={item.availability.status === ClassStatus.Waitlist}
@@ -130,7 +131,9 @@
         </div>
         {/if}
     </div>
+    {#if detectTerm() === $db.term}
     <ClassAllocation availability={item.availability} />
+    {/if}
 </div>
 
 <style>
@@ -146,6 +149,12 @@
 
         display: flex;
         flex-direction: column;
+    }
+    .classItem.small {
+        height: 160px;
+    }
+    .classItem.small .topBar:before {
+        background-color: #444 !important;
     }
     .classItem.focused {
         outline: 2px solid grey;

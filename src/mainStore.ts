@@ -10,64 +10,126 @@ export function detectTerm() {
     // 2232 - 2023 Spring
     // 2230 - 2023 Winter
 
+    if (document.location.search.includes("term=")) {
+        let term = document.location.search.split("term=")[1].split("&")[0];
+        if (term.length === 4) {
+            console.log("Using term from URL...");
+            return parseInt(term);
+        }
+    }
+
     let date = new Date();
     let year = date.getFullYear();
     let termYear = year.toString()[0] + year.toString().slice(2, 4);
     let month = date.getMonth();
 
-    if (month >= 11 || month <= 1) {
+    if (month >= 10) {
         // November-Jan; winter
-        return `${termYear}0`;
-    } else if (month >= 2 && month <= 4) {
+        return parseInt(`${parseInt(termYear) + 1}0`);
+    } else if (month <= 0) {
+        // November-Jan; winter
+        return parseInt(`${termYear}0`);
+    } else if (month >= 1 && month <= 3) {
         // Feb-Apr; spring
-        return `${termYear}2`;
-    } else if (month >= 5 && month <= 7) {
+        return parseInt(`${termYear}2`);
+    } else if (month >= 4 && month <= 6) {
         // May-Jul; summer
-        return `${termYear}4`;
+        return parseInt(`${termYear}4`);
     } else {
         // Aug-Oct; fall
-        return `${termYear}8`;
+        return parseInt(`${termYear}8`);
+    }
+}
+
+async function fetchDBByYear(year: number) {
+    let db = await openDB("yaucsccs", 1, {
+        upgrade(db) {
+          db.createObjectStore('db');
+        },
+    });
+
+    let cachedArrayBuffer = await db.get("db", year);
+
+    if (cachedArrayBuffer) {
+        console.log("Using cached database...");
+        let cachedDB = DB.import(cachedArrayBuffer);
+
+        return {db: cachedDB, cached: true};
+    }
+
+    let resp = await fetch(`./db/${year}.yaucsccs`);
+    if (resp.ok) {
+        return {db: DB.import(await resp.arrayBuffer()), cached: false};
+    } else {
+        return {db: null, cached: false};
     }
 }
 
 
-const TERM = detectTerm();
+export let term = writable(detectTerm());
+export let setDB = (value: any) => {}
 
+let dbPromise = null;
 export let db = readable(null, (set) => {
+    setDB = set;
 
-    // check 
-    new Promise(async () => {
+    if (dbPromise) return;
+
+    // check only once
+    dbPromise = new Promise(async () => {
+        let TERM = detectTerm();
+
+        let fetchedDB = null;
+        let cached = false;
+        while(true) {
+            let result = await fetchDBByYear(TERM);
+            fetchedDB = result.db;
+            cached = result.cached;
+            if (fetchedDB) break;
+
+            TERM -= 2;
+        }
+
+        evaluateURLParams(fetchedDB);
+        set(fetchedDB);
+
         let db = await openDB("yaucsccs", 1, {
             upgrade(db) {
               db.createObjectStore('db');
             },
         });
 
-        let cachedArrayBuffer = await db.get("db", TERM);
-
-        if (cachedArrayBuffer) {
-            console.log("Using cached database...");
-            let cachedDB = DB.import(cachedArrayBuffer);
-            evaluateURLParams(cachedDB);
-            set(cachedDB);
-
-            if (Date.now() - cachedDB.lastUpdate < 1000 * 60 * 60) {
+        if (cached) {
+            if (Date.now() - fetchedDB.lastUpdate < 1000 * 60 * 60) {
                 // Database is younger than an hour, so don't bother updating
-                console.log("Ignoring update")
+                console.log("Ignoring update; database is fresh")
                 return;
             }
-        }
+            if (get(term) !== TERM) {
+                // Older terms will get no updates, so ignore
+                console.log("Ignoring update; database is from an older year")
+                return;
+            }
 
-        let resp = await fetch(`./db/${TERM}.yaucsccs`);
-        let arrayBuffer = await resp.arrayBuffer();
-        
-        // save to db
-        await db.put("db", arrayBuffer, TERM)
-        
-        console.log("Updated to newest version!");
-        let newDB = DB.import(arrayBuffer);
-        evaluateURLParams(newDB);
-        set(newDB);
+            console.log("Updating cached database...");
+
+            let arrayBuffer;
+            let resp = await fetch(`./db/${TERM}.yaucsccs`);
+            if (resp.ok) {
+                arrayBuffer = await resp.arrayBuffer();
+            }
+
+            // save to db and update UI
+            await db.put("db", arrayBuffer, TERM)
+            
+            console.log("Updated to newest version!");
+            let newDB = DB.import(arrayBuffer);
+            evaluateURLParams(newDB);
+            set(newDB);
+        } else {
+            // save to cache
+            await db.put("db", fetchedDB, TERM)
+        }
     })
 
     return () => {}
@@ -108,26 +170,27 @@ function evaluateURLParams(db: any) {
 export let focusedClass = writable<Class|"home"|null>(null);
 export let home = writable<string|null>(localStorage.getItem("home") === null ? "Porter College" : localStorage.getItem("home"));
 export let starredClasses = writable<number[]>(
-    localStorage.getItem("starredClasses") ?
-    JSON.parse(localStorage.getItem("starredClasses")) :
+    localStorage.getItem(`starredClasses-${get(db)?.term || get(term)}`) ?
+    JSON.parse(localStorage.getItem(`starredClasses-${get(db)?.term || get(term)}`)) :
     []
 );
 export let scheduledClasses = writable<number[]>(
-    localStorage.getItem("scheduledClasses") ?
-    JSON.parse(localStorage.getItem("scheduledClasses")) :
+    localStorage.getItem(`scheduledClasses-${get(db)?.term || get(term)}`) ?
+    JSON.parse(localStorage.getItem(`scheduledClasses-${get(db)?.term || get(term)}`)) :
     []
 );
-export let listMode = writable<"scheduler"|"starred"|"all">(
+export let smartClasses = writable<number[]>([]); // do not cache this
+export let listMode = writable<"scheduler"|"starred"|"all"|"smart">(
     get(scheduledClasses).length ? "scheduler" :
     get(starredClasses).length ? "starred" : "all"
 );
 
 starredClasses.subscribe((value) => {
-    localStorage.setItem("starredClasses", JSON.stringify(value));
+    localStorage.setItem(`starredClasses-${get(db)?.term || get(term)}`, JSON.stringify(value));
 })
 
 scheduledClasses.subscribe((value) => {
-    localStorage.setItem("scheduledClasses", JSON.stringify(value));
+    localStorage.setItem(`scheduledClasses-${get(db)?.term || get(term)}`, JSON.stringify(value));
 })
 
 home.subscribe((value) => {
@@ -137,6 +200,18 @@ home.subscribe((value) => {
 db.subscribe((value) => {
     // @ts-ignore
     window.db = value;
+
+    starredClasses.set(
+        localStorage.getItem(`starredClasses-${value?.term || get(term)}`) ?
+        JSON.parse(localStorage.getItem(`starredClasses-${value?.term || get(term)}`)) :
+        []
+    )
+
+    scheduledClasses.set(
+        localStorage.getItem(`scheduledClasses-${value?.term || get(term)}`) ?
+        JSON.parse(localStorage.getItem(`scheduledClasses-${value?.term || get(term)}`)) :
+        []
+    )
 })
 
 interface SearchFilters {
