@@ -2,22 +2,28 @@
     import Star from "svelte-material-icons/Star.svelte";
     import Magnify from "svelte-material-icons/Magnify.svelte";
     import Calendar from "svelte-material-icons/Calendar.svelte";
+    import AutoFix from "svelte-material-icons/AutoFix.svelte";
     import { db, focusedClass, listMode } from "../mainStore";
+    import TermMenu from "./TermMenu.svelte";
 
     let term = "Unknown"
-    switch($db.term % 10) {
-        case 0:
-            term = "❄ 20" + $db.term.toString().slice(1, 3)
-            break;
-        case 2:
-            term = "🌸 20" + $db.term.toString().slice(1, 3)
-            break;
-        case 4:
-            term = "☀ 20" + $db.term.toString().slice(1, 3)
-            break;
-        case 8:
-            term = "🍁 20" + $db.term.toString().slice(1, 3)
-            break;
+    let termMenuOpen = false;
+
+    $: {
+        switch($db.term % 10) {
+            case 0:
+                term = "❄ 20" + $db.term.toString().slice(1, 3)
+                break;
+            case 2:
+                term = "🌸 20" + $db.term.toString().slice(1, 3)
+                break;
+            case 4:
+                term = "☀ 20" + $db.term.toString().slice(1, 3)
+                break;
+            case 8:
+                term = "🍁 20" + $db.term.toString().slice(1, 3)
+                break;
+        }
     }
 </script>
 <aside>
@@ -34,12 +40,21 @@
     <button title="Schedule classes" on:click={() => $listMode = "scheduler"} class="iconBtn" class:active={$listMode === "scheduler"}>
         <Calendar size="2em" />
     </button>
+    <!--
+    <button title="Smart class search" on:click={() => $listMode = "smart"} class="iconBtn smart" class:active={$listMode === "smart"}>
+        <AutoFix size="2em" />
+    </button>
+    -->
     <span class="grower" />
-    <span class="term" style="text-align: center">{term} ({$db.term})</span>
+    <button on:click={() => termMenuOpen = !termMenuOpen} class:active={termMenuOpen} class="term" style="text-align: center">{term} ({$db.term})</button>
+    {#if termMenuOpen}
+        <TermMenu bind:term={term} bind:termMenuOpen={termMenuOpen} />
+    {/if}
 </aside>
 
 <style>
     aside {
+        position: relative;
         flex-shrink: 0;
         width: 72px;
         background-color: #333;
@@ -49,7 +64,7 @@
         padding: 20px 0;
         align-items: center;
     }
-    aside > *:not(.indicator):not(span) {
+    aside > *:not(.indicator):not(.term):not(span) {
         border-radius: 10px;
         width: 62px;
         height: 62px;
@@ -72,6 +87,19 @@
         line-height: 0;
         outline: none;
     }
+    .term {
+        background-color: transparent;
+        color: unset;
+        border: none;
+        outline: none;
+        font-weight: unset;
+        font-size: unset;
+        padding: 0px;
+    }
+    .term:hover, .term.active {
+        color: white;
+    }
+
     .iconBtn.active {
         color: var(--primary);
     }

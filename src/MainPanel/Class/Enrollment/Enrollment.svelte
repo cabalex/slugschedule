@@ -4,7 +4,7 @@
     import { Line } from 'svelte-chartjs'
     import { Chart as ChartJS, TimeScale, Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale } from "chart.js"
     import 'chartjs-adapter-moment';
-    import { db } from "../../../mainStore";
+    import { db, detectTerm } from "../../../mainStore";
     import { ClassStatus } from '../../../../.server/db/DB';
     import ClassStatusIcon from "../../../assets/ClassStatusIcon.svelte";
 
@@ -51,7 +51,6 @@
             },
             y: {
                 min: 0,
-                max: Math.max(availability.capacity, availability.enrolled, availability.waitlist),
                 color: 'white',
                 ticks: {
                     color: '#ccc'
@@ -182,7 +181,20 @@
                         return dataset;
                     })
                     break;
+                default:
+                    if (data.datasets[0].data.length < 2) {
+                        data.datasets = data.datasets.map(dataset => {
+                            dataset.data.push({
+                                x: 0,
+                                y: dataset.data[0]?.y,
+                            })
+                            
+                            return dataset;
+                        })
+                    }
+                    break;
             }
+
 
             /*
             // Removes duplicate sequential points (currently breaks graph highlight, so don't use)
@@ -201,7 +213,7 @@
 </script>
 
 <div class="enrollment">
-    {#if large}
+    {#if large && $db.term === detectTerm()}
     <div class="text">
         <h1 style="display: flex; gap: 20px; align-items: center">
             <ClassStatusIcon status={availability.status} />

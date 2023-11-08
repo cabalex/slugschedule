@@ -13,7 +13,7 @@
 </script>
 
 <main bind:this={mainElem} class:focused={$focusedClass} class:scheduler={$listMode === "scheduler"}>
-    {#if $listMode === "scheduler"}
+    {#if $listMode === "scheduler" || $listMode === "smart"}
         <Scheduler />
     {:else if $focusedClass && $focusedClass !== "home"}
         {#key $focusedClass.number}

@@ -1,5 +1,6 @@
 <script lang="ts">
     import Restart from "svelte-material-icons/Restart.svelte";
+    import Pencil from "svelte-material-icons/Pencil.svelte";
     import Search from "./Search/Search.svelte";
     import VirtualList from "../VirtualList/VirtualList.svelte";
     import { db, focusedClass, listMode, scheduledClasses, searchFilters, starredClasses } from "../mainStore";
@@ -11,6 +12,7 @@
     import GraduateChip from "../Chips/GraduateChip.svelte";
     import SortChip from "../Chips/SortChip.svelte";
     import { tick } from "svelte";
+    import SmartPanel from "../SmartPanel/SmartPanel.svelte";
 
 
     
@@ -76,12 +78,12 @@
         }
     }
     $: {
-        if ($searchFilters[$listMode].searchResults !== null) {
+        if ($listMode !== "smart" && $searchFilters[$listMode].searchResults !== null) {
             items = filterItems($searchFilters[$listMode].searchResults.results.map(x => x.item), $searchFilters[$listMode])
                 .filter(x => $listMode !== "all" ? $starredClasses.includes(x.number) : true)
         }
     }
-    $: filtered = Object.values($searchFilters[$listMode]).some((v) => v instanceof Array ? v.length : v !== null);
+    $: filtered = Object.values($listMode === "smart" ? {} : $searchFilters[$listMode]).some((v) => v instanceof Array ? v.length : v !== null);
 
     function resetFilters() {
         $searchFilters[$listMode].department = [];
@@ -100,36 +102,47 @@
             await tick();
         }
         
-        let index = items.findIndex((c) => c.number === item.number);
-        if (scrollToIndex && $focusedClass && index) {
-            scrollToIndex(index);
-        }
+        setTimeout(() => {
+            let index = items.findIndex((c) => c.number === item.number);
+            if (scrollToIndex && $focusedClass && index) {
+                scrollToIndex(index);
+            }
+        }, 0)
     }
 </script>
 
 <div class="listPanel">
-    <Search onSearchClicked={scrollOnSearch} />
-    <div class="chipShelf">
-        <DepartmentChip />
-        <OnlineChip />
-        <StatusChip />
-        <GeChip />
-        <GraduateChip />
-        <SortChip />
-        {#if filtered}
-            <button class="chip" on:click={resetFilters}><Restart size="1.5em" /></button>
-        {/if}
-    </div>
-    {#if items.length}
-        <VirtualList bind:scrollToIndex={scrollToIndex} items={items} let:item>
-            <ClassItem item={item} />
-        </VirtualList>
-    {:else if $listMode === "starred" && $starredClasses.length === 0}
-        <span>You haven't starred any classes yet.</span>
-    {:else if $listMode === "scheduler"}
-        <span>To add classes to the scheduler, you must star them first.<br />Find what you're interested in taking!</span>
+    {#if $listMode === "smart"}
+        <SmartPanel />
     {:else}
-        <span>No results...</span>
+        <Search onSearchClicked={scrollOnSearch} />
+        <div class="chipShelf">
+            <DepartmentChip />
+            <OnlineChip />
+            <StatusChip />
+            <GeChip />
+            <GraduateChip />
+            <SortChip />
+            {#if filtered}
+                <button class="chip" on:click={resetFilters}><Restart size="1.5em" /></button>
+            {/if}
+        </div>
+        {#if items.length}
+            <VirtualList bind:scrollToIndex={scrollToIndex} items={items} let:item>
+                <ClassItem item={item} />
+            </VirtualList>
+        {:else if $listMode === "starred" && $starredClasses.length === 0}
+            <span>You haven't starred any classes yet.</span>
+        {:else if $listMode === "scheduler"}
+            <span>To add classes to the scheduler, you must star them first.<br />Find what you're interested in taking!</span>
+        {:else}
+            <span>No results...</span>
+        {/if}
+
+        {#if $listMode === "scheduler"}
+            <!-- focus "home" in the scheduler view, which just opens the schedule main view -->
+            <button class="mobileOpenScheduler" on:click={() => $focusedClass = "home"}>Open Scheduler</button>
+        {/if}
     {/if}
 </div>
 
@@ -138,6 +151,7 @@
         display: flex;
         flex-direction: column;
         flex-shrink: 0;
+        position: relative;
 
         width: 500px;
     }
@@ -157,10 +171,23 @@
         padding: 10px;
         text-align: center;
     }
+    .mobileOpenScheduler {
+        display: none;
+        position: fixed;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 30px;
+        border-radius: 50px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
     @media screen and (max-width: 1000px) {
         .listPanel {
             width: 100%;
             height: calc(100% - 50px);
+        }
+        .mobileOpenScheduler {
+            display: block;
         }
     }
 </style>
