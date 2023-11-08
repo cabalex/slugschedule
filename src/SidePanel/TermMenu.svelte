@@ -46,13 +46,14 @@
         }
 
         let resp = await fetch(`./db/${TERM}.yaucsccs`);
-        let arrayBuffer = await resp.arrayBuffer();
 
-        if (arrayBuffer.byteLength === 0) {
+        if (!resp.ok) {
             termLoadError = `Couldn't load term ${TERM} (it may not exist yet).`;
             loading = false;
             return;
         }
+
+        let arrayBuffer = await resp.arrayBuffer();
         
         // save to db
         await db.put("db", arrayBuffer, TERM)
