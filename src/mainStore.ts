@@ -2,7 +2,7 @@ import DB, { type Class, type ClassStatus } from "../.server/db/DB";
 import { readable, writable, get } from 'svelte/store';
 import { openDB } from "idb";
 
-export function detectTerm() {
+export function detectTerm(ignoreUrlParams=true) {
     // ABCD - A = first digit of year, BC = last two digits of year,
     // D: 8 = fall, 0 = winter, 2 = spring, 4 = summer 
     // 2238 - 2023 Fall
@@ -10,7 +10,7 @@ export function detectTerm() {
     // 2232 - 2023 Spring
     // 2230 - 2023 Winter
 
-    if (document.location.search.includes("term=")) {
+    if (document.location.search.includes("term=") && !ignoreUrlParams) {
         let term = document.location.search.split("term=")[1].split("&")[0];
         if (term.length === 4) {
             console.log("Using term from URL...");
@@ -65,7 +65,7 @@ async function fetchDBByYear(year: number) {
 }
 
 
-export let term = writable(detectTerm());
+export let term = writable(detectTerm(false));
 export let setDB = (value: any) => {}
 
 let dbPromise = null;
@@ -76,7 +76,7 @@ export let db = readable(null, (set) => {
 
     // check only once
     dbPromise = new Promise(async () => {
-        let TERM = detectTerm();
+        let TERM = detectTerm(false);
 
         let fetchedArrayBuffer = null;
         let cached = false;
