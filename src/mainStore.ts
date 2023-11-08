@@ -52,16 +52,15 @@ async function fetchDBByYear(year: number) {
 
     if (cachedArrayBuffer) {
         console.log("Using cached database...");
-        let cachedDB = DB.import(cachedArrayBuffer);
 
-        return {db: cachedDB, cached: true};
+        return {arrayBuffer: cachedArrayBuffer, cached: true};
     }
 
     let resp = await fetch(`./db/${year}.yaucsccs`);
     if (resp.ok) {
-        return {db: DB.import(await resp.arrayBuffer()), cached: false};
+        return {arrayBuffer: await resp.arrayBuffer(), cached: false};
     } else {
-        return {db: null, cached: false};
+        return {arrayBuffer: null, cached: false};
     }
 }
 
@@ -79,17 +78,18 @@ export let db = readable(null, (set) => {
     dbPromise = new Promise(async () => {
         let TERM = detectTerm();
 
-        let fetchedDB = null;
+        let fetchedArrayBuffer = null;
         let cached = false;
         while(true) {
             let result = await fetchDBByYear(TERM);
-            fetchedDB = result.db;
+            fetchedArrayBuffer = result.arrayBuffer;
             cached = result.cached;
-            if (fetchedDB) break;
+            if (fetchedArrayBuffer && fetchedArrayBuffer.byteLength) break;
 
             TERM -= 2;
         }
 
+        let fetchedDB = DB.import(fetchedArrayBuffer);
         evaluateURLParams(fetchedDB);
         set(fetchedDB);
 
@@ -128,7 +128,7 @@ export let db = readable(null, (set) => {
             set(newDB);
         } else {
             // save to cache
-            await db.put("db", fetchedDB, TERM)
+            await db.put("db", fetchedArrayBuffer, TERM)
         }
     })
 
