@@ -98,7 +98,7 @@
         {/if}
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
         {#if item.availability.capacity === 0 && item.availability.enrolled === 0}
-            Class Cancelled
+            This class is currently closed with zero capacity. It might open up later, so stay tuned!
         {:else}
             <Enrollment number={item.number} availability={item.availability} />
         {/if}

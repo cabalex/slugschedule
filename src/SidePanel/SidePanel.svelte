@@ -30,7 +30,7 @@
 <aside>
     <span class="grower mobile" />
     <button class="logo" on:click={() => { $focusedClass = "home"; $listMode = "all"}}>
-        <img src={SlugSchedule} width="36px" />
+        <img src={SlugSchedule} width="50px" />
     </button>
     <button title="Search classes" on:click={() => $listMode = "all"} class="iconBtn" class:active={$listMode === "all"}>
         <Magnify size="2em" />
@@ -78,6 +78,13 @@
         line-height: 0;
         padding: 0;
         background-color: transparent !important;
+        border-width: 0;
+        transition: filter 0.1s ease-in-out, transform 0.1s ease-in-out;
+        outline: none;
+    }
+    .logo:hover, .logo:focus-visible {
+        filter: hue-rotate(-55deg);
+        transform: scale(1.1);
     }
     .iconBtn {
         padding: 0;
@@ -112,7 +119,10 @@
             height: 50px;
             padding: 0;
             align-content: center;
-            z-index: 100;
+            z-index: 1;
+        }
+        .logo > img {
+            width: 40px;
         }
         aside > * {
             height: 40px !important;
@@ -123,6 +133,7 @@
         .term {
             line-height: 40px;
             margin-right: 5px;
+            flex-shrink: 10;
         }
     }
 </style>

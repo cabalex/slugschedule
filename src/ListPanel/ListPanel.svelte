@@ -173,10 +173,12 @@
     }
     .mobileOpenScheduler {
         display: none;
+        background-color: #555;
         position: fixed;
-        bottom: 60px;
+        bottom: 80px;
         left: 50%;
-        font-size: 1em;
+        font-size: 1.1em;
+        white-space: nowrap;
         transform: translateX(-50%);
         padding: 10px 30px;
         border-radius: 50px;
