@@ -7,7 +7,7 @@ export default async function getCurrentTerm() {
     if (resp.status != 200) throw new Error("Could not get current term");
 
     let $ = cheerio.load(resp.data);
-    let term = $("#term_dropdown option[selected='selected']").attr('value') || "-1";
+    let term = $("#term_dropdown option").attr('value') || "-1";
 
     if (term === "-1") throw new Error("Could not get current term; term not found in UI");
 
