@@ -105,8 +105,11 @@ function concat(...bufs: ArrayBuffer[]) {
 // This is a really quick and dirty way to compress things into a
 // custom byte format. This class is used in both the backend and frontend
 // so that both sides can unpack/repack it.
+
+const VERSION = 3;
+
 export default class DB {
-    version = 2;
+    version = VERSION;
     term: number;
     classes: Class[] = [];
     // each snapshot has its own time and array of records
@@ -201,18 +204,20 @@ export default class DB {
     }
 
     export() {
+        // will repack as new version
+        this.version = VERSION;
         console.log("Taking class snapshot...")
         this.takeSnapshot();
         console.log("Exporting file...")
         let encoder = new TextEncoder();
-        function packValue(v: any) {
+        function packValue(v: any, force32Bit=false) {
             if (v === undefined || v === null || (typeof v !== "string" && isNaN(v))) throw new Error(`Cannot pack undefined/null object ${v.toString()}`);
             switch(typeof v) {
                 case "string":
                     let encoding = encoder.encode(v);
                     return concat(Uint16Array.from([encoding.byteLength]).buffer, encoding.buffer);
                 case "number":
-                    return Int16Array.from([Math.round(v)]).buffer;
+                    return force32Bit ? Int32Array.from([Math.round(v)]).buffer : Int16Array.from([Math.round(v)]).buffer;
                 case "boolean":
                     return Uint8Array.from([v ? 1 : 0]).buffer;
                 default:
@@ -230,7 +235,7 @@ export default class DB {
             let buf = new ArrayBuffer(0);
             buf = concat(buf, packValue(c.code));
             buf = concat(buf, packValue(c.name));
-            buf = concat(buf, packValue(c.number));
+            buf = concat(buf, packValue(c.number, true));
             buf = concat(buf, packValue(c.details.undergraduate));
             buf = concat(buf, packValue(c.details.grading));
             buf = concat(buf, packValue(c.details.type));
@@ -294,7 +299,7 @@ export default class DB {
             buf = concat(buf, packValue(c.associatedClasses.length));
             for (let associatedClass of c.associatedClasses) {
                 buf = concat(buf, packValue(associatedClass.code));
-                buf = concat(buf, packValue(associatedClass.number));
+                buf = concat(buf, packValue(associatedClass.number, true));
                 buf = concat(buf, packValue(associatedClass.availability.status));
                 buf = concat(buf, packValue(associatedClass.availability.enrolled));
                 buf = concat(buf, packValue(associatedClass.availability.capacity));
@@ -316,7 +321,7 @@ export default class DB {
             let buf = Uint32Array.from([key / 1000]).buffer;
             buf = concat(buf, packValue(value.length)); // records in this snapshot
             for (let record of value) {
-                buf = concat(buf, packValue(record.classNumber));
+                buf = concat(buf, packValue(record.classNumber, true));
                 buf = concat(buf, packValue(record.status));
                 buf = concat(buf, packValue(record.enrolled));
                 buf = concat(buf, packValue(record.capacity));
@@ -369,13 +374,14 @@ export default class DB {
         let version = unpackValue("number");
         let term = unpackValue("number");
         let classCount = unpackValue("number");
+        console.log(`Version ${version}, term ${term}, ${classCount} classes`)
 
         let classes: Class[] = [];
         for (let i = 0; i < classCount; i++) {
             let c: Class = {
                 code: unpackValue("string"),
                 name: unpackValue("string"),
-                number: unpackValue("number"),
+                number: version >= 3 ? unpackValue("uint32") : unpackValue("number"),
                 details: {
                     undergraduate: unpackValue("boolean"),
                     grading: unpackValue("string"),
@@ -456,7 +462,7 @@ export default class DB {
             for (let j = 0; j < associatedClassCount; j++) {
                 c.associatedClasses.push({
                     code: unpackValue("string"),
-                    number: unpackValue("number"),
+                    number: version >= 3 ? unpackValue("uint32") : unpackValue("number"),
                     availability: {
                         status: unpackValue("number") as ClassStatus,
                         enrolled: unpackValue("number"),
@@ -488,7 +494,7 @@ export default class DB {
             let history: HistoryRecord[] = [];
             for (let j = 0; j < recordCount; j++) {
                 history.push({
-                    classNumber: unpackValue("number"),
+                    classNumber: version >= 3 ? unpackValue("uint32") : unpackValue("number"),
                     status: unpackValue("number") as ClassStatus,
                     enrolled: unpackValue("number"),
                     capacity: unpackValue("number"),

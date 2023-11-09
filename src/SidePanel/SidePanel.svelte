@@ -115,6 +115,7 @@
             height: 50px;
             padding: 0;
             align-content: center;
+            z-index: 100;
         }
         .logo {
             width: 120px !important;

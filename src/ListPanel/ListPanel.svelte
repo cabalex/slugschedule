@@ -176,6 +176,7 @@
         position: fixed;
         bottom: 60px;
         left: 50%;
+        font-size: 1em;
         transform: translateX(-50%);
         padding: 10px 30px;
         border-radius: 50px;
