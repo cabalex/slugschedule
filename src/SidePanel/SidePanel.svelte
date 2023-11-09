@@ -1,4 +1,5 @@
 <script lang="ts">
+    import SlugSchedule from "../assets/slugschedule.svg";
     import Star from "svelte-material-icons/Star.svelte";
     import Magnify from "svelte-material-icons/Magnify.svelte";
     import Calendar from "svelte-material-icons/Calendar.svelte";
@@ -29,7 +30,7 @@
 <aside>
     <span class="grower mobile" />
     <button class="logo" on:click={() => { $focusedClass = "home"; $listMode = "all"}}>
-        YA<span style="color: var(--primary); display: block">UCSC</span>CS
+        <img src={SlugSchedule} width="36px" />
     </button>
     <button title="Search classes" on:click={() => $listMode = "all"} class="iconBtn" class:active={$listMode === "all"}>
         <Magnify size="2em" />
@@ -74,13 +75,9 @@
         cursor: pointer;
     }
     .logo {
-        padding: unset;
-        line-height: calc(62px / 3);
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        word-wrap: break-word;
-        outline: none;
+        line-height: 0;
+        padding: 0;
+        background-color: transparent !important;
     }
     .iconBtn {
         padding: 0;
@@ -116,13 +113,6 @@
             padding: 0;
             align-content: center;
             z-index: 100;
-        }
-        .logo {
-            width: 120px !important;
-            background-color: transparent !important;
-        }
-        .logo span {
-            display: inline-block !important;
         }
         aside > * {
             height: 40px !important;
