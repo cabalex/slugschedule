@@ -94,6 +94,7 @@
     }
     let enrolledInLastDay = 0;
     let waitlistInLastDay = 0;
+    let range = 0;
     $: {
         if ($db) {
             enrolledInLastDay = 0;
@@ -143,6 +144,8 @@
             data.datasets[0].data.push({x: new Date($db.lastUpdate), y: availability.enrolled});
             data.datasets[1].data.push({x: new Date($db.lastUpdate), y: availability.waitlist});
             data.datasets[2].data.push({x: new Date($db.lastUpdate), y: availability.capacity});
+
+            range = $db.lastUpdate - data.datasets[0].data[0]?.x?.getTime();
 
             switch(chartView) {
                 case "30d":
@@ -247,12 +250,18 @@
     </div>
     {/if}
     <div class="chart">
+        {#if range > 24 * 60 * 60 * 1000}
         <div class="chartViews">
             <button on:click={() => chartView = "all"} class:active={chartView == "all"}>all</button>
+            {#if range > 30 * 24 * 60 * 60 * 1000}
             <button on:click={() => chartView = "30d"} class:active={chartView == "30d"}>30d</button>
+            {/if}
+            {#if range > 7 * 24 * 60 * 60 * 1000}
             <button on:click={() => chartView = "7d"} class:active={chartView == "7d"}>7d</button>
+            {/if}
             <button on:click={() => chartView = "1d"} class:active={chartView == "1d"}>1d</button>
         </div>
+        {/if}
         <Line
             data={data}
             options={options}
