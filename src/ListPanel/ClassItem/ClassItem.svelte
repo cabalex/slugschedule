@@ -216,7 +216,7 @@
         align-items: center;
         gap: 5px;
     }
-    .rmpScore {
+    :global(.rmpScore) {
         padding: 2px 5px;
         color: black;
         font-weight: bold;
