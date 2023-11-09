@@ -22,6 +22,7 @@
     import DateChecker from "../../assets/DateChecker.svelte";
     import CopyClassNumber from "../../assets/CopyClassNumber.svelte";
   import ShareModal from "../../assets/ShareModal.svelte";
+  import ClassesByCode from "../../assets/ClassesByCode.svelte";
 
     export let item: Class;
 
@@ -96,6 +97,7 @@
         <h3>Notes</h3>
         <p class="notes">{item.classNotes}</p>
         {/if}
+        <ClassesByCode code={item.code} number={item.number} />
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
         {#if item.availability.capacity === 0 && item.availability.enrolled === 0}
             This class is currently closed with zero capacity. It might open up later, so stay tuned!
