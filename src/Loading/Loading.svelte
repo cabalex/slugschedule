@@ -1,13 +1,13 @@
 <script lang="ts">
     import { fade } from "svelte/transition";
+    import SlugSchedule from "../assets/slugschedule.svg";
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
 </script>
 
 <div class="loading" out:fade={{delay: 500, duration: 100}}>
     <div class="center">
-        <h2>Yet Another</h2>
-        <h1>UCSC</h1>
-        <h2>Class Schedule</h2>
+        <img src={SlugSchedule} width="128px" alt="Icon" />
+        <h2>SlugSchedule</h2>
 
         <LoadingIcon size="25em" />
     </div>

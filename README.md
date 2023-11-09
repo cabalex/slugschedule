@@ -1,5 +1,4 @@
-# [YAUCSCCS](https://cabalex.github.io/yaucsccs)
-## Yet Another UCSC Class Schedule
+# [SlugSchedule](https://cabalex.github.io/slugschedule)
 
 I didn't realize how bad the course shopping experience was... so here's a way to make it better!
 
