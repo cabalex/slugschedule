@@ -26,9 +26,9 @@
             </button>
             <h2>Home</h2>
         </header>
-        <h1>Yet Another UCSC Class Schedule</h1>
+        <h1>SlugSchedule</h1>
         Select a class to see more details about it. You can also search or use the dropdowns to filter your results.<br />
-        Need more help? <a href="https://github.com/cabalex/yaucsccs/wiki/Usage-Guide" target="_blank" rel="noopener noreferrer">See the Usage Guide</a>.<br />
+        Need more help? <a href="https://github.com/cabalex/slugschedule/wiki/Usage-Guide" target="_blank" rel="noopener noreferrer">See the Usage Guide</a>.<br />
 
         <h2>Home</h2>
         For accurate walking estimates, I live at <select bind:value={$home}>
@@ -51,7 +51,7 @@
         <a href="https://advising.ucsc.edu/gettingstartedinthemajor/frosh/index.html" targeT="_blank">Getting Started In Your Major</a> <br />
         <a href="https://registrar.ucsc.edu/enrollment/general-education-requirements.html" target="_blank">General Education Requirements</a>
         
-        <p>Created with 💛 by <a href="https://cabalex.github.io">@cabalex</a>. <a href="https://github.com/cabalex/yaucsccs">View source here</a>.</p>
+        <p>Created with 💛 by <a href="https://cabalex.github.io">@cabalex</a>. <a href="https://github.com/cabalex/slugschedule">View source here</a>.</p>
         <p>Data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
         {/if}
 </main>
