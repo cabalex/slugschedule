@@ -1,6 +1,6 @@
 {
-    "name": "Yet Another UCSC Class Schedule",
-    "short_name": "YAUCSCCS",
+    "name": "SlugSchedule",
+    "short_name": "SlugSchedule",
     "start_url": "./",
     "scope": ".",
     "display": "standalone",
