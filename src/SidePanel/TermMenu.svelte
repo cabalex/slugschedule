@@ -1,6 +1,6 @@
 <script lang="ts">
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
-    import { db, detectTerm, setDB } from "../mainStore";
+    import { db, detectTerm, focusedClass, setDB } from "../mainStore";
     import { openDB } from "idb";
     import DB from "../../.server/db/DB";
     import { slide } from "svelte/transition";
@@ -34,6 +34,7 @@
             console.log("Using cached database...");
             let cachedDB = DB.import(cachedArrayBuffer);
             setDB(cachedDB);
+            $focusedClass = "home";
 
             loading = false;
 
@@ -61,6 +62,7 @@
         console.log("Updated to newest version!");
         let newDB = DB.import(arrayBuffer);
         setDB(newDB);
+        $focusedClass = "home";
         loading = false;
         termMenuOpen = false;
     }
@@ -71,7 +73,7 @@
     }
 </script>
 
-<div class="termMenu" transition:slide={{duration: 100, axis: 'x'}}>
+<div class="termMenu" transition:slide={{duration: 100, axis: window.innerWidth < 1000 ? 'y' : 'x'}}>
     View schedule for:
     <span class="termSelector">
         <select bind:value={termQuarter}>
@@ -158,6 +160,16 @@
         }
         to {
             transform: rotate(360deg);
+        }
+    }
+    @media screen and (max-width: 1000px) {
+        .termMenu {
+            bottom: 100% !important;
+            right: 0;
+            left: unset !important;
+            box-shadow: -5px 0 5px rgba(0, 0, 0, 0.5);
+            border-radius: 10px 10px 0 0;
+            align-items: flex-end;
         }
     }
 </style>
