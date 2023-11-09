@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ClassStatus } from "../../.server/db/DB";
   import { db, focusedClass } from "../mainStore";
 
     export let number;
@@ -7,7 +8,8 @@
     let color = "red";
     $: {
         item = $db ? $db.classes.find((item) => item.number === number) : null;
-        color = item?.availability.enrolled / item?.availability.capacity * 100 === 100 ? "var(--closed)" : "white";
+        color = item?.availability.status === ClassStatus.Closed ? "var(--closed)" :
+            item?.availability.status === ClassStatus.Waitlist ? "var(--waitlist)" : "white";
     }
 </script>
 
@@ -18,7 +20,11 @@
     <div class="bar">
         <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
     </div>
-    <span style="color: lightgrey">{Math.round(item.availability.enrolled / item.availability.capacity * 100)}% full ({item.availability.enrolled}/{item.availability.capacity})</span>
+    {#if item.availability.capacity === 0}
+    <span>Temp. Closed ({item.availability.enrolled}/{item.availability.capacity})</span>
+    {:else}
+    <span>{Math.round(item.availability.enrolled / item.availability.capacity * 100)}% full ({item.availability.enrolled}/{item.availability.capacity})</span>
+    {/if}
 </button>
 {/if}
 
@@ -40,6 +46,9 @@
     .classWidget:hover {
         background-color: #555;
         border-color: #aaa;
+    }
+    .classWidget span {
+        color: "lightgrey";
     }
     .bar {
         width: 100%;
