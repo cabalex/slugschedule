@@ -9,6 +9,8 @@
         waitlistCapacity: number;
     };
 
+    export let cancelled: boolean = false;
+
     $: color =
         availability.status === ClassStatus.Closed ? "var(--closed)" :
         availability.status === ClassStatus.Waitlist ? "var(--waitlist)" :
@@ -17,8 +19,12 @@
 </script>
 
 <div class="classAllocation">
-    {#if availability.capacity === 0 && availability.enrolled === 0}
+    {#if cancelled}
         <span class="cancelled">Class Cancelled</span>
+    {:else if availability.capacity === 0}
+        <span class="cancelled" title="This class is closed and is set to zero capacity. It might open up later.">
+            Temporarily Closed
+        </span>
     {:else}
         <div class="barRow enrolled">
             <span>{availability.enrolled}</span>

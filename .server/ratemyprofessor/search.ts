@@ -288,6 +288,27 @@ export default async function searchRMP(instructorName: string, classCode: strin
         }
     }
 
+    let totalRatings = relatedReviews.length + otherReviews.length;
+    if (
+        (instructor.avgDifficulty === 0 && instructor.avgRating === 0) ||
+        instructor.numRatings === 0 ||
+        instructor.numRatings < totalRatings
+    ) {
+        // Sometimes RMP provides incorrect information in search,
+        // so we'll recalculate it from the reviews we have
+        instructor.numRatings = totalRatings;
+        instructor.avgRating = [...relatedReviews, ...otherReviews].reduce((a, b) => a + b.rating, 0) / totalRatings;
+        instructor.avgDifficulty = [...relatedReviews, ...otherReviews].reduce((a, b) => a + b.difficultyRating, 0) / totalRatings;
+    
+        instructor.ratingsDistribution = {
+            r1: [...relatedReviews, ...otherReviews].filter(x => x.rating === 1).length,
+            r2: [...relatedReviews, ...otherReviews].filter(x => x.rating === 2).length,
+            r3: [...relatedReviews, ...otherReviews].filter(x => x.rating === 3).length,
+            r4: [...relatedReviews, ...otherReviews].filter(x => x.rating === 4).length,
+            r5: [...relatedReviews, ...otherReviews].filter(x => x.rating === 5).length,
+        }
+    }
+
     return {
         id: instructor.legacyId,
         name: `${instructor.firstName} ${instructor.lastName}`,

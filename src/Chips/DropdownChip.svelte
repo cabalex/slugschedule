@@ -104,6 +104,16 @@
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
+    .options::-webkit-scrollbar-thumb {
+        background-color: #333;
+    }
+    .options::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+    }
+    .options::-webkit-scrollbar-track {
+        width: 5px;
+        background-color: #222;
+    }
     .option {
         text-align: left;
         padding: 10px;

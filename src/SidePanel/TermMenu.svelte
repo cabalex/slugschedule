@@ -42,6 +42,7 @@
                 // Database is younger than an hour, so don't bother updating
                 // Or, the database is old and won't be updated
                 console.log("Ignoring update")
+                termMenuOpen = false;
                 return;
             }
         }
