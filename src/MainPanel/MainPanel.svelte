@@ -20,12 +20,6 @@
             <Class item={$focusedClass} />
         {/key}
     {:else}
-        <header class="mobileHeader">
-            <button class="roundBtn" on:click={() => $focusedClass = null}>
-                <ArrowLeft />
-            </button>
-            <h2>Home</h2>
-        </header>
         <h1>SlugSchedule</h1>
         Select a class to see more details about it. You can also search or use the dropdowns to filter your results.<br />
         Need more help? <a href="https://github.com/cabalex/slugschedule/wiki/Usage-Guide" target="_blank" rel="noopener noreferrer">See the Usage Guide</a>.<br />
@@ -53,7 +47,16 @@
         
         <p>Created with 💛 by <a href="https://cabalex.github.io">@cabalex</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
         <p>Data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
-        {/if}
+        <button on:click={() => window.location.reload()}>Update now</button>
+        
+        <header class="mobileHeader">
+            <button class="roundBtn" on:click={() => $focusedClass = null}>
+                <ArrowLeft />
+            </button>
+            <h2 style="margin: 0">Home</h2>
+        </header>
+    
+    {/if}
 </main>
 
 <style>
@@ -91,10 +94,6 @@
         }
         main.focused {
             left: 0;
-        }
-        .mobileHeader {
-            top: 0;
-            bottom: unset !important;
         }
     }
 </style>

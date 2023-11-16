@@ -35,7 +35,7 @@
         },
         layout: {
             padding: {
-                bottom: 30
+                bottom: 50
             }
         },
         scales: {
@@ -345,10 +345,10 @@
             flex-direction: column;
             height: auto;
             width: 100%;
-            max-height: 400px;
+            max-height: 600px;
         }
         :global(.enrollment canvas) {
-            max-height: 200px !important;
+            max-height: 300px !important;
         }
 
         .text {

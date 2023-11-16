@@ -119,7 +119,8 @@
             height: 50px;
             padding: 0;
             align-content: center;
-            z-index: 1;
+            z-index: 10;
+            border-top: 2px solid #444;
         }
         .logo > img {
             width: 40px;
