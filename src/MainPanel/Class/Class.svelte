@@ -99,11 +99,7 @@
         {/if}
         <ClassesByCode code={item.code} number={item.number} />
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
-        {#if item.availability.capacity === 0 && item.availability.enrolled === 0}
-            This class is currently closed with zero capacity. It might open up later, so stay tuned!
-        {:else}
-            <Enrollment number={item.number} availability={item.availability} />
-        {/if}
+        <Enrollment number={item.number} availability={item.availability} />
         {#if item.associatedClasses.length}
             <h3>Associated Classes</h3>
             <div class="associatedClasses">
