@@ -263,6 +263,7 @@
     @media screen and (max-width: 900px) {
         .mobileHeader {
             margin: 20px;
+            margin-bottom: 80px;
             width: calc(100% - 40px);
         }
         .times {
