@@ -12,7 +12,7 @@
     export let number;
     export let large = true;
 
-    let chartView: "all" | "30d" | "7d" | "1d" = "all";
+    let chartView: "all" | "30d" | "7d" | "3d" | "1d" = "all";
 
     ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, TimeScale, CategoryScale);
 
@@ -172,6 +172,18 @@
                         return dataset;
                     })
                     break;
+                case "3d":
+                    data.datasets = data.datasets.map(dataset => {
+                        dataset.data = dataset.data.filter(point => point.x.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000);
+                        
+                        dataset.data.unshift({
+                            x: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+                            y: dataset.data[0]?.y
+                        })
+                        
+                        return dataset;
+                    })
+                    break;
                 case "1d":
                     data.datasets = data.datasets.map(dataset => {
                         dataset.data = dataset.data.filter(point => point.x.getTime() > Date.now() - 24 * 60 * 60 * 1000);
@@ -258,6 +270,9 @@
             {/if}
             {#if range > 7 * 24 * 60 * 60 * 1000}
             <button on:click={() => chartView = "7d"} class:active={chartView == "7d"}>7d</button>
+            {/if}
+            {#if range > 3 * 24 * 60 * 60 * 1000}
+            <button on:click={() => chartView = "3d"} class:active={chartView == "3d"}>3d</button>
             {/if}
             <button on:click={() => chartView = "1d"} class:active={chartView == "1d"}>1d</button>
         </div>

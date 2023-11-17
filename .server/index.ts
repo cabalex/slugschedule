@@ -56,8 +56,6 @@ async function main() {
                 // don't need to fetch for this, but it's still a change
                 changed = true;
                 db.classes[dbClassIndex].availability.enrolled = comparingClass.availability.enrolled;
-            } else if (dbClass) {
-
             }
 
             let subscribed = [true];
@@ -83,13 +81,18 @@ async function main() {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (waitlisting)`);
                 } else if (dbClass && dbClass.associatedClasses.length > 0) {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (associated classes)`);
+                } else if (!dbClass) {
+                    // dbClassIndex will be -1, fix it so it will actually add to the array
+                    dbClassIndex = db.classes.length;
+                    console.log(`[${i + 1}/${classes.length}] Creating ${comparingClass.code}`);
                 } else {
                     console.log(`[${i + 1}/${classes.length}] Updating ${comparingClass.code} (something's changed)`);
                 }
                 if (!dbClass || comparingClass.instructor.name !== dbClass.instructor.name) {
-                    db.classes[dbClassIndex] = await backoffRetryer(comparingClass.load);
+                    db.classes[dbClassIndex] = await backoffRetryer(comparingClass.load).catch((e) => { throw e });
                 }  else {
-                    db.classes[dbClassIndex] = await backoffRetryer(comparingClass.load.bind(null, dbClass.instructor));
+                    // @ts-ignore
+                    db.classes[dbClassIndex] = await backoffRetryer(comparingClass.load.bind(null, dbClass.instructor)).catch((e) => { throw e });
                 }
             }
 
@@ -118,7 +121,7 @@ async function main() {
         let detailedClasses: Class[] = [];
         for (let i = 0; i < classes.length; i++) {
             console.log(`[${i + 1}/${classes.length}] Getting details for ${classes[i].code}`)
-            detailedClasses.push(await backoffRetryer(classes[i].load));
+            detailedClasses.push(await backoffRetryer(classes[i].load).catch(e => { throw e }));
             if (i % 10 === 0) {
                 console.log("checking export...");
                 tempDB.classes = detailedClasses;
