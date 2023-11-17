@@ -1,14 +1,47 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
-    import { db, focusedClass, home, listMode } from "../mainStore";
+    import LoadingIcon from "svelte-material-icons/Loading.svelte";
+    import { db, focusedClass, home, listMode, setDB } from "../mainStore";
     import Class from "./Class/Class.svelte";
     import Scheduler from "./Scheduler/Scheduler.svelte";
+    import { openDB } from "idb";
+    import DB from "../../.server/db/DB";
 
     let mainElem;
 
     // scroll to top once new class is clicked
     $: if (mainElem && $focusedClass && $listMode !== "scheduler") {
         mainElem.scrollTop = 0;
+    }
+
+    let loading = false;
+    async function attemptLoad() {
+        loading = true;
+        let TERM = $db?.term;
+
+        let resp = await fetch(`./db/${TERM}.yaucsccs`);
+
+        if (!resp.ok) {
+            loading = false;
+            return;
+        }
+
+        let localDB = await openDB("yaucsccs", 1, {
+            upgrade(db) {
+              db.createObjectStore('db');
+            },
+        });
+
+        let arrayBuffer = await resp.arrayBuffer();
+        
+        // save to db
+        await localDB.put("db", arrayBuffer, TERM)
+        
+        console.log("Updated to newest version!");
+        let newDB = DB.import(arrayBuffer);
+        setDB(newDB);
+        $focusedClass = "home";
+        loading = false;
     }
 </script>
 
@@ -47,7 +80,15 @@
         
         <p>Created with 💛 by <a href="https://cabalex.github.io">@cabalex</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
         <p>Data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
-        <button on:click={() => window.location.reload()}>Update now</button>
+        <button on:click={attemptLoad}>
+            {#if loading}
+                <span class="loading">
+                    <LoadingIcon size="2em" />
+                </span>
+            {:else}
+                Update now
+            {/if}
+        </button>
         
         <header class="mobileHeader">
             <button class="roundBtn" on:click={() => $focusedClass = null}>
@@ -75,6 +116,21 @@
     }
     a {
         line-height: 2em;
+    }
+    .loading {
+        height: 1.25em;
+        width: 5.5em;
+        display: block;
+        transform: rotate(0deg);
+        animation: rotate 1s linear infinite;
+    }
+    @keyframes loading {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
     @media screen and (max-width: 1000px) {
         main {
