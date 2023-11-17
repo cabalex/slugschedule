@@ -12,7 +12,7 @@
     let focused = false;
     export let onSearchClicked = (item) => {};
 
-    const fuse = new Fuse($db.classes, {
+    $: fuse = new Fuse($db.classes, {
         keys: ['name', 'code', 'number', 'description', 'details.instructionMode', 'instructor.name'],
         threshold: 0.3
     });
