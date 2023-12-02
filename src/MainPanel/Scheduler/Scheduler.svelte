@@ -6,7 +6,6 @@
     import { MeetingInfos } from "../../assets/DateChecker.svelte";
     import { db, focusedClass, listMode, scheduledClasses, smartClasses } from "../../mainStore";
     import ClassNumber from "./ClassNumber.svelte";
-    import ShareModal from "../../assets/ShareModal.svelte";
     import ExportModal from "../../assets/ExportModal.svelte";
 
     let shareOpen = false;
@@ -83,13 +82,6 @@
     <button class="roundBtn" on:click={() => shareOpen = true}><ShareVariant /></button>
     <button class="roundBtn" on:click={() => exportOpen = true}><ExportVariant /></button>
 </h2>
-{#if shareOpen}
-    <ShareModal
-        url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
-        headerText="Share this schedule"
-        onClose={() => shareOpen = false}
-    />
-{/if}
 {#if exportOpen}
     <ExportModal
     url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
