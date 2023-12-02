@@ -21,6 +21,8 @@
     }
 </script>
 
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 
 <div class="modal" transition:fade={{duration: 100}} on:click={onClose}>
     <div class="modalInner" on:click={(e) => e.stopPropagation()}>

@@ -189,10 +189,14 @@ export let listMode = writable<"scheduler"|"starred"|"all"|"smart">(
 
 starredClasses.subscribe((value) => {
     localStorage.setItem(`starredClasses-${get(db)?.term || get(term)}`, JSON.stringify(value));
+    //@ts-ignore
+    window.starredClasses = value;
 })
 
 scheduledClasses.subscribe((value) => {
     localStorage.setItem(`scheduledClasses-${get(db)?.term || get(term)}`, JSON.stringify(value));
+    //@ts-ignore
+    window.scheduledClasses = value;
 })
 
 home.subscribe((value) => {
