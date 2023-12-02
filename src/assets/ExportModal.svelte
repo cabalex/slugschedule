@@ -2,13 +2,22 @@
     import QrCode from "svelte-qrcode"
     import { fade } from "svelte/transition";
 
+    //import * as ics from 'ics'
+    import { createEvent,  type DateArray, type DurationObject, type EventAttributes} from "ics"
+
+
     import Close from "svelte-material-icons/Close.svelte";
     import ContentCopy from "svelte-material-icons/ContentCopy.svelte";
     import TrayArrowUp from "svelte-material-icons/TrayArrowUp.svelte";
 
+    import { db, scheduledClasses } from "../mainStore";
+
     export let url = "https://example.com";
     export let headerText = "Share this URL";
     export let onClose = () => {};
+
+    let d_url = "";
+    export const filename = 'schedule.ics';
 
     function copy(e) {
         navigator.clipboard.writeText(url);
@@ -19,6 +28,23 @@
             e.target.style.outline = "";
         }, 1000);
     }
+    let startTime: DateArray = [2023, 12, 2, 8, 30]
+    let duration: DurationObject = {hours: 1}
+    let event: EventAttributes = {
+        start: startTime,
+        title: 'Test Event',
+        description: 'testing of eventstuff',
+        duration: duration
+    }
+
+        const d_file: Promise<File> = new Promise((resolve, reject) => {
+            createEvent(event, (error, value) => {
+                if (error) {
+                    reject(error);
+                }
+                resolve(new File([value], filename, {type: 'text/calendar'}));
+            });
+        });
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -43,6 +69,13 @@
                     <TrayArrowUp size="1.25em" />
                     Share via...
                 </button>
+                {#await d_file}
+                    Loading
+                {:then value}
+                    <a href={URL.createObjectURL(value)} download={filename}>
+                    Schedule ics File  
+                    </a>
+                {/await}        
             </div>
         </div>
     </div>
