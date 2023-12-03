@@ -106,7 +106,7 @@
                         description: scheduledClass.rootClass ? scheduledClass.rootClass.description : scheduledClass.description,
                         location: meetingInfos.infos[0].location,
                         categories: [scheduledClass.code],
-                        recurrenceRule: `FREQ=WEEKLY;INTERVAL=1;UNTIL=${TermEnd.getFullYear()}${TermEnd.getMonth()+1}${TermEnd.getDate()}`
+                                recurrenceRule: `FREQ=WEEKLY;INTERVAL=1;UNTIL=${TermEnd.getFullYear()}${String(TermEnd.getMonth()+1).padStart(2,"0")}${String(TermEnd.getDate()).padStart(2,"0")}`
                     }
                      dailyEvents.push(event)                    
                 }
