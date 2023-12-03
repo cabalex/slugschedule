@@ -3,7 +3,7 @@
     import { fade } from "svelte/transition";
 
     //import * as ics from 'ics'
-    import { createEvent,  type DateArray, type DurationObject, type EventAttributes} from "ics"
+    import { createEvent,  createEvents,  type DateArray, type DurationObject, type EventAttributes} from "ics"
 
 
     import Close from "svelte-material-icons/Close.svelte";
@@ -12,11 +12,13 @@
 
     import { db, scheduledClasses } from "../mainStore";
     import { onDestroy } from "svelte";
+    import App from "../App.svelte";
 
     export let url = "https://example.com";
     export let headerText = "Share this URL";
     export let onClose = () => {};
-
+    export let events: EventAttributes[] = [];
+    //export let d_file: File;
     let d_url: string;
     export const filename = 'schedule.ics';
     let URLfromFile = (value: File) => { d_url = URL.createObjectURL(value); return d_url };
@@ -31,22 +33,17 @@
     }
 
 
-    let startTime: DateArray = [2023, 12, 2, 8, 30]
-    let duration: DurationObject = {hours: 1}
-    let event: EventAttributes = {
-        start: startTime,
-        title: 'Test Event',
-        description: 'testing of eventstuff',
-        duration: duration
-    }
+
+        console.log(events)
         const d_file: Promise<File> = new Promise((resolve, reject) => {
-            createEvent(event, (error, value) => {
+            createEvents(events, (error, value) => {
                 if (error) {
                     reject(error);
+                    //console.log(error)
                 }
                 resolve(new File([value], filename, {type: 'text/calendar'}));
             });
-        });
+        }); 
 
     onDestroy(() => URL.revokeObjectURL(d_url))
 </script>
