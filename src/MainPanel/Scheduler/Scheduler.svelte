@@ -9,6 +9,10 @@
     import ShareModal from "../../assets/ShareModal.svelte";
     import ExportModal from "../../assets/ExportModal.svelte";
 
+    import { createEvent,  type DateArray, type DurationObject, type EventAttributes} from "ics"
+  import TermMenu from "../../SidePanel/TermMenu.svelte";
+
+
     let shareOpen = false;
     let exportOpen = false;
     async function focusClass(event) {
@@ -40,22 +44,52 @@
     let days = [
         [], [], [], [], []
     ];
+    let dailyEvents: Array<Array<EventAttributes>>;
+    //find a smarter way to do this
     $: {
         days = [
             [], [], [], [], []
         ];
+        dailyEvents = [
+            [], [], [], [], []
+        ]
         let classes = $listMode === "smart" ? $smartClasses : $scheduledClasses;
+        // returns day of term start in [MM,DD,YY] its an array
+        let mdy_dayofTermStart = $db.getClassByNumber(classes[0]).meetingInfos[0].dates.slice(0,8).split('/').map((e) => Number(e));
+        // Convert to [YYYY, MM, DD]
+        // no y2k here
+        const TermStart = new Date(
+            (Math.trunc(new Date().getFullYear() / 100) * 100) + mdy_dayofTermStart[2],
+            //month index starts at zero 🙄
+            mdy_dayofTermStart[0]-1,
+            mdy_dayofTermStart[1]
+        )
+        const TermStartDay = TermStart.getDay()
+        //console.log(TermStartDay)
         for (let scheduledClassNumber of classes) {
             let scheduledClass = $db.getClassByNumber(scheduledClassNumber);
             let meetingInfos = MeetingInfos.parse(scheduledClass.meetingInfos || [scheduledClass.meetingInfo]);
             for (let i = 0; i < meetingInfos.infos.length; i++) {
                 let info = meetingInfos.infos[i];
                 for (let day of info.days) {
+                    // This will cause issues near the end of the month 🤷 cause if we're adding more days than there are in the month who knows what happens
+                    // anyways this should return the day that the first session of each section is
+                    // also dont forget days is 0-4 (mon-fri) while .getDate and stuff is 0-6 (Sun-Sat)
+                    let weekDay = day + 1
+                    let classDate = new Date(TermStart)
+                    // i think this is right??
+                    classDate.setDate((weekDay >= TermStartDay) ? TermStart.getDate() + (weekDay - TermStartDay) : TermStart.getDate() + (7 +  TermStartDay - weekDay ));
+                    console.log(classDate)  
                     days[day].push({
                         class: scheduledClass,
                         startTime: info.startTime,
                         endTime: info.endTime
                     });
+                    let date = new Date(info.startTime);
+/*                     dailyEvents[day].push({
+                        start: [date.getHours
+                    }) */
+
                 }
             }
         }
@@ -128,7 +162,8 @@
                         on:contextmenu={removeClass.bind(null, event)}
                         title={event.class.name || event.class.rootClass.name}
                         style={`background-color: hsla(${event.class.number % 360}, 25%, 40%, 0.4); top: ${(event.startTime - top) / (bottom - top) * 100}%; height: ${(event.endTime - event.startTime) / (bottom - top) * 100}%`}
-                    >
+                    >   
+                        <!-- this is how time and dates are converted -->
                         <p class="time">{new Date(event.startTime).toLocaleTimeString().replace(":00 ", " ")}</p>
                         <h2>{event.class.code}</h2>
                         <h3>{event.class.name || event.class.rootClass.name}</h3>
