@@ -85,10 +85,13 @@
                         startTime: info.startTime,
                         endTime: info.endTime
                     });
-                    let date = new Date(info.startTime);
-/*                     dailyEvents[day].push({
-                        start: [date.getHours
-                    }) */
+                    let sTime = new Date(info.startTime);
+                    let eTime = new Date(info.endTime);
+
+                     dailyEvents[day].push({
+                        start: [classDate.getFullYear(), classDate.getMonth(), classDate.getDay(), sTime.getHours(), sTime.getMinutes()],
+                        end: [classDate.getFullYear(), classDate.getMonth(), classDate.getDay(), eTime.getHours(), eTime.getMinutes()]
+                    })
 
                 }
             }
