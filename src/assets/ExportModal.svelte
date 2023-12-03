@@ -11,7 +11,7 @@
     import TrayArrowUp from "svelte-material-icons/TrayArrowUp.svelte";
 
     import { db, scheduledClasses } from "../mainStore";
-    import { onDestroy, onMount } from "svelte";
+    import { onDestroy } from "svelte";
 
     export let url = "https://example.com";
     export let headerText = "Share this URL";
@@ -29,6 +29,8 @@
             e.target.style.outline = "";
         }, 1000);
     }
+
+
     let startTime: DateArray = [2023, 12, 2, 8, 30]
     let duration: DurationObject = {hours: 1}
     let event: EventAttributes = {
