@@ -11,19 +11,20 @@
     import TrayArrowUp from "svelte-material-icons/TrayArrowUp.svelte";
 
     import { db, scheduledClasses } from "../mainStore";
+    import { onDestroy, onMount } from "svelte";
 
     export let url = "https://example.com";
     export let headerText = "Share this URL";
     export let onClose = () => {};
 
-    let d_url = "";
+    let d_url: string;
     export const filename = 'schedule.ics';
+    let URLfromFile = (value: File) => { d_url = URL.createObjectURL(value); return d_url };
 
     function copy(e) {
         navigator.clipboard.writeText(url);
         
         e.target.style.outline = "1px solid var(--success)";
-
         setTimeout(() => {
             e.target.style.outline = "";
         }, 1000);
@@ -36,7 +37,6 @@
         description: 'testing of eventstuff',
         duration: duration
     }
-
         const d_file: Promise<File> = new Promise((resolve, reject) => {
             createEvent(event, (error, value) => {
                 if (error) {
@@ -45,6 +45,8 @@
                 resolve(new File([value], filename, {type: 'text/calendar'}));
             });
         });
+
+    onDestroy(() => URL.revokeObjectURL(d_url))
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -72,7 +74,7 @@
                 {#await d_file}
                     Loading
                 {:then value}
-                    <a href={URL.createObjectURL(value)} download={filename}>
+                    <a href={URLfromFile(value)} download={filename}>
                     Schedule ics File  
                     </a>
                 {/await}        
