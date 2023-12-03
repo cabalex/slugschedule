@@ -9,8 +9,8 @@
     import ShareModal from "../../assets/ShareModal.svelte";
     import ExportModal from "../../assets/ExportModal.svelte";
 
-    import { createEvent,  type DateArray, type DurationObject, type EventAttributes} from "ics"
-  import TermMenu from "../../SidePanel/TermMenu.svelte";
+    import { createEvents,  type DateArray, type DurationObject, type EventAttributes} from "ics"
+    import TermMenu from "../../SidePanel/TermMenu.svelte";
 
 
     let shareOpen = false;
@@ -44,25 +44,33 @@
     let days = [
         [], [], [], [], []
     ];
-    let dailyEvents: Array<Array<EventAttributes>>;
+    //let dailyEvents: Array<Array<EventAttributes>>;
+    let dailyEvents: EventAttributes[] = [];
     //find a smarter way to do this
     $: {
         days = [
             [], [], [], [], []
         ];
-        dailyEvents = [
-            [], [], [], [], []
-        ]
+        //dailyEvents = [
+        //    [], [], [], [], []
+        //]
+        dailyEvents = []
         let classes = $listMode === "smart" ? $smartClasses : $scheduledClasses;
         // returns day of term start in [MM,DD,YY] its an array
         let mdy_dayofTermStart = $db.getClassByNumber(classes[0]).meetingInfos[0].dates.slice(0,8).split('/').map((e) => Number(e));
+        let mdy_dayofTermEnd = $db.getClassByNumber(classes[0]).meetingInfos[0].dates.slice(11,19).split('/').map((e) => Number(e));
+        //console.log(mdy_dayofTermEnd)
         // Convert to [YYYY, MM, DD]
         // no y2k here
         const TermStart = new Date(
             (Math.trunc(new Date().getFullYear() / 100) * 100) + mdy_dayofTermStart[2],
-            //month index starts at zero 🙄
             mdy_dayofTermStart[0]-1,
             mdy_dayofTermStart[1]
+        )
+        const TermEnd = new Date(
+            (Math.trunc(new Date().getFullYear() / 100) * 100) + mdy_dayofTermEnd[2],
+            mdy_dayofTermEnd[0]-1,
+            mdy_dayofTermEnd[1]
         )
         const TermStartDay = TermStart.getDay()
         //console.log(TermStartDay)
@@ -79,7 +87,6 @@
                     let classDate = new Date(TermStart)
                     // i think this is right??
                     classDate.setDate((weekDay >= TermStartDay) ? TermStart.getDate() + (weekDay - TermStartDay) : TermStart.getDate() + (7 +  TermStartDay - weekDay ));
-                    console.log(classDate)  
                     days[day].push({
                         class: scheduledClass,
                         startTime: info.startTime,
@@ -87,12 +94,21 @@
                     });
                     let sTime = new Date(info.startTime);
                     let eTime = new Date(info.endTime);
-
-                     dailyEvents[day].push({
-                        start: [classDate.getFullYear(), classDate.getMonth(), classDate.getDay(), sTime.getHours(), sTime.getMinutes()],
-                        end: [classDate.getFullYear(), classDate.getMonth(), classDate.getDay(), eTime.getHours(), eTime.getMinutes()]
-                    })
-
+                    //console.log(`${scheduledClass.rootClass.code} ${scheduledClass.rootClass.details}`)
+                    //scheduledClass.rootClass ? console.log(scheduledClass) : console.log("error", scheduledClass)
+                    //console.log(scheduledClass)
+                    //existance of .rootClass means it's a discussion section
+                    let event: EventAttributes = {
+                        start: [classDate.getFullYear(), classDate.getMonth()+1, classDate.getDay(), sTime.getHours(), sTime.getMinutes()],
+                        end: [classDate.getFullYear(), classDate.getMonth()+1, classDate.getDay(), eTime.getHours(), eTime.getMinutes()],
+                        title: scheduledClass.rootClass ? `${scheduledClass.code}: ${scheduledClass.rootClass.code} — ${scheduledClass.rootClass.name}` :
+                        `${scheduledClass.code} — ${scheduledClass.name}`,
+                        description: scheduledClass.rootClass ? scheduledClass.rootClass.description : scheduledClass.description,
+                        location: meetingInfos.infos[0].location,
+                        categories: [scheduledClass.code],
+                        recurrenceRule: `FREQ=WEEKLY;INTERVAL=1;UNTIL=${TermEnd.getFullYear()}${TermEnd.getMonth()+1}${TermEnd.getDate()}`
+                    }
+                     dailyEvents.push(event)                    
                 }
             }
         }
@@ -132,6 +148,7 @@
     url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
     headerText="Share this schedule"
     onClose={() => exportOpen = false}
+    events={dailyEvents}
     />
 {/if}
 <div class="schedulerBody">
