@@ -174,7 +174,7 @@
                     break;
                 case "3d":
                     data.datasets = data.datasets.map(dataset => {
-                        dataset.data = dataset.data.filter(point => point.x.getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000);
+                        dataset.data = dataset.data.filter(point => point.x.getTime() > Date.now() - 3 * 24 * 60 * 60 * 1000);
                         
                         dataset.data.unshift({
                             x: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),

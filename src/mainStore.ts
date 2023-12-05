@@ -162,6 +162,8 @@ function evaluateURLParams(db: any) {
         if (classes.length > 0) {
             listMode.set("scheduler");
             scheduledClasses.set(classes);
+            // Add to starred classes if not already there
+            starredClasses.update((value) => [...value, ...classes].filter((v, i, a) => a.indexOf(v) === i));
             localStorage.setItem("scheduledClasses", JSON.stringify(classes));
         }
     }
