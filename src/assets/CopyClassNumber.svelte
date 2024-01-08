@@ -10,7 +10,8 @@
         setTimeout(() => copied = false, 1000);
     }
 </script>
-
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <span class="number" class:copied={copied} on:click={copy}>
     #{number}
     {#if copied}

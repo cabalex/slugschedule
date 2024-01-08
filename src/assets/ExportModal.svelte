@@ -2,23 +2,50 @@
     import QrCode from "svelte-qrcode"
     import { fade } from "svelte/transition";
 
+    //import * as ics from 'ics'
+    import { createEvent,  createEvents,  type DateArray, type DurationObject, type EventAttributes} from "ics"
+
+
     import Close from "svelte-material-icons/Close.svelte";
     import ContentCopy from "svelte-material-icons/ContentCopy.svelte";
     import TrayArrowUp from "svelte-material-icons/TrayArrowUp.svelte";
 
+    import { db, scheduledClasses } from "../mainStore";
+    import { onDestroy } from "svelte";
+    import App from "../App.svelte";
+
     export let url = "https://example.com";
     export let headerText = "Share this URL";
     export let onClose = () => {};
+    export let events: EventAttributes[] = [];
+    //export let d_file: File;
+    let d_url: string;
+    export const filename = 'schedule.ics';
+    let URLfromFile = (value: File) => { d_url = URL.createObjectURL(value); return d_url };
 
     function copy(e) {
         navigator.clipboard.writeText(url);
         
         e.target.style.outline = "1px solid var(--success)";
-
         setTimeout(() => {
             e.target.style.outline = "";
         }, 1000);
     }
+
+
+
+        console.log(events)
+        const d_file: Promise<File> = new Promise((resolve, reject) => {
+            createEvents(events, (error, value) => {
+                if (error) {
+                    reject(error);
+                    //console.log(error)
+                }
+                resolve(new File([value], filename, {type: 'text/calendar'}));
+            });
+        }); 
+
+    onDestroy(() => URL.revokeObjectURL(d_url))
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -43,6 +70,13 @@
                     <TrayArrowUp size="1.25em" />
                     Share via...
                 </button>
+                {#await d_file}
+                    Loading
+                {:then value}
+                    <a href={URLfromFile(value)} download={filename}>
+                    Schedule ics File  
+                    </a>
+                {/await}        
             </div>
         </div>
     </div>
