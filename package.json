@@ -24,6 +24,7 @@
     "chartjs-adapter-moment": "^1.0.1",
     "cheerio": "^1.0.0-rc.12",
     "fuse.js": "^6.6.2",
+    "ics": "^3.5.0",
     "idb": "^7.1.1",
     "moment": "^2.29.4",
     "svelte-chartjs": "^3.1.2",
