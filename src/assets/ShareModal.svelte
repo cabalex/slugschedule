@@ -131,11 +131,12 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-
+<!-- needs to ignore because ... -->
+<!-- switch to native html dialog/modal element ?  -->
 <div class="modal" transition:fade={{duration: 100}} on:click={onClose}>
     <div class="modalInner" on:click={(e) => e.stopPropagation()}>
         <h2>{headerText}</h2>
-        <button class="roundBtn closeBtn" on:click={onClose}>
+        <button class="roundBtn closeBtn" on:click={onClose} aria-label="Close Modal">
             <Close size="1em" />
         </button>
         <div class="body">
