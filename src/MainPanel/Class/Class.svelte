@@ -63,6 +63,7 @@
                 {#if shareOpen}
                 <ShareModal
                     url={`${document.location.origin}${document.location.pathname}?class=${item.number}&term=${$db.term}`}
+                    classes={[item.number]}
                     headerText="Share this class"
                     onClose={() => shareOpen = false}
                 />
