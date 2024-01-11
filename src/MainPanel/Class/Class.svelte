@@ -21,11 +21,11 @@
     import AssociatedClass from "../../assets/AssociatedClass.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
     import CopyClassNumber from "../../assets/CopyClassNumber.svelte";
-  import ShareModal from "../../assets/ShareModal.svelte";
-  import ClassesByCode from "../../assets/ClassesByCode.svelte";
+    import ShareModal from "../../assets/ShareModal.svelte";
+    import ClassesByCode from "../../assets/ClassesByCode.svelte";
 
     export let item: Class;
-
+    
     function toggleStar(e) {
         e.stopPropagation();
         if ($starredClasses.includes(item.number)) {
@@ -34,7 +34,6 @@
             $starredClasses = [...$starredClasses, item.number];
         }
     }
-    
     let shareOpen = false;
     let location = item.meetingInfos.length ? item.meetingInfos[0].location : null;
     $: place =
@@ -64,6 +63,7 @@
                 {#if shareOpen}
                 <ShareModal
                     url={`${document.location.origin}${document.location.pathname}?class=${item.number}&term=${$db.term}`}
+                    classes={[item.number]}
                     headerText="Share this class"
                     onClose={() => shareOpen = false}
                 />

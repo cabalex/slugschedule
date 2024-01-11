@@ -82,7 +82,8 @@
 </h2>
 {#if shareOpen}
     <ShareModal
-        url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
+        url={`${document.location.origin}${document.location.pathname}?scheduler=${($listMode === "smart" ? $smartClasses : $scheduledClasses).join(",")}&term=${$db.term}`}
+        classes={$listMode === "smart" ? $smartClasses : $scheduledClasses}
         headerText="Share this schedule"
         onClose={() => shareOpen = false}
     />
@@ -110,6 +111,7 @@
             {#each days as day, i}
                 <td>
                     {#each day as event}
+                    <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <div
                         class="event"
                         on:click={focusClass.bind(null, event)}
