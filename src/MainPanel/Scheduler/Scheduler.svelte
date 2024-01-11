@@ -1,20 +1,14 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
-    import ExportVariant from "svelte-material-icons/ExportVariant.svelte";
     import { tick, onMount, onDestroy } from "svelte";
     import { MeetingInfos } from "../../assets/DateChecker.svelte";
     import { db, focusedClass, listMode, scheduledClasses, smartClasses } from "../../mainStore";
     import ClassNumber from "./ClassNumber.svelte";
     import ShareModal from "../../assets/ShareModal.svelte";
-    import ExportModal from "../../assets/ExportModal.svelte";
-
-    import { createEvents,  type DateArray, type DurationObject, type EventAttributes} from "ics"
-    import TermMenu from "../../SidePanel/TermMenu.svelte";
-
 
     let shareOpen = false;
-    let exportOpen = false;
+
     async function focusClass(event) {
         $listMode = "all";
         await tick();
@@ -44,71 +38,22 @@
     let days = [
         [], [], [], [], []
     ];
-    //let dailyEvents: Array<Array<EventAttributes>>;
-    let dailyEvents: EventAttributes[] = [];
-    //find a smarter way to do this
     $: {
         days = [
             [], [], [], [], []
         ];
-        //dailyEvents = [
-        //    [], [], [], [], []
-        //]
-        dailyEvents = []
         let classes = $listMode === "smart" ? $smartClasses : $scheduledClasses;
-        // returns day of term start in [MM,DD,YY] its an array
-        let mdy_dayofTermStart = $db.getClassByNumber(classes[0]).meetingInfos[0].dates.slice(0,8).split('/').map((e) => Number(e));
-        let mdy_dayofTermEnd = $db.getClassByNumber(classes[0]).meetingInfos[0].dates.slice(11,19).split('/').map((e) => Number(e));
-        //console.log(mdy_dayofTermEnd)
-        // Convert to [YYYY, MM, DD]
-        // no y2k here
-        const TermStart = new Date(
-            (Math.trunc(new Date().getFullYear() / 100) * 100) + mdy_dayofTermStart[2],
-            mdy_dayofTermStart[0]-1,
-            mdy_dayofTermStart[1]
-        )
-        const TermEnd = new Date(
-            (Math.trunc(new Date().getFullYear() / 100) * 100) + mdy_dayofTermEnd[2],
-            mdy_dayofTermEnd[0]-1,
-            mdy_dayofTermEnd[1]
-        )
-        const TermStartDay = TermStart.getDay()
-        //console.log(TermStartDay)
         for (let scheduledClassNumber of classes) {
             let scheduledClass = $db.getClassByNumber(scheduledClassNumber);
             let meetingInfos = MeetingInfos.parse(scheduledClass.meetingInfos || [scheduledClass.meetingInfo]);
             for (let i = 0; i < meetingInfos.infos.length; i++) {
                 let info = meetingInfos.infos[i];
                 for (let day of info.days) {
-                    // This will cause issues near the end of the month 🤷 cause if we're adding more days than there are in the month who knows what happens
-                    // anyways this should return the day that the first session of each section is
-                    // also dont forget days is 0-4 (mon-fri) while .getDate and stuff is 0-6 (Sun-Sat)
-                    let weekDay = day + 1
-                    let classDate = new Date(TermStart)
-                    // i think this is right??
-                    classDate.setDate((weekDay >= TermStartDay) ? TermStart.getDate() + (weekDay - TermStartDay) : TermStart.getDate() + (7 +  TermStartDay - weekDay ));
                     days[day].push({
                         class: scheduledClass,
                         startTime: info.startTime,
                         endTime: info.endTime
                     });
-                    let sTime = new Date(info.startTime);
-                    let eTime = new Date(info.endTime);
-                    //console.log(`${scheduledClass.rootClass.code} ${scheduledClass.rootClass.details}`)
-                    //scheduledClass.rootClass ? console.log(scheduledClass) : console.log("error", scheduledClass)
-                    //console.log(scheduledClass)
-                    //existance of .rootClass means it's a discussion section
-                    let event: EventAttributes = {
-                        start: [classDate.getFullYear(), classDate.getMonth()+1, classDate.getDay(), sTime.getHours(), sTime.getMinutes()],
-                        end: [classDate.getFullYear(), classDate.getMonth()+1, classDate.getDay(), eTime.getHours(), eTime.getMinutes()],
-                        title: scheduledClass.rootClass ? `${scheduledClass.code}: ${scheduledClass.rootClass.code} — ${scheduledClass.rootClass.name}` :
-                        `${scheduledClass.code} — ${scheduledClass.name}`,
-                        description: scheduledClass.rootClass ? scheduledClass.rootClass.description : scheduledClass.description,
-                        location: meetingInfos.infos[0].location,
-                        categories: [scheduledClass.code],
-                                recurrenceRule: `FREQ=WEEKLY;INTERVAL=1;UNTIL=${TermEnd.getFullYear()}${String(TermEnd.getMonth()+1).padStart(2,"0")}${String(TermEnd.getDate()).padStart(2,"0")}`
-                    }
-                     dailyEvents.push(event)                    
                 }
             }
         }
@@ -134,21 +79,13 @@
     Scheduler
     {/if}
     <button class="roundBtn" on:click={() => shareOpen = true}><ShareVariant /></button>
-    <button class="roundBtn" on:click={() => exportOpen = true}><ExportVariant /></button>
 </h2>
 {#if shareOpen}
     <ShareModal
-        url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
+        url={`${document.location.origin}${document.location.pathname}?scheduler=${($listMode === "smart" ? $smartClasses : $scheduledClasses).join(",")}&term=${$db.term}`}
+        classes={$listMode === "smart" ? $smartClasses : $scheduledClasses}
         headerText="Share this schedule"
         onClose={() => shareOpen = false}
-    />
-{/if}
-{#if exportOpen}
-    <ExportModal
-    url={`${document.location.origin}${document.location.pathname}?scheduler=${$scheduledClasses.join(",")}&term=${$db.term}`}
-    headerText="Share this schedule"
-    onClose={() => exportOpen = false}
-    events={dailyEvents}
     />
 {/if}
 <div class="schedulerBody">
@@ -174,7 +111,6 @@
             {#each days as day, i}
                 <td>
                     {#each day as event}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <div
                         class="event"
@@ -182,8 +118,7 @@
                         on:contextmenu={removeClass.bind(null, event)}
                         title={event.class.name || event.class.rootClass.name}
                         style={`background-color: hsla(${event.class.number % 360}, 25%, 40%, 0.4); top: ${(event.startTime - top) / (bottom - top) * 100}%; height: ${(event.endTime - event.startTime) / (bottom - top) * 100}%`}
-                    >   
-                        <!-- this is how time and dates are converted -->
+                    >
                         <p class="time">{new Date(event.startTime).toLocaleTimeString().replace(":00 ", " ")}</p>
                         <h2>{event.class.code}</h2>
                         <h3>{event.class.name || event.class.rootClass.name}</h3>

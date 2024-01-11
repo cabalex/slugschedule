@@ -1,4 +1,0 @@
-{
-    "regions": ["sfo1"],
-    "installCommand": "npm install --force"
-}
