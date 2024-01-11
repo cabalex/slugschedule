@@ -111,14 +111,16 @@
             {#each days as day, i}
                 <td>
                     {#each day as event}
-                    <!-- svelte-ignore a11y-no-static-element-interactions -->
                     <div
                         class="event"
                         on:click={focusClass.bind(null, event)}
+                        on:keydown={focusClass.bind(null, event)}
                         on:contextmenu={removeClass.bind(null, event)}
                         title={event.class.name || event.class.rootClass.name}
                         style={`background-color: hsla(${event.class.number % 360}, 25%, 40%, 0.4); top: ${(event.startTime - top) / (bottom - top) * 100}%; height: ${(event.endTime - event.startTime) / (bottom - top) * 100}%`}
-                    >
+                        tabindex="0"
+                        role="link"
+                        >
                         <p class="time">{new Date(event.startTime).toLocaleTimeString().replace(":00 ", " ")}</p>
                         <h2>{event.class.code}</h2>
                         <h3>{event.class.name || event.class.rootClass.name}</h3>

@@ -10,9 +10,7 @@
         setTimeout(() => copied = false, 1000);
     }
 </script>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<span class="number" class:copied={copied} on:click={copy}>
+<span class="number" class:copied={copied} on:click={copy} on:keydown={copy} role="button" tabindex="0" title="click to copy class number" aria-label="click or select to copy class number ">
     #{number}
     {#if copied}
         <Check />
