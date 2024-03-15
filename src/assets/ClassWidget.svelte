@@ -19,6 +19,7 @@
     <h3>{item.name}</h3>
     <div class="bar">
         <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
+        <div class="fill" style={`background-color: var(--waitlist-dark); width: ${item.availability.waitlist / item.availability.waitlistCapacity * 100}%`} />
     </div>
     {#if item.availability.capacity === 0}
     <span>Temp. Closed ({item.availability.enrolled}/{item.availability.capacity})</span>
@@ -51,6 +52,7 @@
         color: "lightgrey";
     }
     .bar {
+        position: relative;
         width: 100%;
         height: 5px;
         background-color: #777;
@@ -58,6 +60,9 @@
         overflow: hidden;
     }
     .fill {
+        position: absolute;
+        left: 0;
+        top: 0;
         color: white;
         height: 100%;
     }
