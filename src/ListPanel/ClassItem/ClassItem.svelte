@@ -74,6 +74,8 @@
     class:open={item.availability.status === ClassStatus.Open}
     class:waitlist={item.availability.status === ClassStatus.Waitlist}
     class:closed={item.availability.status === ClassStatus.Closed}
+    role="button"
+    tabindex="0"
     on:click={focusClass}
 >
     <div class="topBar">
