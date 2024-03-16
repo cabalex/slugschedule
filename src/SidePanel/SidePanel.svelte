@@ -30,7 +30,7 @@
 <aside>
     <span class="grower mobile" />
     <button class="logo" on:click={() => { $focusedClass = "home"; $listMode = "all"}}>
-        <img src={SlugSchedule} width="50px" />
+        <img src={SlugSchedule} width="50px" alt="Slug Schedule Logo. Yellow Slug in front of Calendar."/>
     </button>
     <button title="Search classes" on:click={() => $listMode = "all"} class="iconBtn" class:active={$listMode === "all"}>
         <Magnify size="2em" />
