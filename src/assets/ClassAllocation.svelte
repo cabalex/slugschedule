@@ -39,7 +39,7 @@
         >
             <span>{availability.waitlist}</span>
             <div class="bar">
-                <div class="fill" style={`background-color: ${color.replace(")", "-dark)")}; width: ${availability.waitlist / (availability.waitlistCapacity || availability.capacity) * 100}%`} />
+                <div class="fill" style={`background-color: ${color.replace(")", "-dark)")}; width: ${availability.waitlist / (availability.capacity) * 100}%`} />
             </div>
             <span>{availability.waitlistCapacity}</span>
         </div>
@@ -72,7 +72,8 @@
         flex-shrink: 0;
     }
     .bar {
-        width: calc(100% - 10px);
+        width: calc(100% - 60px);
+        flex-shrink: 0;
         margin: 0 5px;
         height: 10px;
         border-radius: 5px;
