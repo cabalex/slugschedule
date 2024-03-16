@@ -89,8 +89,8 @@
     .iconBtn {
         padding: 0;
         line-height: 0;
-        outline: none;
-    }
+/*         outline: none;
+ */    }
     .term {
         background-color: transparent;
         color: unset;
@@ -100,11 +100,13 @@
         font-size: unset;
         padding: 0px;
     }
-    .term:hover, .term.active {
-        color: white;
+    .term:hover, .term.active, .term:focus-visible {
+        color: darkblue;
+        font-weight: 600;
+        text-shadow:#444;
     }
 
-    .iconBtn.active {
+    .iconBtn.active{
         color: var(--primary);
     }
     .grower:not(.mobile) {

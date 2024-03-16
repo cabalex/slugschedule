@@ -10,6 +10,7 @@
 
     import { db } from "../mainStore";
     import { MeetingInfos } from "./DateChecker.svelte";
+    import { onMount, tick } from "svelte";
 
     export let url = "";
     export let headerText = "Share this URL";
@@ -18,6 +19,7 @@
 
     // For calendar export
     export const filename = 'schedule.ics';
+
 
     let calendarDownloaded = false;
 
@@ -131,16 +133,46 @@
 
         calendarDownloaded = true;
     }
+    // modal stuff
+    let closeButton;
+    let modalInner;
+    let firstFocusableElement: HTMLElement;
+    let lastFocusableElement: HTMLElement;
+    let focusableElements: HTMLElement[];
+    onMount(async () => {
+        await tick();
+        closeButton.focus();
+        focusableElements = modalInner.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        firstFocusableElement = focusableElements[0];
+        lastFocusableElement = focusableElements[focusableElements.length - 1];
+    })
+    function handleKeyDown(e: KeyboardEvent) {
+        if (e.key !== 'Tab' || focusableElements.length === 0) {return;}
+        if (e.shiftKey) { // Shift+tab
+            if (document.activeElement === firstFocusableElement) {
+                // loop around
+                console.log(lastFocusableElement);
+                //lastFocusableElement.focus;
+                // no idea why this works but last focusable doesn't
+                focusableElements[focusableElements.length - 1].focus();
+                e.preventDefault();
+            }
+        }
+        else {
+            // tab key
+            if (document.activeElement === lastFocusableElement) {
+                // loop around
+                firstFocusableElement.focus();
+                e.preventDefault();
+            }
+        }
+    }
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- needs to ignore because ... -->
-<!-- switch to native html dialog/modal element ?  -->
-<div class="modal" transition:fade={{duration: 100}} on:click={onClose}>
-    <div class="modalInner" on:click={(e) => e.stopPropagation()}>
+<div class="modal" transition:fade={{duration: 100}} role="none" on:keydown={handleKeyDown}>
+    <div class="modalInner"  role="dialog" aria-modal="true" bind:this={modalInner}>
         <h2>{headerText}</h2>
-        <button class="roundBtn closeBtn" on:click={onClose} aria-label="Close Modal">
+        <button class="roundBtn closeBtn" on:click={onClose} bind:this={closeButton} aria-label="Close Modal">
             <Close size="1em" />
         </button>
         <div class="body">
@@ -173,6 +205,8 @@
         </div>
         {/if}
     </div>
+    <button class="modalBackdrop" on:click={onClose} aria-label="Close Modal"></button>
+
 </div>
 
 <style>
@@ -189,6 +223,15 @@
 
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 100;
+    }
+    .modalBackdrop{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        background-color: transparent;
     }
     .modalInner {
         max-width: 800px;
