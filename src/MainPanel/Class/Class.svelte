@@ -25,7 +25,14 @@
     import ClassesByCode from "../../assets/ClassesByCode.svelte";
 
     export let item: Class;
-    
+    let sharebutton;
+    function openModal() {
+        shareOpen = true;
+    }
+    function closeModal() {
+        shareOpen = false;
+        sharebutton.focus();
+    }
     function toggleStar(e) {
         e.stopPropagation();
         if ($starredClasses.includes(item.number)) {
@@ -57,7 +64,7 @@
                             <StarOutline />
                         {/if}
                 </button>
-                <button class="roundBtn" title="Share this class" on:click={() => shareOpen = true}>
+                <button class="roundBtn" title="Share this class" on:click={() => shareOpen = true} bind:this={sharebutton}>
                     <ShareVariant />
                 </button>
                 {#if shareOpen}
@@ -65,7 +72,7 @@
                     url={`${document.location.origin}${document.location.pathname}?class=${item.number}&term=${$db.term}`}
                     classes={[item.number]}
                     headerText="Share this class"
-                    onClose={() => shareOpen = false}
+                    onClose={closeModal}
                 />
                 {/if}
             </div>

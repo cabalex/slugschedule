@@ -8,7 +8,14 @@
     import ShareModal from "../../assets/ShareModal.svelte";
 
     let shareOpen = false;
-
+    let sharebutton;
+    function openModal() {
+        shareOpen = true;
+    }
+    function closeModal() {
+        shareOpen = false;
+        sharebutton.focus();
+    }
     async function focusClass(event) {
         $listMode = "all";
         await tick();
@@ -78,14 +85,14 @@
     {:else}
     Scheduler
     {/if}
-    <button class="roundBtn" on:click={() => shareOpen = true}><ShareVariant /></button>
+    <button class="roundBtn" on:click={() => shareOpen = true} bind:this={sharebutton}><ShareVariant /></button>
 </h2>
 {#if shareOpen}
     <ShareModal
         url={`${document.location.origin}${document.location.pathname}?scheduler=${($listMode === "smart" ? $smartClasses : $scheduledClasses).join(",")}&term=${$db.term}`}
         classes={$listMode === "smart" ? $smartClasses : $scheduledClasses}
         headerText="Share this schedule"
-        onClose={() => shareOpen = false}
+        onClose={closeModal}
     />
 {/if}
 <div class="schedulerBody">

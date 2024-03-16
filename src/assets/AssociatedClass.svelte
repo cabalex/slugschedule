@@ -15,7 +15,12 @@
 <div class="associatedClass"
     class:cancelled={item.meetingInfo.dayAndTime.includes("Cancelled") || item.meetingInfo.dayAndTime === ""}
     class:clickable={onClick}
+    aria-disabled={!onClick}
     on:click={() => onClick ? onClick() : ""}
+    on:keypress={() => onClick ? onClick() : ""}
+    role="button"
+    tabindex={onClick ? 0 : -1}
+
 >
     <h3>{item.code} <span class="number">#{item.number}</span></h3>
     <div class="fact">
@@ -29,7 +34,7 @@
         <Account />
         {item.meetingInfo.instructor}
     </div>
-    <div style="cursor: {onClick ? 'normal' : 'pointer'}; user-select: none" on:click={() => showEnrollment = onClick ? false : !showEnrollment}>
+    <div role="button" aria-disabled={!onClick} tabindex={onClick ? 0 : -1} style="cursor: {onClick ? 'normal' : 'pointer'}; user-select: none" on:click={() => showEnrollment = onClick ? false : !showEnrollment} on:keypress={() => showEnrollment = onClick ? false : !showEnrollment} >
         <div class="bar">
             <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
         </div>
