@@ -63,17 +63,17 @@
 
 <div class="spacer">
     <div class="searchOuter" class:focused={focused}>
-        <div class="search" on:click={focus} on:keypress={focus}>
+        <div class="search" on:click={focus} on:keypress={focus} role="searchbox" tabindex="0">
             {#if focused}
-                <span on:click={unfocus}>
+                <button on:click={unfocus} on:keypress={unfocus} tabindex="0" style="background: none; border: none; padding: 0; color: inherit; text-align: inherit; cursor:pointer;">
                     <ArrowLeft size="1.5em" />
-                </span>
+                </button>
             {:else}
                 <Magnify size="1.5em" />
             {/if}
             <input type="text" placeholder={$listMode === "all" ? "Search classes" : "Search starred classes"} on:keyup={search} bind:this={searchElem} />
             {#if searchElem?.value}
-                <span on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}}>
+                <span tabindex="0" role="button" on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} on:keypress={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} >
                     <Close size="1.5em" />
                 </span>
             {/if}
@@ -81,7 +81,7 @@
         {#if results !== null}
             <div class="results">
                 {#each results as result}
-                <div class="resultItem" on:click={focusClass.bind(null, result.item)}>
+                <div class="resultItem" role="link" tabindex="0" on:click={focusClass.bind(null, result.item)} on:keypress={focusClass.bind(null, result.item)}>
                     <ClassStatusIcon status={result.item.availability.status} />
                     <div class="text">
                         <span class="resultCode">
@@ -142,6 +142,11 @@
         display: flex;
         flex-direction: row;
         transition: border-radius 0.1s ease-in-out;
+    }
+    .search:focus-visible {
+        border-color: black;
+        border-style: solid;
+        border-width: 5px;
     }
     .results {
         overflow: auto;

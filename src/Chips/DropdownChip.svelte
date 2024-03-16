@@ -57,10 +57,13 @@
 </script>
 
 <div
+    role="button"
+    tabindex="0"
     bind:this={chipElem}
     class="chip {label.replaceAll(".", "")}"
     class:active={value.length}
     on:click={toggle}
+    on:keypress={toggle}
 >
     {#if value.length === 0}
     {label}
@@ -74,13 +77,16 @@
     </span>
     {#if open}
     <div
+        role="listbox"
+        tabindex="0"
         style={`max-height: ${height}px`}
         transition:fly={{duration: 100, y: -50}}
         class="options"
         on:click={(e) => e.stopPropagation()}
+        on:keypress={(e) => e.stopPropagation()}
     >
         {#each Object.keys(options) as option}
-            <div class="option" class:selected={value.includes(option)} on:click={selectOption.bind(null, option)}>
+            <div class="option" role="option" tabindex="0" aria-selected={value.includes(option)} class:selected={value.includes(option)} on:click={selectOption.bind(null, option)} on:keypress={selectOption.bind(null, option)}>
                 <Check />
                 {options[option]}
             </div>

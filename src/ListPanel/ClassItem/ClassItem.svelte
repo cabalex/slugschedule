@@ -77,6 +77,7 @@
     role="button"
     tabindex="0"
     on:click={focusClass}
+    on:keydown={focusClass}
 >
     <div class="topBar">
         <h2 title={`${code} - ${item.name}`}>
