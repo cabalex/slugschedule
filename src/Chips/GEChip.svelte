@@ -2,6 +2,7 @@
     // Export to be used in other files
     export const opts = {
         "AnyGE": "Any GE",
+        "NoPrereq": "No Prerequisites",
         "C": "C Composition",
         "CC": "CC Cross-Cultural Analysis",
         "ER": "ER Ethnicity and Race",

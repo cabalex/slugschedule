@@ -37,6 +37,13 @@
                 if (filters.ges.includes("AnyGE") && x.details.generalEducation.length > 0 && x.details.generalEducation[0] !== "") {
                     return true;
                 }
+                if (filters.ges.includes("NoPrereq")) {
+                    if (filters.ges.length === 1) {
+                        return !x.enrollmentRequirements;
+                    } else if (x.enrollmentRequirements) {
+                        return false;
+                    }
+                }
                 return filters.ges.some(ge => x.details.generalEducation.includes(ge));
             }
             return true;
