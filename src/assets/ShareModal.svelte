@@ -87,6 +87,10 @@
                             eTime.getHours(),
                             eTime.getMinutes()
                         ],
+                        // specify local to ensure "floating" time (not fixed utc time)
+                        // we want this so that we arent "compensating" for DST
+                        startInputType: 'local',
+                        startOutputType: 'local',
                         title: scheduledClass.rootClass ?
                             `${scheduledClass.code}: ${scheduledClass.rootClass.code} — ${scheduledClass.rootClass.name}` :
                             `${scheduledClass.code} — ${scheduledClass.name}`,
