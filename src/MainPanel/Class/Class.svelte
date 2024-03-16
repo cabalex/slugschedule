@@ -138,17 +138,19 @@
             <OpenInNew />
         </a>
         {#each item.meetingInfos as meetingInfo}
-            <div
+            <button
                 class="fact"
-                class:clickable={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction"}
+                class:clickable={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction" && location != meetingInfo.location}
+                aria-disabled={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction" && location != meetingInfo.location}
                 on:click={() => meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction" ? {} : location = meetingInfo.location}
+                style="background:none; border: none; padding: 0; color:inherit; text-align: inherit; cursor:text"
             >
                 {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
                     <Monitor /> {item.details.instructionMode}
                 {:else}
                     <MapMarker /> {meetingInfo.location}
                 {/if}
-            </div>
+            </button>
         {/each}
         {#if item.meetingInfos.some(x => x.dayAndTime)}
         <div class="fact">
