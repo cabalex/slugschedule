@@ -1,6 +1,7 @@
 <script lang="ts">
     import TrendingUp from "svelte-material-icons/TrendingUp.svelte";
     import TrendingDown from "svelte-material-icons/TrendingDown.svelte";
+    import Information from "svelte-material-icons/Information.svelte";
     import { Line } from 'svelte-chartjs'
     import { Chart as ChartJS, TimeScale, Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale } from "chart.js"
     import 'chartjs-adapter-moment';
@@ -234,7 +235,7 @@
             <ClassStatusIcon status={availability.status} />
             {#if availability.status === ClassStatus.Closed}
                 Closed
-            {:else if availability.capacity <= availability.enrolled}
+            {:else if availability.capacity <= availability.enrolled || availability.status === ClassStatus.Waitlist}
                 Full
             {:else if availability.capacity - availability.enrolled === 1}
                 One spot remaining!
@@ -304,6 +305,17 @@
         />
     </div>
 </div>
+{#if large && $db.term === detectTerm() && availability.status === ClassStatus.Waitlist && availability.capacity > availability.enrolled}
+    <!-- waitlists can have empty spots even though you can't enroll in them. -->
+    <div class="note">
+        <Information size="24px" />
+        <div style="flex-grow: 1">
+            <h2>This class is still full, even though there's {availability.capacity - availability.enrolled} open {availability.capacity - availability.enrolled === 1 ? "seat" : "seats"}</h2>
+            <p>You can't enroll directly into a waitlisted class, even if it has empty seats. These seats will automatically be filled by the waitlist at <b>9:00 AM</b> each day. Use the waitlist to enroll.</p>
+        </div>
+    </div>
+
+{/if}
 
 <style>
     .enrollment {
@@ -354,6 +366,22 @@
     .trend > div > span {
         display: block;
         margin: 0;
+    }
+    .note {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--waitlist-dark);
+        border: 2px solid var(--waitlist);
+        border-radius: 10px;
+    }
+    .note h2, .note p {
+        margin: 0;
+    }
+    :global(.note svg) {
+        flex-shrink: 0;
     }
     @media screen and (max-width: 1600px) {
         .enrollment {
