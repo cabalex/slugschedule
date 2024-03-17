@@ -104,6 +104,9 @@
         font-size: unset;
         padding: 0px;
     }
+    .term:focus:not(:focus-visible) {
+        outline: none;
+    }
     .term:hover, .term.active, .term:focus-visible {
         font-weight: 600;
         text-shadow:#444;
