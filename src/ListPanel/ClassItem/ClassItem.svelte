@@ -77,14 +77,14 @@
     role="button"
     tabindex="0"
     on:click={focusClass}
-    on:keydown={focusClass}
+    on:keydown={(e) => { if (e.key !== "Tab") focusClass() }}
 >
     <div class="topBar">
         <h2 title={`${code} - ${item.name}`}>
             <span style="font-weight: bold">{code}</span>
             <span>{item.name}</span>
         </h2>
-        <button class="roundBtn" on:click={$listMode === "scheduler" ? toggleScheduled : toggleStar}>
+        <button tabindex={1} class="roundBtn" on:click={$listMode === "scheduler" ? toggleScheduled : toggleStar}>
             {#if $listMode === "scheduler"}
                 {#if $scheduledClasses.includes(item.number)}
                     <Minus />

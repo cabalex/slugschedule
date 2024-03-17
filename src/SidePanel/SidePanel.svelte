@@ -89,19 +89,22 @@
     .iconBtn {
         padding: 0;
         line-height: 0;
-/*         outline: none;
- */    }
+    }
+    .iconBtn:focus:not(:focus-visible) {
+        outline: none;
+    }
+    .iconBtn:focus-visible {
+        outline: 2px solid var(--primary);
+    }
     .term {
         background-color: transparent;
         color: unset;
         border: none;
-        outline: none;
         font-weight: unset;
         font-size: unset;
         padding: 0px;
     }
     .term:hover, .term.active, .term:focus-visible {
-        color: darkblue;
         font-weight: 600;
         text-shadow:#444;
     }
