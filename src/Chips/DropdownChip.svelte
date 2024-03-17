@@ -78,7 +78,7 @@
     {#if open}
     <div
         role="listbox"
-        tabindex="0"
+        tabindex={-1}
         style={`max-height: ${height}px`}
         transition:fly={{duration: 100, y: -50}}
         class="options"
@@ -123,6 +123,10 @@
     .option {
         text-align: left;
         padding: 10px;
+    }
+    .option:focus-visible {
+        margin: 2px;
+        padding: 8px;
     }
     .option:hover {
         background-color: #333;

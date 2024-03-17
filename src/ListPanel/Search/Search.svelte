@@ -63,9 +63,9 @@
 
 <div class="spacer">
     <div class="searchOuter" class:focused={focused}>
-        <div class="search" on:click={focus} on:keypress={focus} role="searchbox" tabindex="0">
+        <div class="search" on:click={focus} on:focus={focus} on:keypress={focus} role="searchbox" tabindex="0">
             {#if focused}
-                <button on:click={unfocus} on:keypress={unfocus} tabindex="0" style="background: none; border: none; padding: 0; color: inherit; text-align: inherit; cursor:pointer;">
+                <button on:click={unfocus} on:keypress={unfocus}>
                     <ArrowLeft size="1.5em" />
                 </button>
             {:else}
@@ -73,9 +73,9 @@
             {/if}
             <input type="text" placeholder={$listMode === "all" ? "Search classes" : "Search starred classes"} on:keyup={search} bind:this={searchElem} />
             {#if searchElem?.value}
-                <span tabindex="0" role="button" on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} on:keypress={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} >
+                <button on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} on:keypress={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} >
                     <Close size="1.5em" />
-                </span>
+                </button>
             {/if}
         </div>
         {#if results !== null}
@@ -183,14 +183,21 @@
         background-color: unset;
         color: black;
         border: none;
+        outline: none;
         padding: 0;
         flex-grow: 1;
         margin-left: 10px;
         outline: none;
     }
-    .search span {
+    .search button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        color: unset;
         line-height: 0;
-        cursor: pointer;
+    }
+    .search button:focus:not(:focus-visible) {
+        outline: none;
     }
 
     .searchOuter.focused {
