@@ -17,7 +17,7 @@
     class:clickable={onClick}
     aria-disabled={!onClick}
     on:click={() => onClick ? onClick() : ""}
-    on:keypress={() => onClick ? onClick() : ""}
+    on:keydown={(e) => e.key !== "Tab" && onClick ? onClick() : ""}
     role="button"
     tabindex={onClick ? 0 : -1}
 

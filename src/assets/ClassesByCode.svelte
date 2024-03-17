@@ -103,6 +103,9 @@
         min-width: 17em;
         transition: border-color 0.2s, background-color 0.2s;
     }
+    .sectionWidget:focus:not(:focus-visible) {
+        outline: none;
+    }
     .sectionWidget.active {
         background-color: #444;
         border-color: #fff;
@@ -120,7 +123,7 @@
         left: -2px;
         width: calc(100% - 20px);
         padding: 0 10px;
-        transition: height 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+        transition: height 0.2s cubic-bezier(0.075, 0.82, 0.165, 1), border-color 0.2s;
         height: 0px;
         overflow: hidden;
         background-color: #555;
@@ -135,6 +138,9 @@
         border: 2px solid #aaa;
         border-top: none;
         z-index: 1;
+    }
+    .sectionWidget:active, .sectionWidget:active .details {
+        border-color: white;
     }
     .bar {
         width: 100%;

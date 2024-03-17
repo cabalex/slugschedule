@@ -101,6 +101,9 @@ h1 {
 .borderBtn:hover {
   background-color: #333;
 }
+*:focus-visible {
+  outline: 2px solid var(--primary);
+}
 
 hr {
   width: 100%;

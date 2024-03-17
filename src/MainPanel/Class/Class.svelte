@@ -150,7 +150,6 @@
                 class:clickable={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction" && location != meetingInfo.location}
                 aria-disabled={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction" && location != meetingInfo.location}
                 on:click={() => meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction" ? {} : location = meetingInfo.location}
-                style="background:none; border: none; padding: 0; color:inherit; text-align: inherit; cursor:text"
             >
                 {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
                     <Monitor /> {item.details.instructionMode}
@@ -326,17 +325,21 @@
     a:hover {
         background-color: #222;
     }
-    aside i {
-        margin: 10px;
-        text-align: center;
-        display: block;
-    }
     .fact {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 10px;
         padding: 10px;
+    }
+    button.fact {
+        background-color: unset;
+        font-weight: unset;
+        color: unset;
+        border: none;
+    }
+    button.fact:focus:not(:focus-visible) {
+        outline: none;
     }
     :global(.fact svg) {
         font-size: 24px;
