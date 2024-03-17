@@ -25,7 +25,14 @@
     import ClassesByCode from "../../assets/ClassesByCode.svelte";
 
     export let item: Class;
-    
+    let sharebutton;
+    function openModal() {
+        shareOpen = true;
+    }
+    function closeModal() {
+        shareOpen = false;
+        sharebutton.focus();
+    }
     function toggleStar(e) {
         e.stopPropagation();
         if ($starredClasses.includes(item.number)) {
@@ -57,7 +64,7 @@
                             <StarOutline />
                         {/if}
                 </button>
-                <button class="roundBtn" title="Share this class" on:click={() => shareOpen = true}>
+                <button class="roundBtn" title="Share this class" on:click={() => shareOpen = true} bind:this={sharebutton}>
                     <ShareVariant />
                 </button>
                 {#if shareOpen}
@@ -65,7 +72,7 @@
                     url={`${document.location.origin}${document.location.pathname}?class=${item.number}&term=${$db.term}`}
                     classes={[item.number]}
                     headerText="Share this class"
-                    onClose={() => shareOpen = false}
+                    onClose={closeModal}
                 />
                 {/if}
             </div>
@@ -138,9 +145,10 @@
             <OpenInNew />
         </a>
         {#each item.meetingInfos as meetingInfo}
-            <div
+            <button
                 class="fact"
-                class:clickable={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction"}
+                class:clickable={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction" && location != meetingInfo.location}
+                aria-disabled={meetingInfo.location !== "Online" && meetingInfo.location !== "Remote Instruction" && location != meetingInfo.location}
                 on:click={() => meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction" ? {} : location = meetingInfo.location}
             >
                 {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
@@ -148,7 +156,7 @@
                 {:else}
                     <MapMarker /> {meetingInfo.location}
                 {/if}
-            </div>
+            </button>
         {/each}
         {#if item.meetingInfos.some(x => x.dayAndTime)}
         <div class="fact">
@@ -317,17 +325,21 @@
     a:hover {
         background-color: #222;
     }
-    aside i {
-        margin: 10px;
-        text-align: center;
-        display: block;
-    }
     .fact {
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 10px;
         padding: 10px;
+    }
+    button.fact {
+        background-color: unset;
+        font-weight: unset;
+        color: unset;
+        border: none;
+    }
+    button.fact:focus:not(:focus-visible) {
+        outline: none;
     }
     :global(.fact svg) {
         font-size: 24px;

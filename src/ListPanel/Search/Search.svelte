@@ -63,25 +63,25 @@
 
 <div class="spacer">
     <div class="searchOuter" class:focused={focused}>
-        <div class="search" on:click={focus} on:keypress={focus}>
+        <div class="search" on:click={focus} on:focus={focus} on:keypress={focus} role="searchbox" tabindex="0">
             {#if focused}
-                <span on:click={unfocus}>
+                <button on:click={unfocus} on:keypress={unfocus}>
                     <ArrowLeft size="1.5em" />
-                </span>
+                </button>
             {:else}
                 <Magnify size="1.5em" />
             {/if}
             <input type="text" placeholder={$listMode === "all" ? "Search classes" : "Search starred classes"} on:keyup={search} bind:this={searchElem} />
             {#if searchElem?.value}
-                <span on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}}>
+                <button on:click={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} on:keypress={(e) => {$searchFilters[$listMode].searchResults = null; unfocus(e)}} >
                     <Close size="1.5em" />
-                </span>
+                </button>
             {/if}
         </div>
         {#if results !== null}
             <div class="results">
                 {#each results as result}
-                <div class="resultItem" on:click={focusClass.bind(null, result.item)}>
+                <div class="resultItem" role="link" tabindex="0" on:click={focusClass.bind(null, result.item)} on:keypress={focusClass.bind(null, result.item)}>
                     <ClassStatusIcon status={result.item.availability.status} />
                     <div class="text">
                         <span class="resultCode">
@@ -143,6 +143,11 @@
         flex-direction: row;
         transition: border-radius 0.1s ease-in-out;
     }
+    .search:focus-visible {
+        border-color: black;
+        border-style: solid;
+        border-width: 5px;
+    }
     .results {
         overflow: auto;
         height: calc(100% - 50px);
@@ -178,14 +183,21 @@
         background-color: unset;
         color: black;
         border: none;
+        outline: none;
         padding: 0;
         flex-grow: 1;
         margin-left: 10px;
         outline: none;
     }
-    .search span {
+    .search button {
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        color: unset;
         line-height: 0;
-        cursor: pointer;
+    }
+    .search button:focus:not(:focus-visible) {
+        outline: none;
     }
 
     .searchOuter.focused {
