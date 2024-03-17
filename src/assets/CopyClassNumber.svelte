@@ -10,9 +10,16 @@
         setTimeout(() => copied = false, 1000);
     }
 </script>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<span class="number" class:copied={copied} on:click={copy}>
+<span
+    class="number"
+    class:copied={copied}
+    on:click={copy}
+    on:keydown={(e) => { if (e.key !== "Tab") copy() }}
+    role="button"
+    tabindex="0"
+    title="click to copy class number"
+    aria-label="click or select to copy class numbe "
+>
     #{number}
     {#if copied}
         <Check />
@@ -29,10 +36,14 @@
         user-select: none;
         cursor: pointer;
     }
+    .number:focus {
+        outline: none;
+    }
     .copied {
         position: relative;
         color: var(--success);
         animation: copy 1s ease-in-out;
+        outline: none;
     }
 
     @keyframes copy {

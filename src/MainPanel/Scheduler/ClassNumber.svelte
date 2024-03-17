@@ -14,15 +14,14 @@
 
     $: item = $db.getClassByNumber(number);
 </script>
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<span
+
+<button
     class="classNumber"
     on:click={(e) => copy(e, number)}
     style={`background-color: hsla(${number % 360}, 25%, 40%, 1)`}
 >
     {number} ({item.code}{item.rootClass ? ` for ${item.rootClass.code}` : ""})
-</span>
+</button>
 
 <style>
     .classNumber {
