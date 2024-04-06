@@ -84,7 +84,7 @@
             <span style="font-weight: bold">{code}</span>
             <span>{item.name}</span>
         </h2>
-        <button tabindex={1} class="roundBtn" on:click={$listMode === "scheduler" ? toggleScheduled : toggleStar}>
+        <button aria-label={$listMode === "scheduler" ? "Add/remove class to schedule" : "Star this class for later"} tabindex={1} class="roundBtn" on:click={$listMode === "scheduler" ? toggleScheduled : toggleStar}>
             {#if $listMode === "scheduler"}
                 {#if $scheduledClasses.includes(item.number)}
                     <Minus />

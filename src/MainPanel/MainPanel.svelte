@@ -58,7 +58,7 @@
         Need more help? <a href="https://github.com/cabalex/slugschedule/wiki/Usage-Guide" target="_blank" rel="noopener noreferrer">See the Usage Guide</a>.<br />
 
         <h2>Home</h2>
-        For accurate walking estimates, I live at <select bind:value={$home}>
+        For accurate walking estimates, I live at <select aria-label="Home location" bind:value={$home}>
             <option value="">Off campus</option>
             <option>Cowell College</option>
             <option>Stevenson College</option>

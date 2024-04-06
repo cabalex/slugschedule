@@ -63,7 +63,7 @@
 
 <div class="spacer">
     <div class="searchOuter" class:focused={focused}>
-        <div class="search" on:click={focus} on:focus={focus} on:keypress={focus} role="searchbox" tabindex="0">
+        <div class="search" on:click={focus} on:focus={focus} on:keypress={focus} aria-label="Search classes" role="searchbox" tabindex="0">
             {#if focused}
                 <button on:click={unfocus} on:keypress={unfocus}>
                     <ArrowLeft size="1.5em" />

@@ -85,7 +85,7 @@
     {:else}
     Scheduler
     {/if}
-    <button class="roundBtn" on:click={() => shareOpen = true} bind:this={sharebutton}><ShareVariant /></button>
+    <button class="roundBtn" aria-label="Share this schedule" on:click={() => shareOpen = true} bind:this={sharebutton}><ShareVariant /></button>
 </h2>
 {#if shareOpen}
     <ShareModal
@@ -147,11 +147,11 @@
     </table>
 </div>
 <p style="margin: 10px">This schedule is made out of these Class Numbers (click to copy):</p>
-<li style="list-style: none; margin: 0 10px">
+<div class="list">
     {#each $scheduledClasses as classNumber}
         <ClassNumber number={classNumber} />
     {/each}
-</li>
+</div>
 <header class="mobileHeader">
     <button class="roundBtn" on:click={() => $focusedClass = null}>
         <ArrowLeft />
@@ -265,7 +265,7 @@
         margin: 0;
         width: 100%;
     }
-    li {
+    .list {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
