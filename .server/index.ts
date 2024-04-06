@@ -1,10 +1,10 @@
 import getCurrentTerm from "./search/currentTerm";
 import search from "./search/search";
-import searchRMP from "./ratemyprofessor/search";
 import { readFileSync, existsSync, writeFileSync, unlinkSync } from "fs";
 import DB, { type Class, ClassStatus } from "./db/DB";
 import axios from "axios";
 import https from "https";
+import { ZstdInit } from '@oneidentity/zstd-js';
 
 
 
@@ -30,6 +30,16 @@ async function backoffRetryer<T>(fn: () => Promise<T>, index?: number): Promise<
     
 }
 
+async function decompressZSTD(buffer: ArrayBufferLike): Promise<ArrayBuffer> {
+    const zstdInit = await ZstdInit();
+    return zstdInit.ZstdSimple.decompress(new Uint8Array(buffer)).buffer;
+}
+
+async function compressZSTD(buffer: ArrayBufferLike): Promise<ArrayBuffer> {
+    const zstdInit = await ZstdInit();
+    return zstdInit.ZstdSimple.compress(new Uint8Array(buffer)).buffer;
+}
+
 async function main() {
     // Fix axios instances
     axios.defaults.timeout = 15000;
@@ -40,11 +50,16 @@ async function main() {
     console.log(`Reaching out to full catalog for term ${term}...`)
     let classes = (await search({term, results: 2000}));
 
-    if (existsSync(`../public/db/${term}.yaucsccs`)) {
+    if (existsSync(`../public/db/${term}.yaucsccs`) || existsSync(`../public/db/${term}.yaucsccs.zstd`)) {
         // update database
         console.log("updating the database...");
-        let tempDB = new DB(term);
-        let db = DB.import(readFileSync(__dirname + `/../public/db/${term}.yaucsccs`).buffer);
+        let filename = existsSync(`../public/db/${term}.yaucsccs.zstd`) ?
+            __dirname + `/../public/db/${term}.yaucsccs.zstd` :
+            __dirname + `/../public/db/${term}.yaucsccs`;
+
+        let file = readFileSync(filename).buffer;
+        
+        let db = DB.import(filename.endsWith("zstd") ? await decompressZSTD(file) : file);
         let changed = false;
         
         for (let i = 0; i < classes.length; i++) {
@@ -109,7 +124,7 @@ async function main() {
 
         if (changed) {
             console.log("writing changes to database...");
-            writeFileSync(__dirname + `/../public/db/${term}.yaucsccs`, Buffer.from(db.export()));
+            writeFileSync(__dirname + `/../public/db/${term}.yaucsccs.zstd`, Buffer.from(await compressZSTD(db.export())));
         } else {
             console.log("no changes detected");
         }
@@ -136,7 +151,7 @@ async function main() {
         let db = new DB(term);
         db.classes = detailedClasses;
 
-        writeFileSync(__dirname + `/../public/db/${term}.yaucsccs`, Buffer.from(db.export()));
+        writeFileSync(__dirname + `/../public/db/${term}.yaucsccs.zstd`, Buffer.from(await compressZSTD(db.export())));
     }
 }
 

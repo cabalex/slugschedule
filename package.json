@@ -19,6 +19,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "@oneidentity/zstd-js": "^1.0.3",
     "axios": "^1.4.0",
     "chart.js": "^4.3.3",
     "chartjs-adapter-moment": "^1.0.1",

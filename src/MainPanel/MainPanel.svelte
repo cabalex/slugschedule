@@ -1,7 +1,7 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
-    import { db, focusedClass, home, listMode, setDB } from "../mainStore";
+    import { db, focusedClass, home, listMode, setDB, decompressZSTD } from "../mainStore";
     import Class from "./Class/Class.svelte";
     import Scheduler from "./Scheduler/Scheduler.svelte";
     import { openDB } from "idb";
@@ -19,7 +19,7 @@
         loading = true;
         let TERM = $db?.term;
 
-        let resp = await fetch(`./db/${TERM}.yaucsccs`);
+        let resp = await fetch(`./db/${TERM}.yaucsccs.zstd`);
 
         if (!resp.ok) {
             loading = false;
@@ -32,7 +32,7 @@
             },
         });
 
-        let arrayBuffer = await resp.arrayBuffer();
+        let arrayBuffer = await decompressZSTD(await resp.arrayBuffer());
         
         // save to db
         await localDB.put("db", arrayBuffer, TERM)
