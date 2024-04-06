@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@oneidentity/zstd-js": "^1.0.3",
     "axios": "^1.4.0",
     "cheerio": "^1.0.0-rc.12",
     "ts-node-dev": "^2.0.0"

@@ -1,5 +1,6 @@
 import DB, { type Class, type ClassStatus } from "../.server/db/DB";
 import { readable, writable, get } from 'svelte/store';
+import { ZstdInit } from '@oneidentity/zstd-js';
 import { openDB } from "idb";
 
 export function detectTerm(ignoreUrlParams=true) {
@@ -41,6 +42,11 @@ export function detectTerm(ignoreUrlParams=true) {
     }
 }
 
+export async function decompressZSTD(buffer: ArrayBufferLike): Promise<ArrayBuffer> {
+    const zstdInit = await ZstdInit();
+    return zstdInit.ZstdSimple.decompress(new Uint8Array(buffer)).buffer;
+}
+
 async function fetchDBByYear(year: number) {
     let db = await openDB("yaucsccs", 1, {
         upgrade(db) {
@@ -56,9 +62,9 @@ async function fetchDBByYear(year: number) {
         return {arrayBuffer: cachedArrayBuffer, cached: true};
     }
 
-    let resp = await fetch(`./db/${year}.yaucsccs`);
+    let resp = await fetch(`./db/${year}.yaucsccs.zstd`);
     if (resp.ok) {
-        return {arrayBuffer: await resp.arrayBuffer(), cached: false};
+        return {arrayBuffer: await decompressZSTD(await resp.arrayBuffer()), cached: false};
     } else {
         return {arrayBuffer: null, cached: false};
     }
@@ -114,9 +120,9 @@ export let db = readable(null, (set) => {
             console.log("Updating cached database...");
 
             let arrayBuffer;
-            let resp = await fetch(`./db/${TERM}.yaucsccs`);
+            let resp = await fetch(`./db/${TERM}.yaucsccs.zstd`);
             if (resp.ok) {
-                arrayBuffer = await resp.arrayBuffer();
+                arrayBuffer = await decompressZSTD(await resp.arrayBuffer());
             }
 
             // save to db and update UI
