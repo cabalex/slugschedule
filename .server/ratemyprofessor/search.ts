@@ -240,7 +240,13 @@ export default async function searchRMP(instructorName: string, classCode: strin
         throw new Error(`Could not search RateMyProfessor: ${JSON.stringify(resp.data)}`);
     }
 
-    // This won't match the instructor 100% of the time but it's good enough...
+    // RMP can return null here when the search function is down
+    if (resp.data.data.newSearch.teachers === null) {
+        console.warn("WARNING: RateMyProfessor search is currently DOWN. Reviews will NOT be generated.")
+        return null;
+    }
+    
+    // This won't match the instructor 100% of the time but it's good enough...    
     let instructors = resp.data.data.newSearch.teachers.edges.map(x => x.node);
 
     if (instructors.length === 0) return null;

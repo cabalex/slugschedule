@@ -30,17 +30,18 @@ async function backoffRetryer<T>(fn: () => Promise<T>, index?: number): Promise<
     
 }
 
+let zstdInit;
+
 async function decompressZSTD(buffer: ArrayBufferLike): Promise<ArrayBuffer> {
-    const zstdInit = await ZstdInit();
     return zstdInit.ZstdSimple.decompress(new Uint8Array(buffer)).buffer;
 }
 
 async function compressZSTD(buffer: ArrayBufferLike): Promise<ArrayBuffer> {
-    const zstdInit = await ZstdInit();
     return zstdInit.ZstdSimple.compress(new Uint8Array(buffer)).buffer;
 }
 
 async function main() {
+    zstdInit = await ZstdInit();
     // Fix axios instances
     axios.defaults.timeout = 15000;
     axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
