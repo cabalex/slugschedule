@@ -27,17 +27,17 @@ export function detectTerm(ignoreUrlParams=true) {
     if (month >= 10) {
         // November-Jan; winter
         return parseInt(`${parseInt(termYear) + 1}0`);
-    } else if (month <= 0) {
+    } else if (month === 0) {
         // November-Jan; winter
         return parseInt(`${termYear}0`);
-    } else if (month >= 1 && month <= 3) {
+    } else if (month >= 1 && month < 3) {
         // Feb-Apr; spring
         return parseInt(`${termYear}2`);
-    } else if (month >= 4 && month <= 6) {
-        // May-Jul; summer
+    } else if (month >= 3 && date.getDay() < 10) {
+        // April-May; summer
         return parseInt(`${termYear}4`);
     } else {
-        // Aug-Oct; fall
+        // May-Oct; fall
         return parseInt(`${termYear}8`);
     }
 }
