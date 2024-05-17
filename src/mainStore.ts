@@ -24,16 +24,16 @@ export function detectTerm(ignoreUrlParams=true) {
     let termYear = year.toString()[0] + year.toString().slice(2, 4);
     let month = date.getMonth();
 
-    if (month >= 10) {
+    if (month >= 11) {
         // November-Jan; winter
         return parseInt(`${parseInt(termYear) + 1}0`);
-    } else if (month === 0) {
+    } else if (month === 1) {
         // November-Jan; winter
         return parseInt(`${termYear}0`);
-    } else if (month >= 1 && month < 3) {
+    } else if (month >= 2 && month < 4) {
         // Feb-Apr; spring
         return parseInt(`${termYear}2`);
-    } else if (month >= 3 && date.getDay() < 10) {
+    } else if (month == 4 && date.getDay() < 10) {
         // April-May; summer
         return parseInt(`${termYear}4`);
     } else {
