@@ -33,7 +33,7 @@ export function detectTerm(ignoreUrlParams=true) {
     } else if (month >= 2 && month < 4) {
         // Feb-Apr; spring
         return parseInt(`${termYear}2`);
-    } else if (month == 4 && date.getDay() < 10) {
+    } else if (month == 4 && date.getDate() < 10) {
         // April-May; summer
         return parseInt(`${termYear}4`);
     } else {
