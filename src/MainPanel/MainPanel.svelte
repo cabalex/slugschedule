@@ -70,6 +70,11 @@
             <option>Rachel Carson College</option>
             <option>College Nine</option>
             <option>John R. Lewis College</option>
+            <option>The Village</option>
+            <option value="Redwood Grove Apartments">Redwood Grove</option>
+            <option>Graduate Student Housing</option>
+            <option>Family Student Housing</option>
+            <option value="UCSC Trailer Park">Camper Park</option>
         </select>
 
         <h2>Quick Links</h2>
