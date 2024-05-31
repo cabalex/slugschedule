@@ -193,6 +193,43 @@ export let listMode = writable<"scheduler"|"starred"|"all"|"smart">(
     get(starredClasses).length ? "starred" : "all"
 );
 
+function pushState() {
+    let url = "./"
+
+    let focusedClassValue = get(focusedClass);
+    let listModeValue = get(listMode);
+    let termValue = get(term);
+
+    if ((listModeValue === "all" || listModeValue === "starred") && focusedClassValue !== null && typeof focusedClassValue !== "string") {
+        url = `./?class=${focusedClassValue.number}&term=${get(term)}`;
+    }
+
+    if (url.slice(2) === document.location.search) {
+        // no update needed
+        return;
+    }
+
+    window.history.pushState({
+        class: focusedClassValue,
+        listMode: listModeValue,
+        term: termValue
+    }, "", url);
+}
+
+focusedClass.subscribe(pushState);
+listMode.subscribe(pushState);
+
+window.addEventListener("popstate", (state) => {
+    const poppedState = state.state;
+
+    listMode.set(poppedState.listMode);
+
+    if (poppedState.term !== get(term)) {
+        term.set(poppedState.term);
+    }
+    focusedClass.set(poppedState.class);
+})
+
 starredClasses.subscribe((value) => {
     localStorage.setItem(`starredClasses-${get(db)?.term || get(term)}`, JSON.stringify(value));
     //@ts-ignore
