@@ -204,7 +204,7 @@ function pushState() {
         url = `./?class=${focusedClassValue.number}&term=${get(term)}`;
     }
 
-    if (url.slice(2) === document.location.search) {
+    if (url.slice(2) === document.location.search || get(db) === null) {
         // no update needed
         return;
     }
@@ -222,12 +222,30 @@ listMode.subscribe(pushState);
 window.addEventListener("popstate", (state) => {
     const poppedState = state.state;
 
-    listMode.set(poppedState.listMode);
+    if (poppedState) {
+        listMode.set(poppedState.listMode);
+        focusedClass.set(poppedState.class);
 
-    if (poppedState.term !== get(term)) {
-        term.set(poppedState.term);
+        if (poppedState.term !== get(term)) {
+            term.set(poppedState.term);
+        }
+    } else {
+        let urlParams = new URLSearchParams(document.location.search);
+        if (urlParams.has("class")) {
+            let classNumber = parseInt(urlParams.get("class"));
+            if (classNumber) {
+                focusedClass.set(get(db).getClassByNumber(classNumber));
+            }
+        } else {
+            focusedClass.set(null);
+        }
+
+        if (urlParams.has("term")) {
+            term.set(parseInt(urlParams.get("term")));
+        }
     }
-    focusedClass.set(poppedState.class);
+
+    
 })
 
 starredClasses.subscribe((value) => {
