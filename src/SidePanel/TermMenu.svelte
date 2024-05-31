@@ -1,6 +1,6 @@
 <script lang="ts">
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
-    import { db, decompressZSTD, detectTerm, focusedClass, setDB } from "../mainStore";
+    import { db, decompressZSTD, detectTerm, focusedClass, setDB, term as termStore } from "../mainStore";
     import { openDB } from "idb";
     import DB from "../../.server/db/DB";
     import { slide } from "svelte/transition";
@@ -42,6 +42,7 @@
                 // Database is younger than an hour, so don't bother updating
                 // Or, the database is old and won't be updated
                 console.log("Ignoring update")
+                $termStore = TERM;
                 termMenuOpen = false;
                 return;
             }
@@ -63,6 +64,7 @@
         console.log("Updated to newest version!");
         let newDB = DB.import(arrayBuffer);
         setDB(newDB);
+        $termStore = TERM;
         $focusedClass = "home";
         loading = false;
         termMenuOpen = false;
