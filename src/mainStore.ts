@@ -64,6 +64,7 @@ async function fetchDBByYear(year: number) {
 
     let resp = await fetch(`./db/${year}.yaucsccs.zstd`);
     if (resp.ok) {
+        term.set(year);
         return {arrayBuffer: await decompressZSTD(await resp.arrayBuffer()), cached: false};
     } else {
         return {arrayBuffer: null, cached: false};
@@ -194,17 +195,18 @@ export let listMode = writable<"scheduler"|"starred"|"all"|"smart">(
 );
 
 function pushState() {
+    if (get(db) === null) return;
+
     let url = "./"
 
     let focusedClassValue = get(focusedClass);
     let listModeValue = get(listMode);
-    let termValue = get(term);
 
     if ((listModeValue === "all" || listModeValue === "starred") && focusedClassValue !== null && typeof focusedClassValue !== "string") {
-        url = `./?class=${focusedClassValue.number}&term=${get(term)}`;
+        url = `./?class=${focusedClassValue.number}&term=${get(db).term}`;
     }
 
-    if (url.slice(2) === document.location.search || get(db) === null) {
+    if (url.slice(2) === document.location.search) {
         // no update needed
         return;
     }
@@ -212,7 +214,7 @@ function pushState() {
     window.history.pushState({
         class: focusedClassValue,
         listMode: listModeValue,
-        term: termValue
+        term: get(db).term
     }, "", url);
 }
 
@@ -227,7 +229,10 @@ window.addEventListener("popstate", (state) => {
         focusedClass.set(poppedState.class);
 
         if (poppedState.term !== get(term)) {
-            term.set(poppedState.term);
+            fetchDBByYear(poppedState.term).then((result) => {
+                let fetchedDB = DB.import(result.arrayBuffer);
+                setDB(fetchedDB);
+            })
         }
     } else {
         let urlParams = new URLSearchParams(document.location.search);
@@ -241,7 +246,10 @@ window.addEventListener("popstate", (state) => {
         }
 
         if (urlParams.has("term")) {
-            term.set(parseInt(urlParams.get("term")));
+            fetchDBByYear(poppedState.term).then((result) => {
+                let fetchedDB = DB.import(result.arrayBuffer);
+                setDB(fetchedDB);
+            })
         }
     }
 
