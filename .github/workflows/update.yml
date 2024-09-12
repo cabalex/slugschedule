@@ -43,7 +43,7 @@ jobs:
         commit_author: GitHub Actions Bot <actions@github.com>
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: database
         path: ./public/db/*.yaucsccs.zstd
