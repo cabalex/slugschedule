@@ -125,9 +125,12 @@
                 }
             }
         } else {
-            let termDistribution = distributions.find(d => d.term === filterTerm);
-            for (let key of Object.keys(total)) {
-                total[key] += termDistribution[key] || 0;
+            // allow terms with multiple sections
+            for (let distribution of distributions) {
+                if (distribution.term !== filterTerm) continue;
+                for (let key of Object.keys(total)) {
+                    total[key] += distribution[key] || 0;
+                }
             }
         }
 
@@ -209,8 +212,8 @@
                 <div class="chartViews">
                     {#if item.gradeDistributions.length > 1}
                         <button on:click={() => term = null} class:active={term === null}>all</button>
-                        {#each item.gradeDistributions.toReversed() as distribution}
-                            <button on:click={() => (term = distribution.term)} class:active={term === distribution.term}>{prettyTerm(distribution.term)}</button>
+                        {#each [...new Set(item.gradeDistributions.map(distribution => distribution.term))].toReversed() as distTerm}
+                            <button on:click={() => (term = distTerm)} class:active={term === distTerm}>{prettyTerm(distTerm)}</button>
                         {/each}
                     {:else if item.gradeDistributions.length === 1}
                         <button class="active">{prettyTerm(item.gradeDistributions[0].term)}</button>
