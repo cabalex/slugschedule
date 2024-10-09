@@ -46,20 +46,8 @@ async function main() {
     axios.defaults.timeout = 15000;
     axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
 
-    let term = 2228;
-    while (term < 2250) {
-        let filename = `../public/db/${term}.yaucsccs.zstd`;
-        if (existsSync(filename)) {
-            let file = readFileSync(filename).buffer;
-            let db = DB.import(filename.endsWith("zstd") ? await decompressZSTD(file) : file);
-            writeFileSync(__dirname + `/../public/db/${term}.yaucsccs.zstd`, Buffer.from(await compressZSTD(db.export())));
-        }
-        term += 2;
-    }
-    return
 
-
-    //let term = await getCurrentTerm();
+    let term = await getCurrentTerm();
     console.log(`Reaching out to full catalog for term ${term}...`)
     let classes = (await search({term, results: 2000}));
 
