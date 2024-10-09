@@ -392,4 +392,21 @@
             justify-content: center;
         }
     }
+    @media screen and (max-width: 1000px) {
+        .associatedClasses {
+            overflow: auto;
+            flex-wrap: nowrap;
+            width: calc(100% + 40px);
+            transform: translateX(-20px);
+        }
+        :global(.associatedClasses > *) {
+            flex-shrink: 0;
+        }
+        :global(.associatedClasses > *:first-child) {
+            margin-left: 20px;
+        }
+        :global(.associatedClasses > *:last-child) {
+            margin-right: 20px;
+        }
+    }
 </style>
