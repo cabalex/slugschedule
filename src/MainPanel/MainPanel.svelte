@@ -83,7 +83,8 @@
         <a href="https://advising.ucsc.edu/gettingstartedinthemajor/frosh/index.html" target="_blank">Getting Started In Your Major</a> <br />
         <a href="https://registrar.ucsc.edu/enrollment/general-education-requirements.html" target="_blank">General Education Requirements</a>
         
-        <p>Created with 💛 by <a href="https://cabalex.github.io">@cabalex</a> with contributions from <a href="https://github.com/darthnithin">@darthnithin</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
+        <p>Created with 💛 by <a href="https://cabalex.github.io" target="_blank">@cabalex</a> with contributions from <a href="https://github.com/darthnithin" target="_blank">@darthnithin</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
+        <p>Thanks to <a href="https://slugtistics.com/about" target="_blank">Jack LeValley</a> for grade distributions data.</p>
         <p>Data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
         <button on:click={attemptLoad}>
             {#if loading}
