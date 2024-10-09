@@ -151,6 +151,7 @@ export default async function getClassDetails(classUrl: string, existingRMPInfo?
         description,
         enrollmentRequirements,
         classNotes,
-        associatedClasses
+        associatedClasses,
+        gradeDistributions: []
     }
 }

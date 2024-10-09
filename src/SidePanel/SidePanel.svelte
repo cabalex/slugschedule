@@ -1,31 +1,28 @@
+<script lang="ts" context="module">
+    export function prettyTerm(term: number) {
+        switch(term % 10) {
+            case 0:
+                return "❄ 20" + term.toString().slice(1, 3)
+            case 2:
+                return "🌸 20" + term.toString().slice(1, 3)
+            case 4:
+                return "☀ 20" + term.toString().slice(1, 3)
+            case 8:
+                return "🍁 20" + term.toString().slice(1, 3)
+        }
+    }
+</script>
 <script lang="ts">
     import SlugSchedule from "../assets/slugschedule.svg";
     import Star from "svelte-material-icons/Star.svelte";
     import Magnify from "svelte-material-icons/Magnify.svelte";
     import Calendar from "svelte-material-icons/Calendar.svelte";
-    import AutoFix from "svelte-material-icons/AutoFix.svelte";
     import { db, focusedClass, listMode } from "../mainStore";
     import TermMenu from "./TermMenu.svelte";
 
-    let term = "Unknown"
     let termMenuOpen = false;
 
-    $: {
-        switch($db.term % 10) {
-            case 0:
-                term = "❄ 20" + $db.term.toString().slice(1, 3)
-                break;
-            case 2:
-                term = "🌸 20" + $db.term.toString().slice(1, 3)
-                break;
-            case 4:
-                term = "☀ 20" + $db.term.toString().slice(1, 3)
-                break;
-            case 8:
-                term = "🍁 20" + $db.term.toString().slice(1, 3)
-                break;
-        }
-    }
+    $: term = prettyTerm($db.term);
 </script>
 <aside>
     <span class="grower mobile" />
