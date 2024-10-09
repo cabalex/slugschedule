@@ -23,7 +23,6 @@
     import CopyClassNumber from "../../assets/CopyClassNumber.svelte";
     import ShareModal from "../../assets/ShareModal.svelte";
     import ClassesByCode from "../../assets/ClassesByCode.svelte";
-    import FinalsTime from "../../assets/FinalsTime.svelte";
     import GradeDistribution from "./GradeDistribution/GradeDistribution.svelte";
 
     export let item: Class;
