@@ -23,6 +23,8 @@
     import CopyClassNumber from "../../assets/CopyClassNumber.svelte";
     import ShareModal from "../../assets/ShareModal.svelte";
     import ClassesByCode from "../../assets/ClassesByCode.svelte";
+    import FinalsTime from "../../assets/FinalsTime.svelte";
+    import GradeDistribution from "./GradeDistribution/GradeDistribution.svelte";
 
     export let item: Class;
     let sharebutton;
@@ -107,6 +109,10 @@
         <ClassesByCode code={item.code} number={item.number} />
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
         <Enrollment number={item.number} availability={item.availability} />
+        {#if item.gradeDistributions.length}
+            <h3>Grade distribution</h3>
+            <GradeDistribution item={item} />
+        {/if}
         {#if item.associatedClasses.length}
             <h3>Associated Classes</h3>
             <div class="associatedClasses">
