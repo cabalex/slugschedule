@@ -1,3 +1,17 @@
+import grades from "./grades.json";
+
+function getGradeDistributions(code: string, instructor: string) {
+    let gradeDistributions = grades[code.split(" - ")[0]]; // only want string
+    if (!gradeDistributions) return null;
+    for (let key of Object.keys(gradeDistributions)) {
+        let lastName = key.split(" ").pop() || "NO_LAST_NAME";
+        if (instructor.includes(lastName)) {
+            return gradeDistributions[key];
+        }
+    }
+    return [];
+}
+
 export type InstructionMode = "In Person"|"Synchronous Online"|"Asynchronous Online"|"Hybrid"
 export enum ClassStatus {
     "Open",
@@ -35,6 +49,7 @@ export interface Class {
     enrollmentRequirements: string;
     classNotes: string;
     associatedClasses: Array<AssociatedClass>
+    gradeDistributions: GradeRecord[];
 }
 
 export interface Instructor {
@@ -62,6 +77,28 @@ export interface TeacherRating {
     comment: string,
     tags: string;
     related: boolean;
+}
+
+interface GradeRecord {
+    term: number;
+    "A+": number;
+    A: number;
+    "A-": number;
+    "B+": number;
+    B: number;
+    "B-": number;
+    "C+": number;
+    C: number;
+    "C-": number;
+    "D+": number;
+    D: number;
+    "D-": number;
+    F: number;
+    P: number; // pass
+    NP: number;// no pass
+    S: number; // graduate: satisfactory
+    U: number; // graduate: unsatisfactory
+    I: number; // graduate: incomplete
 }
 
 export interface AssociatedClass {
@@ -106,7 +143,7 @@ function concat(...bufs: ArrayBuffer[]) {
 // custom byte format. This class is used in both the backend and frontend
 // so that both sides can unpack/repack it.
 
-const VERSION = 3;
+const VERSION = 4;
 
 export default class DB {
     version = VERSION;
@@ -309,6 +346,32 @@ export default class DB {
                 buf = concat(buf, packValue(associatedClass.meetingInfo.location));
                 buf = concat(buf, packValue(associatedClass.meetingInfo.instructor));
             }
+
+            // grade distributions
+            c.gradeDistributions = getGradeDistributions(c.code, c.instructor.name) || c.gradeDistributions;
+            buf = concat(buf, packValue(c.gradeDistributions.length));
+            for (let gradeRecord of c.gradeDistributions) {
+                buf = concat(buf, packValue(gradeRecord.term));
+                buf = concat(buf, packValue(gradeRecord["A+"]));
+                buf = concat(buf, packValue(gradeRecord["A"]));
+                buf = concat(buf, packValue(gradeRecord["A-"]));
+                buf = concat(buf, packValue(gradeRecord["B+"]));
+                buf = concat(buf, packValue(gradeRecord["B"]));
+                buf = concat(buf, packValue(gradeRecord["B-"]));
+                buf = concat(buf, packValue(gradeRecord["C+"]));
+                buf = concat(buf, packValue(gradeRecord["C"]));
+                buf = concat(buf, packValue(gradeRecord["C-"]));
+                buf = concat(buf, packValue(gradeRecord["D+"]));
+                buf = concat(buf, packValue(gradeRecord["D"]));
+                buf = concat(buf, packValue(gradeRecord["D-"]));
+                buf = concat(buf, packValue(gradeRecord["F"]));
+                buf = concat(buf, packValue(gradeRecord["P"]));
+                buf = concat(buf, packValue(gradeRecord["NP"]));
+                buf = concat(buf, packValue(gradeRecord["S"]));
+                buf = concat(buf, packValue(gradeRecord["U"]));
+                buf = concat(buf, packValue(gradeRecord["I"]));
+            }
+
             bufs.push(buf);
         }
 
@@ -419,7 +482,8 @@ export default class DB {
                     name: unpackValue("string"),
                     id: unpackValue("string")
                 },
-                associatedClasses: []
+                associatedClasses: [],
+                gradeDistributions: []
             }
 
             if (parseInt(c.instructor.id) !== -1) {
@@ -478,11 +542,39 @@ export default class DB {
                 });
             }
 
+            if (version >= 4) {
+                // grade distributions
+                let gradeDistributionCount = unpackValue("number");
+                for (let j = 0; j < gradeDistributionCount; j++) {
+                    c.gradeDistributions.push({
+                        term: unpackValue("number"),
+                        "A+": unpackValue("number"),
+                        A: unpackValue("number"),
+                        "A-": unpackValue("number"),
+                        "B+": unpackValue("number"),
+                        B: unpackValue("number"),
+                        "B-": unpackValue("number"),
+                        "C+": unpackValue("number"),
+                        C: unpackValue("number"),
+                        "C-": unpackValue("number"),
+                        "D+": unpackValue("number"),
+                        D: unpackValue("number"),
+                        "D-": unpackValue("number"),
+                        F: unpackValue("number"),
+                        P: unpackValue("number"),
+                        NP: unpackValue("number"),
+                        S: unpackValue("number"),
+                        U: unpackValue("number"),
+                        I: unpackValue("number")
+                    });
+                }
+            }
+
             classes.push(c);
         }
 
         let db = new DB(term);
-        db.version = 2;
+        db.version = version;
         db.classes = classes;
 
         // history
