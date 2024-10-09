@@ -10,7 +10,6 @@
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
-    import SlugtisticsLogo from "../../assets/slugtistics.svg";
 
     import type { Class } from "../../../.server/db/DB";
     import { home, db, focusedClass, starredClasses, detectTerm } from "../../mainStore";
@@ -110,13 +109,10 @@
         <ClassesByCode code={item.code} number={item.number} />
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
         <Enrollment number={item.number} availability={item.availability} />
-        <h3>
-            Grade distribution
-            <a href="https://slugtistics.com/" target="_blank" class="slugtisticsLogo" title="Data provided by slugtistics.com">
-                <img src={SlugtisticsLogo} alt="Slugtistics Logo" />
-            </a>
-        </h3>
-        <GradeDistribution code={item.code} instructor={item.instructor.name} />
+        {#if item.gradeDistributions.length}
+            <h3>Grade distribution</h3>
+            <GradeDistribution item={item} />
+        {/if}
         {#if item.associatedClasses.length}
             <h3>Associated Classes</h3>
             <div class="associatedClasses">
@@ -368,16 +364,6 @@
     h1 {
         font-size: 2.5em;
         margin-bottom: 5px;
-    }
-    .slugtisticsLogo {
-        line-height: 0;
-        background-color: transparent !important;
-        padding: 0;
-        border-radius: 0;
-        vertical-align: top;
-    }
-    .slugtisticsLogo img {
-        width: 24px;
     }
     @media screen and (max-width: 1400px) {
         .class {
