@@ -22,7 +22,7 @@ export function detectTerm(ignoreUrlParams=true) {
     let date = new Date();
     let year = date.getFullYear();
     let termYear = year.toString()[0] + year.toString().slice(2, 4);
-    let month = date.getMonth();
+    let month = date.getMonth() + 1; // month is ZERO INDEXED!!!
 
     if (month >= 11) {
         // November-Jan; winter
