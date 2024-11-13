@@ -10,6 +10,7 @@
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
+    import Information from "svelte-material-icons/Information.svelte";
 
     import type { Class } from "../../../.server/db/DB";
     import { home, db, focusedClass, starredClasses, detectTerm } from "../../mainStore";
@@ -24,6 +25,7 @@
     import ShareModal from "../../assets/ShareModal.svelte";
     import ClassesByCode from "../../assets/ClassesByCode.svelte";
     import GradeDistribution from "./GradeDistribution/GradeDistribution.svelte";
+  import RichText from "../../assets/RichText.svelte";
 
     export let item: Class;
     let sharebutton;
@@ -86,7 +88,7 @@
                 </h1>
             </div>
         </header>
-        <p class="description">{item.description}</p>
+        <RichText class="description" content={item.description} />
         {#if item.combinedSections.length}
         <h3>Combined sections with</h3>
         <div class="combinedSections">
@@ -99,11 +101,11 @@
         {/if}
         {#if item.enrollmentRequirements}
         <h3>Prerequisites</h3>
-        <p class="prerequisites">{item.enrollmentRequirements}</p>
+        <RichText class="prerequisites" content={item.enrollmentRequirements} />
         {/if}
         {#if item.classNotes}
         <h3>Notes</h3>
-        <p class="notes">{item.classNotes}</p>
+        <RichText class="notes" content={item.classNotes} />
         {/if}
         <ClassesByCode code={item.code} number={item.number} />
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
