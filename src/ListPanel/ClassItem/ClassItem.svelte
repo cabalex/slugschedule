@@ -4,6 +4,22 @@
         if (score >= 3.0) return "rgb(255, 241, 112)";
         return "rgb(255, 156, 156)";
     }
+    export function gpaDifficultyColor(difficulty: string) {
+        switch (difficulty) {
+            case "a breeze":
+                return "#00E676";
+            case "easy":
+                return "#C6FF00";
+            case "fine":
+                return "var(--primary)";
+            case "hard":
+                return "#FF6E40";
+            case "challenging":
+                return "#FF5252";
+            default:
+                return "white";
+        }
+    }
 </script>
 <script lang="ts">
     import Star from "svelte-material-icons/Star.svelte";
@@ -13,12 +29,14 @@
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
     import Monitor from "svelte-material-icons/Monitor.svelte";
     import Account from "svelte-material-icons/Account.svelte";
+    import Poll from "svelte-material-icons/Poll.svelte";
 
     import { db, detectTerm, focusedClass, listMode, scheduledClasses, starredClasses, term } from "../../mainStore";
     import { ClassStatus, type Class } from "../../../.server/db/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
     import SectionPopup from "./SectionPopup.svelte";
+    import { calculateAverageGPA, calculateDifficulty } from "../../MainPanel/Class/GradeDistribution/GradeDistribution.svelte";
 
     export let item: Class;
 
@@ -103,7 +121,7 @@
     <div class="body">
         {#if item.meetingInfos.some(x => x.location && x.location !== "N/A")}
         {#each item.meetingInfos as meetingInfo}
-            <div class="location">
+            <div style="min-width: calc(50% - 10px)" class="location">
                 {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
                 <Monitor />
                 {:else}
@@ -119,7 +137,7 @@
         </div>
         {/if}
         {#if item.instructor.name && item.instructor.name !== "N/A"}
-        <div class="instructor">
+        <div class="instructor" style="min-width: calc(50% - 10px)">
             <Account />
             {item.instructor.name}
             {#if item.instructor.id && item.instructor.id !== "-1" && item.instructor.numRatings > 0}
@@ -131,6 +149,16 @@
                 </div>
                 ({item.instructor.numRatings} ratings)
             {/if}
+        </div>
+        {/if}
+        {#if item.gradeDistributions && item.gradeDistributions.length}
+        {@const averageGPA = calculateAverageGPA(item.gradeDistributions)}
+        {@const difficulty = calculateDifficulty(averageGPA)}
+        <div class="gradeDistribution">
+            <Poll /> GPA
+            <div class="rmpScore" style={`background-color: ${gpaDifficultyColor(difficulty)}`}>
+                {averageGPA.toFixed(1)}
+            </div>
         </div>
         {/if}
     </div>
@@ -203,7 +231,6 @@
     }
     .body {
         flex-grow: 1;
-
         display: flex;
         flex-direction: row;
         align-content: flex-start;
