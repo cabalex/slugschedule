@@ -1,12 +1,13 @@
 <script lang="ts">
+  import { calculateAverageGPA } from "../MainPanel/Class/GradeDistribution/GradeDistribution.svelte";
     import { searchFilters, listMode } from "../mainStore";
     import DropdownChip from "./DropdownChip.svelte";
   
     const opts = {
         "Largest": "Class size (large to small)",
         "Smallest": "Class size (small to large)",
-        "Best rated": "Rating (high to low)",
-        "Worst rated": "Rating (low to high)",
+        "Best rated": "Best rating",
+        "Highest GPA": "Highest GPA average",
         "Most reviews": "Most reviews",
         "Availability": "Most open seats",
     }
@@ -24,8 +25,8 @@
                 case "Best rated":
                     filters[$listMode].sortMode = {value, fn: (a, b) => (b.instructor.avgRating || 0) - (a.instructor.avgRating || 0) };
                     break;
-                case "Worst rated":
-                    filters[$listMode].sortMode = {value, fn: (a, b) => (a.instructor.avgRating || 0) - (b.instructor.avgRating || 0) };
+                case "Highest GPA":
+                    filters[$listMode].sortMode = {value, fn: (a, b) => (calculateAverageGPA(b.gradeDistributions) || 0) - (calculateAverageGPA(a.gradeDistributions) || 0) };
                     break;
                 case "Most reviews":
                     filters[$listMode].sortMode = {value, fn: (a, b) => b.instructor.numRatings - a.instructor.numRatings };

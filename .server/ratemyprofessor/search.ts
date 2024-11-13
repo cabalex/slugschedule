@@ -12,7 +12,7 @@ export default async function searchRMP(instructorName: string, classCode: strin
     let className = classCode.split(" - ")[0].replace(" ", "");
 
     if (query.includes(" ")) {
-        query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1].replaceAll(".", "") : "");
+        query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1].replace(/\./g, "") : "");
     }
 
     let resp = await POST("https://www.ratemyprofessors.com/graphql",
