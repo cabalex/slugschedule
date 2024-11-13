@@ -137,7 +137,7 @@
         </div>
         {/if}
         {#if item.instructor.name && item.instructor.name !== "N/A"}
-        <div class="instructor" style="min-width: calc(50% - 10px)">
+        <div class="instructor" style="min-width: calc(50%)">
             <Account />
             {item.instructor.name}
             {#if item.instructor.id && item.instructor.id !== "-1" && item.instructor.numRatings > 0}
