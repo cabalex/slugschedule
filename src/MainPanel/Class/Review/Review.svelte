@@ -33,7 +33,9 @@
             </h3>
             <h3>{new Date(review.postedAt).toLocaleDateString()}</h3>
         </header>
-        {review.comment.replace(/&quot;/gm, "\"").replace(/&amp;/gm, "&")}
+        <p>
+            {review.comment.replace(/&quot;/gm, "\"").replace(/&amp;/gm, "&")}
+        </p>
         {#if review.tags}
             <div class="tags">
                 {#each review.tags.split("--") as tag}
@@ -56,7 +58,13 @@
         flex-direction: row;
     }
     .body {
+        width: calc(100% - 70px);
+        flex-shrink: 1;
         flex-grow: 1;
+    }
+    p {
+        overflow-wrap: break-word;
+        margin: 0;
     }
     h3 {
         margin: 12px 0;

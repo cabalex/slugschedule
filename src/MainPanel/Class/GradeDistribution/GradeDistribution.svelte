@@ -1,9 +1,76 @@
+<script context="module" lang="ts">
+    const gpas = {
+        "A+": 4.0,
+        "A": 4.0,
+        "A-": 3.7,
+        "B+": 3.3,
+        "B": 3.0,
+        "B-": 2.7,
+        "C+": 2.3,
+        "C": 2.0,
+        "C-": 1.7,
+        "D+": 1.3,
+        "D": 1.0,
+        "D-": 0.7,
+        "F": 0.0
+    }
+    const notGraded = ["P", "NP", "W", "I", "S", "U"];
+    export function calculateAverageGPA(gradeDistributions) {
+        let total = {
+            "A+": 0,
+            "A": 0,
+            "A-": 0,
+            "B+": 0,
+            "B": 0,
+            "B-": 0,
+            "C+": 0,
+            "C": 0,
+            "C-": 0,
+            "D+": 0,
+            "D": 0,
+            "D-": 0,
+            "F": 0,
+            "P": 0,
+            "NP": 0,
+            "W": 0,
+            "S": 0,
+            "I": 0,
+            "U": 0,
+        }
+
+        for (let distribution of gradeDistributions) {
+            for (let key of Object.keys(total)) {
+                total[key] += distribution[key] || 0;
+            }
+        }
+
+        // remove students who haven't been graded
+        let gradedStudents = Object.values(total).reduce((acc, value) => acc + value, 0);
+        notGraded.forEach(key => gradedStudents -= total[key]);
+
+        return Object.entries(total).reduce((acc, [key, value]) => {
+            return acc + (gpas[key] || 0) * value;
+        }, 0) / gradedStudents;
+    }
+    export function calculateDifficulty(averageGPA: number) {
+        if (averageGPA >= 3.7) {
+            return 'a breeze';
+        } else if (averageGPA >= 3.3) {
+            return 'easy';
+        } else if (averageGPA >= 3.0) {
+            return 'fine';
+        } else if (averageGPA >= 2.7) {
+            return 'hard';
+        } else {
+            return 'challenging';
+        }
+    }
+</script>
 <script lang="ts">
     import { Bar } from 'svelte-chartjs'
     import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js"
-    import { onMount } from "svelte";
     import Class from "../Class.svelte";
-  import { prettyTerm } from '../../../SidePanel/SidePanel.svelte';
+    import { prettyTerm } from '../../../SidePanel/SidePanel.svelte';
 
     ChartJS.register(
         Title,
@@ -59,23 +126,6 @@
     }
 
     export let item: Class;
-
-    const gpas = {
-        "A+": 4.0,
-        "A": 4.0,
-        "A-": 3.7,
-        "B+": 3.3,
-        "B": 3.0,
-        "B-": 2.7,
-        "C+": 2.3,
-        "C": 2.0,
-        "C-": 1.7,
-        "D+": 1.3,
-        "D": 1.0,
-        "D-": 0.7,
-        "F": 0.0
-    }
-    const notGraded = ["P", "NP", "W", "I", "S", "U"];
     
     function gradeFromGPA(gpa: number) {
         let grades = Object.keys(gpas);
@@ -155,18 +205,7 @@
             delete total.NP;
         }
 
-
-        if (averageGPA >= 3.7) {
-            difficulty = 'a breeze';
-        } else if (averageGPA >= 3.3) {
-            difficulty = 'easy';
-        } else if (averageGPA >= 3.0) {
-            difficulty = 'fine';
-        } else if (averageGPA >= 2.7) {
-            difficulty = 'hard';
-        } else {
-            difficulty = 'challenging';
-        }
+        difficulty = calculateDifficulty(averageGPA);
 
         data = {
                 labels: Object.keys(total),

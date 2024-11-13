@@ -12,7 +12,7 @@ export default async function searchRMP(instructorName: string, classCode: strin
     let className = classCode.split(" - ")[0].replace(" ", "");
 
     if (query.includes(" ")) {
-        query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1] : "");
+        query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1].replaceAll(".", "") : "");
     }
 
     let resp = await POST("https://www.ratemyprofessors.com/graphql",
@@ -266,6 +266,11 @@ export default async function searchRMP(instructorName: string, classCode: strin
     let index = similarityScore.indexOf(Math.max(...similarityScore));
     
     let instructor = instructors[index];
+
+    // sanity check; ensure the last name is the same
+    if (!instructor.lastName.endsWith(query)) {
+        return null;
+    }
 
     let relatedReviews: InstructorRating[] = [];
     let otherReviews: InstructorRating[] = [];
