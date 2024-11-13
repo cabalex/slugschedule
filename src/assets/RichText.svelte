@@ -31,7 +31,7 @@
 
     function getTargetClass(classStr: string): Class|null {
         for (let cls of $db.classes) {
-            if (cls.code.startsWith(classStr)) return cls;
+            if (cls.code.split(" - ")[0] === classStr) return cls;
         }
         return null;
     }
