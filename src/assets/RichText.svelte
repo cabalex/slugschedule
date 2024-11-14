@@ -68,4 +68,9 @@
         cursor: not-allowed;
         position: relative;
     }
+    p {
+        margin-top: 5px;
+        line-height: 2em;
+        white-space: pre-line;
+    }
 </style>
