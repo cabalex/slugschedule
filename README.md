@@ -14,3 +14,6 @@ To develop in the repository, you must run `npm install --force` in the root dir
 You must also run `npm install` in the `.server` directory.
 
 Then, you can run `npm run dev` in the root directory to start the dev server, or `npm run dev` in the `.server` directory to run the GitHub Action script (for updating the class schedule).
+
+### License
+MIT. If you make something cool with my code, feel free to let me know! :)
