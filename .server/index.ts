@@ -5,6 +5,7 @@ import DB, { type Class, ClassStatus } from "./db/DB";
 import axios from "axios";
 import https from "https";
 import { ZstdInit } from '@oneidentity/zstd-js';
+import searchRMP from "./ratemyprofessor/search";
 
 
 
@@ -111,6 +112,18 @@ async function main() {
                     db.classes[dbClassIndex] = await backoffRetryer(comparingClass.load.bind(null, dbClass.instructor)).catch((e) => { throw e });
                 }
             }
+
+            /*
+            // force rmp update
+            
+            if (db.classes[dbClassIndex].instructor.name && db.classes[dbClassIndex].instructor.name !== "Staff") {
+                let rateMyProfessor = await backoffRetryer(searchRMP.bind(null, db.classes[dbClassIndex].instructor.name, db.classes[dbClassIndex].code) as any);
+                db.classes[dbClassIndex].instructor = {
+                    ...rateMyProfessor as any,
+                    name: db.classes[dbClassIndex].instructor.name
+                }
+            }
+            */
 
             /*if (i % 50 === 0) {
                 console.log("checking export...");
