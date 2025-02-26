@@ -4,16 +4,23 @@ import { POST } from "../search/retryableSearch";
 
 const SCHOOL_ID = "U2Nob29sLTEwNzg=";
 
+// Tromba, A.J.Bauerle,F.Lin,L. -> ["Tromba", "A"]
+// Escobar Vega, L. -> ["Escobar Vega", "L"]
 
-export default async function searchRMP(instructorName: string, classCode: string): Promise<Instructor|null> {
-    // UCSC class search doesn't include spaces
+function getPisaName(instructorName: string) {
     let splitName = instructorName.split(",");
-    let query = splitName[0];
+    let lastName = splitName[0];
+    let firstInitial = splitName[1] ? splitName[1].split(".")[0] : "";
+    return [lastName, firstInitial];
+}
+
+export default async function searchRMP(instructorName: string, classCode: string, searchWithInitial=false): Promise<Instructor|null> {
+    // UCSC class search doesn't include spaces
+    let [lastName, firstInitial] = getPisaName(instructorName);
     let className = classCode.split(" - ")[0].replace(" ", "");
 
-    if (query.includes(" ")) {
-        query = (query.split(" ").pop() || "") + (splitName[1] ? ", " + splitName[1].replace(/\./g, "") : "");
-    }
+    // This seems to give best results in the RMP search (don't use commas)
+    let query = lastName + " " + firstInitial;
 
     let resp = await POST("https://www.ratemyprofessors.com/graphql",
         {
@@ -253,9 +260,9 @@ export default async function searchRMP(instructorName: string, classCode: strin
 
     let similarityScore = instructors.map((b) =>
             // Check if last name matches
-            (b.lastName.endsWith(query) ? 1 : -10) +
+            (b.lastName.endsWith(lastName) ? 1 : -10) +
             // Check if first initial matches
-            (b.firstName.startsWith(splitName[1][0]) ? 1 : -1) +
+            (b.firstName.startsWith(firstInitial) ? 1 : -1) +
             // Check if this instructor has taught courses like this
             (b.courseCodes.map(x => x.courseName.replace(/([0-9 ]+.+)|(AND.+)/gm, "")).includes(className.replace(/([0-9 ]+.+)|(AND.+)/gm, "")) ? 1 : -1) +
             // Check if this instructor has taught this course
@@ -267,8 +274,8 @@ export default async function searchRMP(instructorName: string, classCode: strin
     
     let instructor = instructors[index];
 
-    // sanity check; ensure the last name is the same
-    if (!instructor.lastName.endsWith(query)) {
+    // sanity check; ensure what we know is true
+    if (!instructor.lastName.endsWith(lastName) || !instructor.firstName.startsWith(firstInitial)) {
         return null;
     }
 
