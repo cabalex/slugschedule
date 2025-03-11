@@ -28,7 +28,7 @@
     "ics": "^3.5.0",
     "idb": "^7.1.1",
     "moment": "^2.29.4",
-    "svelte-chartjs": "^3.1.2",
+    "svelte-chartjs": "^3.1.5",
     "svelte-material-icons": "^3.0.5",
     "svelte-navigator": "^3.2.2",
     "svelte-qrcode": "^1.0.0",
