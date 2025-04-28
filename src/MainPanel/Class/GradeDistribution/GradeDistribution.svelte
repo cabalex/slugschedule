@@ -48,8 +48,9 @@
         let gradedStudents = Object.values(total).reduce((acc, value) => acc + value, 0);
         notGraded.forEach(key => gradedStudents -= total[key]);
 
+        console.log(total, gradedStudents);
         return Object.entries(total).reduce((acc, [key, value]) => {
-            return acc + (gpas[key] || 0) * value;
+            return acc + (gpas[key] ?? 0) * value;
         }, 0) / gradedStudents;
     }
     export function calculateDifficulty(averageGPA: number) {
