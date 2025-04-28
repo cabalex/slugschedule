@@ -14,7 +14,8 @@ export default async function getCurrentTerm() {
     // Summer Session is added to the calendar really early,
     // so it starts conflicting with Spring quarter enrollment.
     // Push it back to May!
-    if (term.endsWith("4") && new Date().getMonth() < 4) {
+    let isSummer = new Date().getMonth() > 4 || (new Date().getMonth() === 4 && new Date().getDate() > 15);
+    if (term.endsWith("4") && isSummer) {
         return parseInt(term) - 2;
     }
 
