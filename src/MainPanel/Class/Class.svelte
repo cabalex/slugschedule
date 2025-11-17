@@ -12,8 +12,8 @@
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
     import Information from "svelte-material-icons/Information.svelte";
 
-    import type { Class } from "../../../.server/db/DB";
-    import { home, db, focusedClass, starredClasses, detectTerm } from "../../mainStore";
+    import { type Class, ClassStatus } from "../../../.server/db/DB";
+    import { home, db, focusedClass, starredClasses, detectTerm, term } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
@@ -25,9 +25,61 @@
     import ShareModal from "../../assets/ShareModal.svelte";
     import ClassesByCode from "../../assets/ClassesByCode.svelte";
     import GradeDistribution from "./GradeDistribution/GradeDistribution.svelte";
-  import RichText from "../../assets/RichText.svelte";
+    import RichText from "../../assets/RichText.svelte";
+    import { onDestroy, onMount } from "svelte";
 
     export let item: Class;
+
+    let lastUpdate = $db?.lastUpdate ? new Date($db.lastUpdate) : new Date();
+    async function updateClass() {
+        const endpoint = `https://my.ucsc.edu/PSIGW/RESTListeningConnector/PSFT_CSPRD/SCX_CLASS_DETAIL.v1/${$term}/${item.number}`
+        const res = await fetch(endpoint);
+        if (res.ok) {
+            const data = await res.json();
+            // Assign new data to item
+            item.name = data.primary_section.title_long
+            item.description = data.primary_section.description
+            if (data.notes) {
+                item.classNotes = data.notes.join("\n\n")
+            }
+            item.enrollmentRequirements = data.primary_section.requirements
+            item.availability = {
+                status: ClassStatus[data.primary_section.enrl_status] as unknown as ClassStatus,
+                capacity: parseInt(data.primary_section.capacity),
+                enrolled: parseInt(data.primary_section.enrl_total),
+                waitlist: parseInt(data.primary_section.waitlist_total),
+                waitlistCapacity: parseInt(data.primary_section.waitlist_capacity)
+            }
+            if (data.secondary_sections) {
+                for (let secondarySection of data.secondary_sections) {
+                    const index = item.associatedClasses.findIndex(x => x.number === parseInt(secondarySection.class_nbr));
+                    if (index !== -1) {
+                        item.associatedClasses[index].availability = {
+                            status: ClassStatus[secondarySection.enrl_status] as unknown as ClassStatus,
+                            capacity: parseInt(secondarySection.capacity),
+                            enrolled: parseInt(secondarySection.enrl_total),
+                            waitlist: parseInt(secondarySection.waitlist_total),
+                            waitlistCapacity: parseInt(secondarySection.waitlist_capacity)
+                        }
+                    }
+                }
+            }
+            lastUpdate = new Date();
+            console.log("Class data updated");
+        } else {
+            console.error("Failed to update class data");
+        }
+    }
+
+    let updateInterval;
+    onMount(() => {
+        updateClass();
+        updateInterval = setInterval(updateClass, 60 * 1000); // every minute
+    })
+    onDestroy(() => {
+        clearInterval(updateInterval);
+    })
+
     let sharebutton;
     function openModal() {
         shareOpen = true;
@@ -109,7 +161,7 @@
         {/if}
         <ClassesByCode code={item.code} number={item.number} />
         <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
-        <Enrollment number={item.number} availability={item.availability} />
+        <Enrollment number={item.number} availability={item.availability} {lastUpdate} />
         {#if item.gradeDistributions.length}
             <h3>Grade distribution</h3>
             <GradeDistribution item={item} />
