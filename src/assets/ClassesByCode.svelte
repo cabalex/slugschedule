@@ -137,7 +137,7 @@
         height: 6em;
         border: 2px solid #aaa;
         border-top: none;
-        z-index: 1;
+        z-index: 5;
     }
     .sectionWidget:active, .sectionWidget:active .details {
         border-color: white;
