@@ -96,5 +96,6 @@
     .fill {
         height: 100%;
         background-color: var(--closed);
+        transition: width 0.2s cubic-bezier(0.65, 0, 0.35, 1);
     }
 </style>

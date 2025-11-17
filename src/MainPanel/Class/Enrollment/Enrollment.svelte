@@ -8,10 +8,12 @@
     import { db, detectTerm } from "../../../mainStore";
     import { ClassStatus } from '../../../../.server/db/DB';
     import ClassStatusIcon from "../../../assets/ClassStatusIcon.svelte";
+  import RollingNumber from "../../../assets/RollingNumber.svelte";
 
     export let availability;
     export let number;
     export let large = true;
+    export let lastUpdate: Date = new Date();
 
     let chartView: "all" | "30d" | "7d" | "3d" | "1d" = "all";
 
@@ -97,7 +99,7 @@
     let waitlistInLastDay = 0;
     let range = 0;
     $: {
-        if ($db) {
+        if ($db && availability) {
             enrolledInLastDay = 0;
             waitlistInLastDay = 0;
             data.datasets[0].data = [];
@@ -142,11 +144,11 @@
                     }
                 }
             }
-            data.datasets[0].data.push({x: new Date($db.lastUpdate), y: availability.enrolled});
-            data.datasets[1].data.push({x: new Date($db.lastUpdate), y: availability.waitlist});
-            data.datasets[2].data.push({x: new Date($db.lastUpdate), y: availability.capacity});
+            data.datasets[0].data.push({x: lastUpdate, y: availability.enrolled});
+            data.datasets[1].data.push({x: lastUpdate, y: availability.waitlist});
+            data.datasets[2].data.push({x: lastUpdate, y: availability.capacity});
 
-            range = $db.lastUpdate - data.datasets[0].data[0]?.x?.getTime();
+            range = lastUpdate.getTime() - data.datasets[0].data[0]?.x?.getTime();
 
             switch(chartView) {
                 case "30d":
@@ -240,11 +242,11 @@
             {:else if availability.capacity - availability.enrolled === 1}
                 One spot remaining!
             {:else}
-                {availability.capacity - availability.enrolled} spots remaining
+                <span><RollingNumber number={availability.capacity - availability.enrolled} /> spots remaining</span>
             {/if}
         </h1>
         {#if availability.status === ClassStatus.Waitlist}
-        <h1>{availability.waitlist} on waitlist</h1>
+        <h1><RollingNumber number={availability.waitlist} /> on waitlist</h1>
         {/if}
         {#if enrolledInLastDay !== 0}
         <h2 class="trend">
@@ -254,12 +256,16 @@
             <TrendingDown size="2em" />
             {/if}
             <div>
-                <span>{enrolledInLastDay} enrolled in last day</span>
+                <span><RollingNumber number={enrolledInLastDay} /> enrolled in last day</span>
                 <span style="font-size: 0.8em">({Math.round(Math.abs(enrolledInLastDay) / availability.capacity * 100)}% of capacity)</span>
             </div>
-        </h2>
-        
+        </h2>        
         {/if}
+        <div class="updatingLive">Updated {lastUpdate.toLocaleTimeString(navigator.language, {
+        hour: 'numeric',
+        minute: '2-digit'
+        })}</div>
+
     </div>
     {/if}
     <div class="chart">
@@ -347,6 +353,7 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        position: relative;
     }
     .text h1 {
         margin: 10px;
@@ -366,6 +373,13 @@
     .trend > div > span {
         display: block;
         margin: 0;
+    }
+    .updatingLive {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        color: #ccc;
+        font-size: 0.8em;
     }
     .note {
         display: flex;
