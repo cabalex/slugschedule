@@ -111,6 +111,7 @@
 <SectionPopup item={item} close={() => showSectionPopup = false} />
 {/if}
 
+{#key item.number}
 <div
     class="classItem"
     class:small={detectTerm() !== $db.term}
@@ -192,6 +193,7 @@
     <ClassAllocation availability={item.availability} />
     {/if}
 </div>
+{/key}
 
 <style>
     .classItem {
