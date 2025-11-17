@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { liveUpdates } from "../mainStore";
     import { ClassStatus } from "../../.server/db/DB";
 
     export let status: ClassStatus;
@@ -6,6 +7,7 @@
 
 <span
     class="classStatus"
+    class:noLive={!$liveUpdates}
     class:open={status === ClassStatus.Open}
     class:waitlist={status === ClassStatus.Waitlist}
     class:closed={status === ClassStatus.Closed}
@@ -36,7 +38,7 @@
         background-color: var(--closed);
         border: 5px solid var(--closed-dark);
     }
-    .classStatus:after {
+    .classStatus:not(.noLive):after {
         content: "";
         animation: ping 60s infinite;
         position: absolute;
@@ -46,13 +48,13 @@
         opacity: 0.75;
         z-index: 1;
     }
-    .classStatus.open:after {
+    .classStatus.open:not(.noLive):after {
         background-color: var(--success);
     }
-    .classStatus.waitlist:after {
+    .classStatus.waitlist:not(.noLive):after {
         background-color: var(--waitlist);
     }
-    .classStatus.closed:after {
+    .classStatus.closed:not(.noLive):after {
         border-radius: 0;
         background-color: var(--closed);
     }
