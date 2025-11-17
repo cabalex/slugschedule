@@ -193,6 +193,7 @@ export let listMode = writable<"scheduler"|"starred"|"all"|"smart">(
     get(scheduledClasses).length ? "scheduler" :
     get(starredClasses).length ? "starred" : "all"
 );
+export let liveUpdates = writable<boolean>(localStorage.getItem('autoCheckForUpdates') !== "false");
 
 function pushState() {
     if (get(db) === null) return;
@@ -270,6 +271,10 @@ scheduledClasses.subscribe((value) => {
 
 home.subscribe((value) => {
     localStorage.setItem("home", value);
+})
+
+liveUpdates.subscribe((value) => {
+    localStorage.setItem('autoCheckForUpdates', value ? "true" : "false");
 })
 
 db.subscribe((value) => {
