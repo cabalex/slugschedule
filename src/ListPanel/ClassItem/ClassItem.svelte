@@ -37,6 +37,7 @@
     import DateChecker from "../../assets/DateChecker.svelte";
     import SectionPopup from "./SectionPopup.svelte";
     import { calculateAverageGPA, calculateDifficulty } from "../../MainPanel/Class/GradeDistribution/GradeDistribution.svelte";
+  import { onDestroy, onMount } from "svelte";
 
     export let item: Class;
 
@@ -79,6 +80,31 @@
         }
         $focusedClass = item;
     }
+
+    // This is sort of a hack, but I'm not sure how to trigger reactivity
+    // in a better way here. The object is updated but reactivity is not
+    // detected on it.
+    let oldAvailability = {...item.availability};
+    function checkForUpdate() {
+        if (oldAvailability.status !== item.availability.status ||
+            oldAvailability.enrolled !== item.availability.enrolled ||
+            oldAvailability.capacity !== item.availability.capacity ||
+            oldAvailability.waitlist !== item.availability.waitlist ||
+            oldAvailability.waitlistCapacity !== item.availability.waitlistCapacity) {
+            // availability has changed
+            oldAvailability = {...item.availability};
+            // trigger reactivity
+            item = {...item};
+        }
+    }
+
+    let updateInterval;
+    onMount(() => {
+        updateInterval = setInterval(checkForUpdate, 1000);
+    })
+    onDestroy(() => {
+        clearInterval(updateInterval);
+    })
 </script>
 
 {#if showSectionPopup}
@@ -200,6 +226,7 @@
         z-index: -1;
         background-color: #444;
         z-index: 1;
+        transition: background-color 0.2s;
     }
     .classItem.closed .topBar:before {
         background-color: var(--closed-dark);
