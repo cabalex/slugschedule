@@ -10,10 +10,9 @@
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
-    import Information from "svelte-material-icons/Information.svelte";
 
     import { type Class, ClassStatus } from "../../../.server/db/DB";
-    import { home, db, focusedClass, starredClasses, detectTerm, term } from "../../mainStore";
+    import { home, db, focusedClass, starredClasses, liveUpdates, detectTerm, term } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
@@ -73,6 +72,7 @@
 
     let updateInterval;
     onMount(() => {
+        if (!$liveUpdates) return;
         updateClass();
         updateInterval = setInterval(updateClass, 60 * 1000); // every minute
     })

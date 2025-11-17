@@ -1,7 +1,7 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
-    import { db, focusedClass, home, listMode, setDB, decompressZSTD } from "../mainStore";
+    import { db, focusedClass, home, listMode, liveUpdates, setDB, decompressZSTD } from "../mainStore";
     import Class from "./Class/Class.svelte";
     import Scheduler from "./Scheduler/Scheduler.svelte";
     import { openDB } from "idb";
@@ -43,6 +43,11 @@
         $focusedClass = "home";
         loading = false;
     }
+
+    function setLiveUpdates(event) {
+        let checked = (event.target as HTMLInputElement).checked;
+        liveUpdates.set(checked);
+    }
 </script>
 
 <main bind:this={mainElem} class:focused={$focusedClass} class:scheduler={$listMode === "scheduler"}>
@@ -57,7 +62,12 @@
         Select a class to see more details about it. You can also search or use the dropdowns to filter your results.<br />
         Need more help? <a href="https://github.com/cabalex/slugschedule/wiki/Usage-Guide" target="_blank" rel="noopener noreferrer">See the Usage Guide</a>.<br />
 
-        <h2>Home</h2>
+        <h2>Settings</h2>
+        <p>
+            <label for="autoCheckForUpdates">Enable live updates (pulls from UCSC servers):</label>
+            <input type="checkbox" id="autoCheckForUpdates" on:change={setLiveUpdates} checked={$liveUpdates} />
+        </p>
+        
         For accurate walking estimates, I live at <select aria-label="Home location" bind:value={$home}>
             <option value="">Off campus</option>
             <option>Cowell College</option>
@@ -77,16 +87,7 @@
             <option value="UCSC Trailer Park">Camper Park</option>
         </select>
 
-        <h2>Quick Links</h2>
-        <a href="https://my.ucsc.edu" target="_blank">MyUCSC</a> <br />
-        <a href="https://ucsc.instructure.com" target="_blank">Canvas</a> <br />
-        <a href="https://advising.ucsc.edu/gettingstartedinthemajor/frosh/index.html" target="_blank">Getting Started In Your Major</a> <br />
-        <a href="https://registrar.ucsc.edu/enrollment/general-education-requirements.html" target="_blank">General Education Requirements</a> <br />
-        <a href="https://registrar.ucsc.edu/soc/final-examinations.html" target="_blank">Final Examinations Times</a>
-
-        <p>Created with 💛 by <a href="https://cabalex.github.io" target="_blank">@cabalex</a> with contributions from <a href="https://github.com/darthnithin" target="_blank">@darthnithin</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
-        <p>Thanks to <a href="https://slugtistics.com/about" target="_blank">Jack LeValley</a> for grade distributions data.</p>
-        <p>Data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
+        <p>DB data should update every hour. Last updated: {new Date($db.lastUpdate).toLocaleString()}</p>
         <button on:click={attemptLoad}>
             {#if loading}
                 <span class="loading">
@@ -96,6 +97,17 @@
                 Update now
             {/if}
         </button>
+
+        <h2>Quick Links</h2>
+        <a href="https://my.ucsc.edu" target="_blank">MyUCSC</a> <br />
+        <a href="https://ucsc.instructure.com" target="_blank">Canvas</a> <br />
+        <a href="https://advising.ucsc.edu/gettingstartedinthemajor/frosh/index.html" target="_blank">Getting Started In Your Major</a> <br />
+        <a href="https://registrar.ucsc.edu/enrollment/general-education-requirements.html" target="_blank">General Education Requirements</a> <br />
+        <a href="https://registrar.ucsc.edu/soc/final-examinations.html" target="_blank">Final Examinations Times</a>
+
+        <p>Created with 💛 by <a href="https://cabalex.github.io" target="_blank">@cabalex</a> with contributions from <a href="https://github.com/darthnithin" target="_blank">@darthnithin</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
+        <p>Thanks to <a href="https://slugtistics.com/about" target="_blank">Jack LeValley</a> for grade distributions data.</p>
+
         
         <header class="mobileHeader">
             <button class="roundBtn" on:click={() => $focusedClass = null}>
@@ -117,6 +129,11 @@
         border-radius: 10px 10px 0 0;
         background-color: #333;
         overflow: auto;
+    }
+    input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-left: 10px;
+        vertical-align: middle;
     }
     h1 {
         font-size: 2em;
