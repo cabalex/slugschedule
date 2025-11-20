@@ -256,7 +256,7 @@
             <TrendingDown size="2em" />
             {/if}
             <div>
-                <span><RollingNumber number={enrolledInLastDay} /> enrolled in last day</span>
+                <span><RollingNumber number={Math.abs(enrolledInLastDay)} /> {enrolledInLastDay < 0 ? "dropped" : "enrolled"} in last day</span>
                 <span style="font-size: 0.8em">({Math.round(Math.abs(enrolledInLastDay) / availability.capacity * 100)}% of capacity)</span>
             </div>
         </h2>        
