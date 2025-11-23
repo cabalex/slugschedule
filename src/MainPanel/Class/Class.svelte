@@ -41,9 +41,12 @@
             if (data.notes) {
                 item.classNotes = data.notes.join("\n\n")
             }
+            const status = data.primary_section.enrl_status === "Open" ? ClassStatus.Open :
+                data.primary_section.enrl_status === "Wait List" ? ClassStatus.Waitlist :
+                ClassStatus.Closed;
             item.enrollmentRequirements = data.primary_section.requirements
             item.availability = {
-                status: ClassStatus[data.primary_section.enrl_status] as unknown as ClassStatus,
+                status,
                 capacity: parseInt(data.primary_section.capacity),
                 enrolled: parseInt(data.primary_section.enrl_total),
                 waitlist: parseInt(data.primary_section.waitlist_total),
@@ -53,8 +56,11 @@
                 for (let secondarySection of data.secondary_sections) {
                     const index = item.associatedClasses.findIndex(x => x.number === parseInt(secondarySection.class_nbr));
                     if (index !== -1) {
+                        const sectionStatus = secondarySection.enrl_status === "Open" ? ClassStatus.Open :
+                            secondarySection.enrl_status === "Wait List" ? ClassStatus.Waitlist :
+                            ClassStatus.Closed;
                         item.associatedClasses[index].availability = {
-                            status: ClassStatus[secondarySection.enrl_status] as unknown as ClassStatus,
+                            status: sectionStatus,
                             capacity: parseInt(secondarySection.capacity),
                             enrolled: parseInt(secondarySection.enrl_total),
                             waitlist: parseInt(secondarySection.waitlist_total),
