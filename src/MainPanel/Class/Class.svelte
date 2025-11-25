@@ -12,7 +12,7 @@
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
 
     import { type Class, ClassStatus } from "../../../.server/db/DB";
-    import { home, db, focusedClass, starredClasses, liveUpdates, detectTerm, term } from "../../mainStore";
+    import { home, db, focusedClass, starredClasses, liveUpdates, detectTerm } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";
     import { rmpScoreColor } from "../../ListPanel/ClassItem/ClassItem.svelte";
@@ -31,7 +31,7 @@
 
     let lastUpdate = $db?.lastUpdate ? new Date($db.lastUpdate) : new Date();
     async function updateClass() {
-        const endpoint = `https://my.ucsc.edu/PSIGW/RESTListeningConnector/PSFT_CSPRD/SCX_CLASS_DETAIL.v1/${$term}/${item.number}`
+        const endpoint = `https://my.ucsc.edu/PSIGW/RESTListeningConnector/PSFT_CSPRD/SCX_CLASS_DETAIL.v1/${$db.term}/${item.number}`
         const res = await fetch(endpoint);
         if (res.ok) {
             const data = await res.json();
@@ -76,9 +76,21 @@
         }
     }
 
+    function printTerm(termNum: number): string {
+        const year = "20" + termNum.toString().slice(1, 3);
+        const quarterCode = termNum % 10;
+        const quarterMap: { [key: number]: string } = {
+            0: "Winter",
+            2: "Spring",
+            4: "Summer",
+            8: "Fall"
+        };
+        return ` (${quarterMap[quarterCode]} ${year})`;
+    }
+
     let updateInterval;
     onMount(() => {
-        if (!$liveUpdates) return;
+        if (!$liveUpdates || $db.term !== detectTerm()) return;
         updateClass();
         updateInterval = setInterval(updateClass, 60 * 1000); // every minute
     })
@@ -139,7 +151,11 @@
             </div>
             <div class="text">
                 <h2>
-                    {item.code} <CopyClassNumber number={item.number} />
+                    {item.code}
+                    {#if $db.term !== detectTerm()}
+                        <span class="different-term">{printTerm($db.term)}</span>
+                    {/if}
+                    <CopyClassNumber number={item.number} />
                 </h2>
                 <h1>
                     {item.name}
@@ -327,6 +343,9 @@
         flex-direction: row;
         align-items: center;
         gap: 10px;
+    }
+    .different-term {
+        color: orange;
     }
     .actionColumn {
         display: flex;
