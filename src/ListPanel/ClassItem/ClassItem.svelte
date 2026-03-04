@@ -41,13 +41,8 @@
 
     export let item: Class;
 
-    let code = item.code;
+    $: code = item.code.split(" - ")[0];;
     let showSectionPopup = false;
-    $: {
-        if ($db.classes.map(x => x.name).filter(x => x.includes(item.code.split(" - ")[0])).length < 1) {
-            code = item.code.split(" - ")[0];
-        }
-    }
 
     function toggleStar(e) {
         e.stopPropagation();
