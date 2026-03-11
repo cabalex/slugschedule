@@ -406,9 +406,10 @@ export default class DB {
         
         function unpackValue(mode: "string") : string
         function unpackValue(mode: "number") : number
+        function unpackValue(mode: "int16") : number
         function unpackValue(mode: "uint32") : number
         function unpackValue(mode: "boolean") : boolean
-        function unpackValue(mode: "string" | "uint32" | "number" | "boolean") : string | number | boolean {
+        function unpackValue(mode: "string" | "uint32" | "int16" | "number" | "boolean") : string | number | boolean {
             switch(mode) {
                 case "string":
                     let length = dataView.getUint16(offset, true);
@@ -419,6 +420,10 @@ export default class DB {
                     let number = dataView.getUint16(offset, true);
                     offset += 2;
                     return number;
+                case "int16":
+                    let uint16 = dataView.getInt16(offset, true);
+                    offset += 2;
+                    return uint16;
                 case "uint32":
                     // Technically dates should be Uint64, due to the 2038 problem...
                     // But whatever, I'm probably not going to be at this school in 2038
@@ -493,7 +498,7 @@ export default class DB {
                 c.instructor.ratings = Array.from(new Uint8Array(arrayBuffer, offset, 5)) as any;
                 offset += 5;
                 c.instructor.numRatings = unpackValue("number");
-                c.instructor.wouldTakeAgainPercent = unpackValue("number");
+                c.instructor.wouldTakeAgainPercent = unpackValue("int16");
                 let reviewCount = unpackValue("number");
                 c.instructor.reviews = [];
                 for (let j = 0; j < reviewCount; j++) {
