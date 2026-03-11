@@ -254,7 +254,7 @@ export default class DB {
                     let encoding = encoder.encode(v);
                     return concat(Uint16Array.from([encoding.byteLength]).buffer, encoding.buffer);
                 case "number":
-                    return force32Bit ? Int32Array.from([Math.round(v)]).buffer : Int16Array.from([Math.round(v)]).buffer;
+                    return force32Bit ? Int32Array.from([Math.round(v)]).buffer : Uint16Array.from([Math.round(v)]).buffer;
                 case "boolean":
                     return Uint8Array.from([v ? 1 : 0]).buffer;
                 default:
@@ -263,7 +263,7 @@ export default class DB {
         }
     
         let bufs: ArrayBuffer[] = [
-            encoder.encode("UCSC"),
+            encoder.encode("UCSC").buffer,
             packValue(this.version),
             packValue(this.term),
             packValue(this.classes.length)
@@ -416,7 +416,7 @@ export default class DB {
                     offset += 2 + length;
                     return text;
                 case "number":
-                    let number = dataView.getInt16(offset, true);
+                    let number = dataView.getUint16(offset, true);
                     offset += 2;
                     return number;
                 case "uint32":

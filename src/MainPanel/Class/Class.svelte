@@ -41,16 +41,19 @@
             if (data.notes) {
                 item.classNotes = data.notes.join("\n\n")
             }
-            const status = data.primary_section.enrl_status === "Open" ? ClassStatus.Open :
-                data.primary_section.enrl_status === "Wait List" ? ClassStatus.Waitlist :
-                ClassStatus.Closed;
             item.enrollmentRequirements = data.primary_section.requirements
+            // If combined section, primary_section will have the wrong numbers, so
+            // find the correct section from combined_sections
+            const enrollmentSection = 'combined_sections' in data ? data.combined_sections.find(x => x.class_nbr === item.number.toString()) : data.primary_section;
+            const status = enrollmentSection.enrl_status === "Open" ? ClassStatus.Open :
+                enrollmentSection.enrl_status === "Wait List" ? ClassStatus.Waitlist :
+                ClassStatus.Closed;
             item.availability = {
                 status,
-                capacity: parseInt(data.primary_section.capacity),
-                enrolled: parseInt(data.primary_section.enrl_total),
-                waitlist: parseInt(data.primary_section.waitlist_total),
-                waitlistCapacity: parseInt(data.primary_section.waitlist_capacity)
+                capacity: parseInt(enrollmentSection.capacity),
+                enrolled: parseInt(enrollmentSection.enrl_total),
+                waitlist: parseInt(enrollmentSection.waitlist_total),
+                waitlistCapacity: parseInt(enrollmentSection.waitlist_capacity)
             }
             if (data.secondary_sections) {
                 for (let secondarySection of data.secondary_sections) {
