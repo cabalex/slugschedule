@@ -73,7 +73,7 @@
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
                 points: false,
-                tension: 0.1,
+                tension: 0,
                 pointRadius: 0,
             },
             {
@@ -81,7 +81,7 @@
                 data: [],
                 fill: false,
                 borderColor: 'orange',
-                tension: 0.1,
+                tension: 0,
                 pointRadius: 0
             },
             {
@@ -90,7 +90,7 @@
                 backgroundColor: 'rgb(192, 192, 192)',
                 fillColor: 'red',
                 borderColor: 'rgb(192, 192, 192)',
-                tension: 0.1,
+                tension: 0,
                 pointRadius: 0
             }
         ]
