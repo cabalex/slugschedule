@@ -6,6 +6,8 @@
     export let options = {};
     export let label = "Label";
     export let multiple = false;
+    export let minWidth: string|null = null;
+    export let displayValue = null;
     export let onChange = (value: string[]) => {};
 
     function selectOption(option) {
@@ -54,6 +56,14 @@
         if (e && e.target.closest(`.chip.${label.replaceAll(".", "")}`)) return;
         open = false;
     }
+
+    $: chipLabel = displayValue ?
+        displayValue(value, label, options) :
+        value.length === 0 ?
+        label :
+        value.length === 1 ?
+        value[0] :
+        `${value.length} selected`;
 </script>
 
 <div
@@ -62,16 +72,11 @@
     bind:this={chipElem}
     class="chip {label.replaceAll(".", "")}"
     class:active={value.length}
+    style={minWidth ? `min-width: ${minWidth};` : ""}
     on:click={toggle}
     on:keypress={toggle}
 >
-    {#if value.length === 0}
-    {label}
-    {:else if value.length === 1}
-    {value[0]}
-    {:else}
-    {value.length} selected
-    {/if}
+    {chipLabel}
     <span style={open ? "transform: rotate(180deg)" : ""}>
         <MenuDown />
     </span>
