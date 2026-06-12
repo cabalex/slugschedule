@@ -300,38 +300,32 @@ interface SearchFilters {
     status: ClassStatus[],
     ges: string[],
     undergraduate: boolean|null,
+    days: string[],
+    startTime: number|null,
+    endTime: number|null,
     searchResults: {query: string, results: any[]}|null;
     sortMode: {value: string, fn: Function}|null;
 }
 
+function getDefaultSearchFilters(): SearchFilters {
+    return {
+        department: [],
+        instructionMode: [],
+        status: [],
+        ges: [],
+        undergraduate: null,
+        days: [],
+        startTime: null,
+        endTime: null,
+        searchResults: null,
+        sortMode: null
+    };
+}
+
 export let searchFilters = writable<{[key: string]: SearchFilters}>(
     {
-        "all": {
-            department: [],
-            instructionMode: [],
-            status: [],
-            ges: [],
-            undergraduate: null,
-            searchResults: null,
-            sortMode: null
-        },
-        "starred": {
-            department: [],
-            instructionMode: [],
-            status: [],
-            ges: [],
-            undergraduate: null,
-            searchResults: null,
-            sortMode: null
-        },
-        "scheduler": {
-            department: [],
-            instructionMode: [],
-            status: [],
-            ges: [],
-            undergraduate: null,
-            searchResults: null,
-            sortMode: null
-        }
+        "all": getDefaultSearchFilters(),
+        "starred": getDefaultSearchFilters(),
+        "scheduler": getDefaultSearchFilters()
     }
 )
