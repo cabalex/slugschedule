@@ -11,8 +11,11 @@
     import GeChip from "../Chips/GEChip.svelte";
     import GraduateChip from "../Chips/GraduateChip.svelte";
     import SortChip from "../Chips/SortChip.svelte";
+    import DayChip from "../Chips/DayChip.svelte";
+    import TimeChip from "../Chips/TimeChip.svelte";
     import { tick } from "svelte";
     import SmartPanel from "../SmartPanel/SmartPanel.svelte";
+    import { matchesMeetingFilters } from "../meetingInfo";
 
 
     
@@ -52,6 +55,8 @@
                 return filters.undergraduate === x.details.undergraduate;
             }
             return true;
+        }).filter(x => {
+            return matchesMeetingFilters(x.meetingInfos || [x.meetingInfo], filters);
         })
 
         if (filters.sortMode) {
@@ -98,6 +103,9 @@
         $searchFilters[$listMode].status = [];
         $searchFilters[$listMode].ges = [];
         $searchFilters[$listMode].undergraduate = null;
+        $searchFilters[$listMode].days = [];
+        $searchFilters[$listMode].startTime = null;
+        $searchFilters[$listMode].endTime = null;
         $searchFilters[$listMode].searchResults = null;
         $searchFilters[$listMode].sortMode = null;
     }
@@ -129,6 +137,8 @@
             <StatusChip />
             <GeChip />
             <GraduateChip />
+            <DayChip />
+            <TimeChip />
             <SortChip />
             {#if filtered}
                 <button class="chip" on:click={resetFilters}><Restart size="1.5em" /></button>

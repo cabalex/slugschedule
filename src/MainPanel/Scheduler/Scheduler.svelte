@@ -2,7 +2,7 @@
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
     import { tick, onMount, onDestroy } from "svelte";
-    import { MeetingInfos } from "../../assets/DateChecker.svelte";
+    import { MeetingInfos } from "../../meetingInfo";
     import { db, focusedClass, listMode, scheduledClasses, smartClasses } from "../../mainStore";
     import ClassNumber from "./ClassNumber.svelte";
     import ShareModal from "../../assets/ShareModal.svelte";
