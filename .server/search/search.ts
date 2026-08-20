@@ -245,7 +245,8 @@ export default async function search(
     let resp = await POST(ENDPOINT, formData, {
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
-        }
+        },
+        timeout: 60000
     })
 
     if (resp.status !== 200) {
