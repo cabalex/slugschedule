@@ -9,7 +9,7 @@
     import CalendarExport from "svelte-material-icons/CalendarExport.svelte";
 
     import { db } from "../mainStore";
-    import { MeetingInfos } from "./DateChecker.svelte";
+    import { MeetingInfos } from "../meetingInfo";
 
     export let url = "";
     export let headerText = "Share this URL";
