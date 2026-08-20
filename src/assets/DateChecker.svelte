@@ -1,68 +1,7 @@
-<script lang="ts" context="module">
-    enum Day {
-        Monday, Tuesday, Wednesday, Thursday, Friday
-    }
-    export class MeetingInfos {
-        infos: Array<{
-            days: Day[];
-            startTime: number;
-            endTime: number;
-            location: string;
-            dates: string;
-        }>
-        constructor(infos) {
-            this.infos = infos;
-        }
-        static parse(infos: any[]) {
-            let outputInfos = [];
-            for (let i = 0; i < infos.length; i++) {
-                // "MTuWThFSaSu 10:00-11:00"
-                let [daysText, times] = infos[i].dayAndTime.split(" ");
-                if (!times) continue;
-                // really hacky way but i hate dealing with dates
-                let [startTime, endTime] = times.split("-").map(x => new Date("1/1/1970 " + x.replace("A", " A").replace("P", " P")).getTime());
-                let days = [];
-                if (daysText.includes("M")) days.push(Day.Monday);
-                if (daysText.includes("Tu")) days.push(Day.Tuesday);
-                if (daysText.includes("W")) days.push(Day.Wednesday);
-                if (daysText.includes("Th")) days.push(Day.Thursday);
-                if (daysText.includes("F")) days.push(Day.Friday);
-
-                outputInfos.push({
-                    days, startTime, endTime, location: infos[i].location, dates: infos[i].dates
-                })
-            }
-            return new MeetingInfos(outputInfos);
-        }
-        checkOverlap(a: MeetingInfos) {
-            for (let i = 0; i < this.infos.length; i++) {
-                for (let j = 0; j < a.infos.length; j++) {
-                    if (this.infos[i].days.some(x => a.infos[j].days.includes(x))) {
-                        if (this.infos[i].startTime < a.infos[j].endTime && this.infos[i].endTime > a.infos[j].startTime) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        checkVicinity(a: MeetingInfos, margin: number) {
-            for (let i = 0; i < this.infos.length; i++) {
-                for (let j = 0; j < a.infos.length; j++) {
-                    if (this.infos[i].days.some(x => a.infos[j].days.includes(x))) {
-                        if (this.infos[i].startTime < a.infos[j].endTime + margin && this.infos[i].endTime > a.infos[j].startTime - margin) {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-    }
-</script>
 <script lang="ts">
     import Clock from "svelte-material-icons/Clock.svelte";
     import { db, scheduledClasses } from "../mainStore";
+    import { MeetingInfos } from "../meetingInfo";
 
     export let number;
     export let onlyShowConflict = false;
