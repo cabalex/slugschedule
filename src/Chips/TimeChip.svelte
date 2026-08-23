@@ -104,9 +104,6 @@
 <style>
     .chip {
         padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
     }
     .chipTrigger {
         background: transparent;
@@ -146,6 +143,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        border: 1px solid #777;
     }
     label {
         display: flex;

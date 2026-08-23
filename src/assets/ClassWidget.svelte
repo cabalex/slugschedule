@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ClassStatus } from "../../.server/db/DB";
-  import { db, focusedClass } from "../mainStore";
+  import { db, focusedClass, shouldAnimate } from "../mainStore";
 
     export let number;
 
@@ -11,10 +11,16 @@
         color = item?.availability.status === ClassStatus.Closed ? "var(--closed)" :
             item?.availability.status === ClassStatus.Waitlist ? "var(--waitlist)" : "white";
     }
+
+    function focusClass() {
+        $shouldAnimate = false;
+        $focusedClass = item;
+        setTimeout(() => $shouldAnimate = true, 0);
+    }
 </script>
 
 {#if item}
-<button class="classWidget" on:click={() => focusedClass.set(item)}>
+<button class="classWidget" on:click={focusClass}>
     <h4>{item.code}</h4>
     <h3>{item.name}</h3>
     <div class="bar">
