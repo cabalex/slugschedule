@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Class } from "../../.server/db/DB";
-  import { db, term, focusedClass } from "../mainStore";
+  import { db, term, focusedClass, shouldAnimate } from "../mainStore";
 
     export let content = "";
 
@@ -38,7 +38,9 @@
 
     function navigateToClass(cls: Class, e) {
         e.preventDefault();
+        $shouldAnimate = false;
         $focusedClass = cls;
+        setTimeout(() => $shouldAnimate = true, 0);
     }
 
     $: parsedContent = parse(content);

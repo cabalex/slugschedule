@@ -107,6 +107,7 @@
         position: absolute;
         z-index: 10;
         background-color: #222;
+        box-sizing: border-box;
         width: 300px;
         top: calc(100% + 2px);
         left: 0;
@@ -114,6 +115,7 @@
         overflow-y: auto;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        border: 1px solid #777;
     }
     .options::-webkit-scrollbar-thumb {
         background-color: #333;

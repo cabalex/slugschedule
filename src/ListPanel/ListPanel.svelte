@@ -130,19 +130,21 @@
     {#if $listMode === "smart"}
         <SmartPanel />
     {:else}
-        <Search onSearchClicked={scrollOnSearch} />
-        <div class="chipShelf">
-            <DepartmentChip />
-            <OnlineChip />
-            <StatusChip />
-            <GeChip />
-            <GraduateChip />
-            <DayChip />
-            <TimeChip />
-            <SortChip />
-            {#if filtered}
-                <button class="chip" on:click={resetFilters}><Restart size="1.5em" /></button>
-            {/if}
+        <div class="searchContainer">
+            <Search onSearchClicked={scrollOnSearch} />
+            <div class="chipShelf">
+                <DepartmentChip />
+                <OnlineChip />
+                <StatusChip />
+                <GeChip />
+                <GraduateChip />
+                <DayChip />
+                <TimeChip />
+                <SortChip />
+                {#if filtered}
+                    <button class="chip" on:click={resetFilters}><Restart size="1.5em" /></button>
+                {/if}
+            </div>
         </div>
         {#if items.length}
             <VirtualList bind:scrollToIndex={scrollToIndex} items={items} let:item>
@@ -171,6 +173,11 @@
         position: relative;
 
         width: 500px;
+    }
+    .searchContainer {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #444;
     }
     .chipShelf {
         display: flex;

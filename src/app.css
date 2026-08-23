@@ -134,7 +134,7 @@ button:focus-visible {
 
 header.mobileHeader {
   position: sticky;
-  bottom: 80px;
+  bottom: 40px;
   z-index: 10;
   margin-top: 100px;
   width: 100%;
@@ -147,6 +147,9 @@ header.mobileHeader {
   gap: 10px;
   align-items: center;
 }
+header.mobileHeader h2 {
+  flex-grow: 1;
+}
 svg {
   flex-shrink: 0;
 }
@@ -154,21 +157,5 @@ svg {
 @media screen and (min-width: 1000px) {
   .mobileHeader {
     display: none !important;
-  }
-  ::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #333;
-  }
-  ::-webkit-scrollbar-track:hover {
-    background: #444;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #ccc;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #eee;
   }
 }

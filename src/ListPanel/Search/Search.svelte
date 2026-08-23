@@ -78,7 +78,7 @@
                 </button>
             {/if}
         </div>
-        {#if results !== null}
+        {#if results !== null && focused}
             <div class="results">
                 {#each results as result}
                 <div class="resultItem" role="link" tabindex="0" on:click={focusClass.bind(null, result.item)} on:keypress={focusClass.bind(null, result.item)}>
@@ -112,7 +112,7 @@
 <style>
     .spacer {
         width: 100%;
-        height: 84px;
+        height: 80px;
         position: relative;
     }
     .searchOuter {
@@ -120,12 +120,12 @@
         left: 0;
         top: 0;
         overflow: hidden;
-        clip-path: inset(10px);
-        width: calc(100% - 40px);
+        box-sizing: border-box;
         height: 54px;
-        padding: 10px 20px;
-        border-radius: 26px;
-        transition: height 0.1s ease-in-out, clip-path 0.1s ease-in-out, background-color 0.1s ease-in-out;
+        padding: 0px;
+        margin: 10px;
+        border-radius: 27px;
+        transition: border-radius 0.2s ease-in-out, margin 0.1s ease-in-out, padding 0.1s ease-in-out, height 0.2s ease-in-out;
     }
     .searchOuter p {
         color: black;
@@ -134,14 +134,15 @@
         color: black;
         background-color: #eee;
         margin: auto;
-        border-radius: 26px;
+        border-radius: 27px;
         padding: 15px 20px;
         user-select: none;
         cursor: text;
 
         display: flex;
         flex-direction: row;
-        transition: border-radius 0.1s ease-in-out;
+        border-bottom-color: transparent;
+        transition: border-bottom-color 0.2s ease-in-out;
     }
     .search:focus-visible {
         border-color: black;
@@ -201,11 +202,13 @@
     }
 
     .searchOuter.focused {
-        clip-path: inset(0);
         z-index: 20;
         background-color: #eee;
-        height: 50vh;
-        max-height: calc(100vh - 20px);
+        height: 50dvh;
+        padding: 10px;
+        margin: 0px;
+        border-radius: 0 0 27px 27px;
+        max-height: calc(100dvh - 20px);
     }
     .results::-webkit-scrollbar {
         width: 5px;

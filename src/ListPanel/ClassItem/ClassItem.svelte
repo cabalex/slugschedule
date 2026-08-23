@@ -200,9 +200,11 @@
         height: 200px;
         position: relative;
         overflow: hidden;
+        outline: 1px solid #555;
 
         display: flex;
         flex-direction: column;
+        transition: transform 0.2s cubic-bezier(0.075, 0.82, 0.165, 1), border-radius 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
     }
     .classItem.small {
         height: 160px;
@@ -212,6 +214,8 @@
     }
     .classItem.focused {
         outline: 2px solid grey;
+        transform: translateX(10px);
+        border-radius: 10px 0 0 10px;
     }
     .classItem .topBar:before {
         content: "";
