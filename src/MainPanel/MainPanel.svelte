@@ -107,9 +107,9 @@
             <h2>Quick Links</h2>
             <a href="https://my.ucsc.edu" target="_blank">MyUCSC</a> <br />
             <a href="https://ucsc.instructure.com" target="_blank">Canvas</a> <br />
-            <a href="https://advising.ucsc.edu/gettingstartedinthemajor/frosh/index.html" target="_blank">Getting Started In Your Major</a> <br />
-            <a href="https://registrar.ucsc.edu/enrollment/general-education-requirements.html" target="_blank">General Education Requirements</a> <br />
-            <a href="https://registrar.ucsc.edu/soc/final-examinations.html" target="_blank">Final Examinations Times</a>
+            <a href="https://advising.ucsc.edu/plan-your-academics/" target="_blank">Undergraduate Advising / Academic Planning</a> <br />
+            <a href="https://registrar.ucsc.edu/requirements-planning/undergraduate-degree-requirements/" target="_blank">General Education Requirements</a> <br />
+            <a href="https://registrar.ucsc.edu/calendars-resources/academic-calendar/final-exam-calendar/" target="_blank">Final Exam Calendar</a>
 
             <p>Created with 💛 by <a href="https://cabalex.github.io" target="_blank">@cabalex</a> with contributions from <a href="https://github.com/darthnithin" target="_blank">@darthnithin</a>. <a href="https://github.com/cabalex/slugschedule" target="_blank" rel="noopener noreferrer">View source here</a>.</p>
             <p>Thanks to <a href="https://slugtistics.com/about" target="_blank">Jack LeValley</a> for grade distributions data.</p>
