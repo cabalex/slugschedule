@@ -122,10 +122,10 @@
         overflow: hidden;
         box-sizing: border-box;
         height: 54px;
-        padding: 0px;
+        width: calc(100% - 20px);
         margin: 10px;
         border-radius: 27px;
-        transition: border-radius 0.2s ease-in-out, margin 0.1s ease-in-out, padding 0.1s ease-in-out, height 0.2s ease-in-out;
+        transition: border-radius 0.2s ease-in-out, margin 0.1s ease-in-out, padding 0.1s ease-in-out, height 0.2s ease-in-out, width 0.1s ease-in-out;
     }
     .searchOuter p {
         color: black;
@@ -205,6 +205,7 @@
         z-index: 20;
         background-color: #eee;
         height: 50dvh;
+        width: 100%;
         padding: 10px;
         margin: 0px;
         border-radius: 0 0 27px 27px;
