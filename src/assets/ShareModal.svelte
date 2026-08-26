@@ -41,7 +41,7 @@
 
                 let dates = info.dates;
 
-                if (dates === undefined) {
+                if (dates === undefined || dates.trim() === "") {
                     // get dates of root class
                     dates = scheduledClass.rootClass.meetingInfos[0].dates;
                 }
