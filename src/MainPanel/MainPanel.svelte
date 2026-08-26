@@ -176,81 +176,81 @@
 </main>
 
 <style>
-  main {
-    flex-grow: 1;
-  }
-  .mainInner {
-    box-sizing: border-box;
-    width: calc(100% - 10px);
-    height: calc(100% - 10px);
-    margin: 10px 10px 0 0;
-    padding: 20px;
-    border-radius: 10px 10px 0 0;
-    border: 1px solid #777;
-    border-bottom: 0;
-    background-color: #333;
-    overflow: auto;
-  }
-  .mainInner.initial {
-    background-color: transparent;
-    border: none;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  input[type="checkbox"] {
-    transform: scale(1.2);
-    margin-left: 10px;
-    vertical-align: middle;
-  }
-  h1 {
-    font-size: 2em;
-  }
-  a {
-    line-height: 2em;
-  }
-  .loading {
-    height: 1.25em;
-    width: 5.5em;
-    display: block;
-    transform: rotate(0deg);
-    animation: rotate 1s linear infinite;
-  }
-  @keyframes loading {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  @media screen and (max-width: 1000px) {
     main {
-      position: fixed;
-      left: 100%;
-      top: 0;
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      transition: left 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
-      z-index: 2;
+        flex-grow: 1;
     }
     .mainInner {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      border-radius: 0;
-      border: none;
+        box-sizing: border-box;
+        width: calc(100% - 10px);
+        height: calc(100% - 10px);
+        margin: 10px 10px 0 0;
+        padding: 20px;
+        border-radius: 16px 16px 0 0;
+        border-bottom: 0;
+        border: 1px solid #6a6969;
+        background-color: #494949;
+        overflow: auto;
     }
     .mainInner.initial {
-      max-width: unset;
-      background-color: #333;
+        background-color: transparent;
+        border: none;
+        max-width: 800px;
+        margin: 0 auto;
     }
-    .scheduler .mainInner {
-      width: 100%;
-      padding: 0;
+    input[type="checkbox"] {
+        transform: scale(1.2);
+        margin-left: 10px;
+        vertical-align: middle;
     }
-    main.focused {
-      left: 0;
+    h1 {
+        font-size: 2em;
     }
-  }
+    a {
+        line-height: 2em;
+    }
+    .loading {
+        height: 1.25em;
+        width: 5.5em;
+        display: block;
+        transform: rotate(0deg);
+        animation: rotate 1s linear infinite;
+    }
+    @keyframes loading {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    @media screen and (max-width: 1000px) {
+        main {
+            position: fixed;
+            left: 100%;
+            top: 0;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            transition: left 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+            z-index: 2;
+        }
+        .mainInner { 
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 0;
+            border: none;
+        }
+        .mainInner.initial {
+            max-width: unset;
+            background-color: #333;
+        }
+        .scheduler .mainInner {
+            width: 100%;
+            padding: 0;
+        }
+        main.focused {
+            left: 0;
+        }
+    }
 </style>
