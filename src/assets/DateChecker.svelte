@@ -6,6 +6,7 @@
     export let number;
     export let onlyShowConflict = false;
     export let meetingInfos: Array<{dayAndTime: string; location: string; dates: string}>;
+    export let compressed: boolean = true;
 
     let conflict: false|"close"|true = false;
     $: infoObject = MeetingInfos.parse(meetingInfos);
@@ -21,19 +22,57 @@
     }
 </script>
 
-{#if conflict === true}
-    <Clock color="red" />
-    <span title="This time conflicts with one or more classes in your schedule." style="color: red">
-        {meetingInfos.map(x => x.dayAndTime).join(", ")}
-    </span>
-{:else if conflict === "close"}
-    <Clock color="orange" />
-    <span title="This time is close to another class on your schedule (<30 min). You may have trouble commuting." style="color: orange">
-        {meetingInfos.map(x => x.dayAndTime).join(", ")}
-    </span>
-{:else if (!onlyShowConflict)}
-    <Clock />
-    <span>
-        {meetingInfos.map(x => x.dayAndTime).join(", ")}
-    </span>
-{/if}
+<div class="fact {compressed ? "compressed" : ""} {conflict === true ? "red" : (conflict === "close" ? "orange" : "default")}">
+    {#if conflict === true}
+        <Clock />
+        <span title="This time conflicts with one or more classes in your schedule.">
+            {meetingInfos.map(x => x.dayAndTime).join(", ")}
+        </span>
+    {:else if conflict === "close"}
+        <Clock />
+        <span title="This time is close to another class on your schedule (<30 min). You may have trouble commuting.">
+            {meetingInfos.map(x => x.dayAndTime).join(", ")}
+        </span>
+    {:else if (!onlyShowConflict)}
+        <Clock />
+        <span>
+            {meetingInfos.map(x => x.dayAndTime).join(", ")}
+        </span>
+    {/if}
+</div>
+
+<style>
+    .fact {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 3px;
+    }
+
+    .compressed {
+        padding: 5px 12px 5px 6px;
+        margin: -5px 0px -5px -6px;
+        gap: 5px;
+    }
+
+    .compressed :global(svg) {
+        font-size: 16px;
+    }
+
+    .default {
+        background-color: #0000002d;
+    }
+
+    .red {
+        background-color: #3a0000;
+        color: #ff9999
+    }
+
+    .orange {
+        background-color: #3a1c00;
+        color: #ffc599
+    }
+</style>

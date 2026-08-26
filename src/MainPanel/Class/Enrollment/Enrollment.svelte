@@ -95,7 +95,7 @@
             }
         ]
     }
-    let enrolledInLastDay = 0;
+    export let enrolledInLastDay = 0;
     let waitlistInLastDay = 0;
     let range = 0;
     $: {
@@ -231,43 +231,6 @@
 </script>
 
 <div class="enrollment">
-    {#if large && $db.term === detectTerm()}
-    <div class="text">
-        <h1 style="display: flex; gap: 20px; align-items: center">
-            <ClassStatusIcon status={availability.status} />
-            {#if availability.status === ClassStatus.Closed}
-                Closed
-            {:else if availability.capacity <= availability.enrolled || availability.status === ClassStatus.Waitlist}
-                Full
-            {:else if availability.capacity - availability.enrolled === 1}
-                One spot remaining!
-            {:else}
-                <span><RollingNumber number={availability.capacity - availability.enrolled} /> spots remaining</span>
-            {/if}
-        </h1>
-        {#if availability.status === ClassStatus.Waitlist}
-        <h1><RollingNumber number={availability.waitlist} /> on waitlist</h1>
-        {/if}
-        {#if enrolledInLastDay !== 0}
-        <h2 class="trend">
-            {#if enrolledInLastDay > 0}
-            <TrendingUp size="2em" />
-            {:else}
-            <TrendingDown size="2em" />
-            {/if}
-            <div>
-                <span><RollingNumber number={Math.abs(enrolledInLastDay)} /> {enrolledInLastDay < 0 ? "dropped" : "enrolled"} in last day</span>
-                <span style="font-size: 0.8em">({Math.round(Math.abs(enrolledInLastDay) / availability.capacity * 100)}% of capacity)</span>
-            </div>
-        </h2>        
-        {/if}
-        <div class="updatingLive">Updated {lastUpdate.toLocaleTimeString(navigator.language, {
-        hour: 'numeric',
-        minute: '2-digit'
-        })}</div>
-
-    </div>
-    {/if}
     <div class="chart">
         {#if range > 24 * 60 * 60 * 1000}
         <div class="chartViews">
@@ -320,7 +283,6 @@
             <p>You can't enroll directly into a waitlisted class, even if it has empty seats. These seats will automatically be filled by the waitlist at <b>9:00 AM</b> each day. Use the waitlist to enroll.</p>
         </div>
     </div>
-
 {/if}
 
 <style>

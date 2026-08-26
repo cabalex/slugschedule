@@ -135,10 +135,10 @@
         height: calc(100% - 10px);
         margin: 10px 10px 0 0;
         padding: 20px;
-        border-radius: 10px 10px 0 0;
-        border: 1px solid #777;
+        border-radius: 16px 16px 0 0;
         border-bottom: 0;
-        background-color: #333;
+        border: 1px solid #6a6969;
+        background-color: #494949;
         overflow: auto;
     }
     .mainInner.initial {
