@@ -172,7 +172,7 @@
         flex-shrink: 0;
         position: relative;
 
-        width: 350px;
+        width: 500px;
     }
     .searchContainer {
         display: flex;

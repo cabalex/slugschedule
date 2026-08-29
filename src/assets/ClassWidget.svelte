@@ -14,7 +14,7 @@
 
     function focusClass() {
         $shouldAnimate = false;
-        $focusedClass = item;
+        $focusedClass = item;   
         setTimeout(() => $shouldAnimate = true, 0);
     }
 </script>
@@ -50,43 +50,45 @@
 {/if}
 
 <style>
-  h3,
-  h4 {
-    margin: 0;
-  }
-  .classWidget {
-    text-align: left;
-    cursor: pointer;
-    user-select: none;
-    background-color: #222;
-    border-radius: 5px;
-    padding: 10px;
-    display: inline-block;
-    border: 2px solid #777;
-    transition:
-      border-color 0.2s,
-      background-color 0.2s;
-  }
-  .classWidget:hover {
-    background-color: #555;
-    border-color: #aaa;
-  }
-  .classWidget span {
-    color: "lightgrey";
-  }
-  .bar {
-    position: relative;
-    width: 100%;
-    height: 5px;
-    background-color: #777;
-    border-radius: 5px;
-    overflow: hidden;
-  }
-  .fill {
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: white;
-    height: 100%;
-  }
+    h3, h4 {
+        margin: 0;
+    }
+    h4 {
+        padding-bottom: 6px;
+        color: lightgrey;
+    }
+    .classWidget {
+        text-align: left;
+        cursor: pointer;
+        user-select: none;
+        background-color: #0000002d;
+        border-radius: 5px;
+        padding: 10px 14px 10px 14px;
+        display: inline-block;
+    }
+    .classWidget:hover {
+        background-color: #2c2c2c;
+        border-color: #2c2c2c;
+    }
+    .classWidget span {
+        color: lightgrey;
+        display: block;
+        margin-top: 4px;
+    }
+    .bar {
+        position: relative;
+        width: 100%;
+        height: 5px;
+        background-color: #777;
+        border-radius: 5px;
+        margin-top: 14px;
+        overflow: hidden;
+    }
+    .fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: white;
+        height: 100%;
+    }
 </style>
