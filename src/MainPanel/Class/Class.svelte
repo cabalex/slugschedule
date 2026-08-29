@@ -15,6 +15,9 @@
     import ClipboardAccountOutline from 'svelte-material-icons/ClipboardAccountOutline.svelte'
     import TrendingUp from "svelte-material-icons/TrendingUp.svelte";
     import TrendingDown from "svelte-material-icons/TrendingDown.svelte";
+    import ChartBox from "svelte-material-icons/ChartBox.svelte";
+    import Information from 'svelte-material-icons/Information.svelte'
+    import VectorCombine from 'svelte-material-icons/VectorCombine.svelte'
 
     import { type Class, ClassStatus } from "../../../.server/db/DB";
     import { home, db, focusedClass, starredClasses, liveUpdates, detectTerm } from "../../mainStore";
@@ -137,11 +140,13 @@
         null;
 
     let enrolledInLastDay = 0;
+
+    let openSeatsOnWaitlisted =  $db.term === detectTerm() && item.availability.status === ClassStatus.Waitlist && item.availability.capacity > item.availability.enrolled;
 </script>
 
 <div class="class">
     <div class="classInfo">
-        <header class="title">
+        <header class="title" style="{openSeatsOnWaitlisted ? "border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;" : ""}">
             <div class="actionRow">
                 <button class="backBtn" on:click={() => $focusedClass = null}>
                     <ArrowLeft />
@@ -193,7 +198,7 @@
                             {/if}
 
                             {#if item.availability.status === ClassStatus.Waitlist}
-                                <span> - <RollingNumber number={item.availability.waitlist} /> on waitlist</span>
+                                <span>(<RollingNumber number={item.availability.waitlist} /> on waitlist)</span>
                             {/if}
                         </div>
                         {#if enrolledInLastDay !== 0}
@@ -204,8 +209,8 @@
                                     <TrendingDown size="2em" />
                                 {/if}
                                 <div>
-                                    <span><RollingNumber number={Math.abs(enrolledInLastDay)} /> {enrolledInLastDay < 0 ? "dropped" : "enrolled"} in last day</span>
-                                    <span>({Math.round(Math.abs(enrolledInLastDay) / item.availability.capacity * 100)}% of capacity)</span>
+                                    <span><RollingNumber number={Math.abs(enrolledInLastDay)} /> {enrolledInLastDay < 0 ? "dropped" : "enrolled"} last day</span>
+                                    <span>({Math.round(Math.abs(enrolledInLastDay) / item.availability.capacity * 100)}%)</span>
                                 </div>
                             </h2>        
                         {:else} 
@@ -217,47 +222,53 @@
                     </div>
                 </div>
                 <div class="instructorRow">
-                    <div class="icon">
-                        <School></School>
-                    </div>
-                    <div class="instructor">
-                        <div class="name">
-                            {item.instructor.name.replace(",", ", ") || "Unknown"}
+                    <div class="instructorLeft">
+                        <div class="icon">
+                            <School></School>
                         </div>
-                        <div class="ratingInfo">
-                            {#if typeof item.instructor.numRatings !== "number"}
-                                RMP score not available
-                            {:else}
-                                {item.instructor.numRatings} ratings
-                            {/if}
+                        <div class="instructor">
+                            <div class="name">
+                                {item.instructor.name.replace(",", ", ") || "Unknown"}
+                            </div>
+                            <div class="ratingInfo">
+                                {#if typeof item.instructor.numRatings !== "number"}
+                                    RMP score not available
+                                {:else}
+                                    {item.instructor.numRatings} ratings
+                                {/if}
+                            </div>
                         </div>
                     </div>
                     {#if item.instructor.id && item.instructor.id !== "-1"}
+                        {@const avgRating = item.instructor.avgRating}
+                        {@const avgDifficulty = item.instructor.avgDifficulty}
+
                         <div class="ratings">
-                            <DonutChart
-                                color={rmpScoreColor(item.instructor.avgRating)}
-                                number={item.instructor.avgRating}
-                                of={5}
-                                label="QUALITY"
-                            />
-                            <DonutChart
-                                color="white"
-                                number={item.instructor.avgDifficulty}
-                                of={5}
-                                label="DIFFICULTY"
-                            />
-                            <DonutChart
-                                color={rmpScoreColor(item.instructor.wouldTakeAgainPercent / 20)}
-                                number={item.instructor.wouldTakeAgainPercent}
-                                of={100}
-                                type="percent"
-                                label="WOULD TAKE AGAIN"
-                            />
+                            <div style="background-color: {rmpScoreColor(avgRating)};" class="ratingSection">
+                                <div class="ratingLabel">Quality</div>
+                                <div class="ratingValue">{avgRating < 10 ? Math.max(avgRating, 0).toFixed(1) : avgRating}</div>
+                            </div>
+                            <div style="background-color: #aaaaaa;" class="ratingSection">
+                                <div class="ratingLabel">Difficulty</div>
+                                <div class="ratingValue">{avgDifficulty < 10 ? Math.max(avgDifficulty, 0).toFixed(1) : avgDifficulty}</div>
+                            </div>
                         </div>
                     {/if}
                 </div>
             </div>
         </header>
+
+        {#if openSeatsOnWaitlisted}
+            <!-- waitlists can have empty spots even though you can't enroll in them. -->
+            <div class="note">
+                <Information size="24px" />
+                <div style="flex-grow: 1">
+                    <h2>This class is still full, even though there's {item.availability.capacity -item. availability.enrolled} open {item.availability.capacity - item.availability.enrolled === 1 ? "seat" : "seats"}</h2>
+                    <p>You can't enroll directly into a waitlisted class, even if it has empty seats. These seats will automatically be filled by the waitlist at <b>9:00 AM</b> each day. Use the waitlist to enroll.</p>
+                </div>
+            </div>
+        {/if}
+
         <div class="sectionTitle">
             <div class="icon">
                 <PinOutline></PinOutline>
@@ -287,8 +298,14 @@
         <div class="section bottom">
             <RichText class="description" content={item.description} />
         </div>
+        <ClassesByCode code={item.code} number={item.number} />
         {#if item.combinedSections.length}
-        <h3>Combined sections with</h3>
+        <div class="sectionTitle">
+            <div class="icon">
+                <VectorCombine></VectorCombine>
+            </div>
+            <p class="text">Combined sections with</p>
+        </div>
         <div class="combinedSections">
             {#each item.combinedSections.filter(x => x !== item.number) as combinedSection}
                 {#key combinedSection}
@@ -311,19 +328,29 @@
                 <RichText class="notes" content={item.classNotes} />
             </div>
         {/if}
-        <h3>Enrollment {$db.term !== detectTerm() ? "over time" : ""}</h3>
-        <Enrollment bind:enrolledInLastDay number={item.number} availability={item.availability} {lastUpdate} />
-        {#if item.gradeDistributions.length}
-            <h3>Grade distribution</h3>
-            <GradeDistribution item={item} />
-        {/if}
         {#if item.associatedClasses.length}
-            <h3>Associated Classes</h3>
+            <div class="sectionTitle">
+                <div class="icon">
+                    <VectorCombine></VectorCombine>
+                </div>
+                <p class="text">Associated Classes</p>
+            </div>
             <div class="associatedClasses">
                 {#each item.associatedClasses as associatedClass}
                     <AssociatedClass item={associatedClass} />
                 {/each}
             </div>
+        {/if}
+        <div class="sectionTitle">
+            <div class="icon">
+                <ChartBox></ChartBox>
+            </div>
+             <p class="text">Enrollment {$db.term !== detectTerm() ? "over time" : ""}</p>
+        </div>
+        <Enrollment bind:enrolledInLastDay number={item.number} availability={item.availability} {lastUpdate} />
+        {#if item.gradeDistributions.length}
+            <h3>Grade distribution</h3>
+            <GradeDistribution item={item} />
         {/if}
     </div>
     <div class="divider"></div>
@@ -377,7 +404,7 @@
             {[...new Set(item.meetingInfos.map(x => x.dates))].join(", ")}
         </div>
 
-        <ClassesByCode code={item.code} number={item.number} />
+        <ClassesByCode reduced={true} code={item.code} number={item.number} />
     </aside>
 </div>
 <div class="">
@@ -406,11 +433,13 @@
     .class {
         display: flex;
         flex-direction: row;
-        align-items: stretch;
-        gap: 10px;
+        gap: 7px;
+        overflow: hidden;
+        position: relative;
     }
     .classInfo {
-        flex-grow: 1;
+        width: 100%;
+        overflow: hidden;
     }
     header.title {
         display: flex;
@@ -419,15 +448,18 @@
         gap: 3px;
         background-color: #2c2c2c;
         border-radius: 8px;
+        container-type: inline-size;
+        container-name: header;
     }
     .actionRow {
         display: flex;
         gap: 3px;
     }
     .actionRow .text {
-        padding: 10px 20px 10px 0px;
+        padding: 14px 20px 10px 0px;
         font-size: 20px;
         width: 100%;
+        line-height: 20px;
     }
     .actionRow button {
         padding: 10px 20px 10px 20px;
@@ -451,17 +483,17 @@
     }
     .infoRow {
         display: flex;
-        gap: 3px;
+        gap: 10px;
         align-items: stretch;
         position: relative;
+        overflow: hidden;
+        padding: 12px 20px 12px 20px;
     }
     .enrollmentRow {
-        padding: 12px 20px 12px 20px;
         display: flex;
         align-items: center;
         gap: 16px;
         font-size: 24px;
-        width: 100%;
     }
     .enrollmentRow .status {
         display: flex;
@@ -478,14 +510,23 @@
         font-size: 14px;
         align-items: center;
         font-weight: 300;
-        gap: 6px;
+        gap: 3px;
+        white-space: nowrap;
     }
     .instructorRow {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 16px;
-        padding: 12px 20px 12px 20px;
-        width: 100%;
+        overflow: hidden;
+        min-width: 45%;
+        margin-left: auto;
+    }
+    .instructorLeft {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        overflow: hidden;
     }
     .instructorRow .icon {
         font-size: 30px;
@@ -494,18 +535,45 @@
         display: flex;
         flex-direction: column;
         gap: 3px;
-        padding-right: 10px;
+        padding-right: 2px;
+        overflow: hidden;
     }
     .instructorRow .instructor .name {
         font-size: 18px;
         font-weight: 700;
         white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     .instructorRow .instructor .ratingInfo {
         font-size: 14px;
         font-weight: 300;
         padding-bottom: 4px;
         white-space: nowrap;
+        width: fit-content;
+    }
+    .note {
+        display: flex;
+        gap: 16px;
+        padding: 12px 20px 12px 20px;
+        justify-content: center;
+        align-items: center;
+        background-color: var(--waitlist-dark);
+        border-radius: 4px 4px 8px 8px;
+        margin-top: 3px;
+    }
+    .note h2, .note p {
+        margin: 0;
+    }
+    .note h2 {
+        font-size: 20px;
+        line-height: 24px;
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .note p {
+        line-height: 24px;
+        margin-bottom: 4px;
     }
     .sectionTitle {
         display: flex; 
@@ -542,8 +610,47 @@
     .ratings {
         display: flex;
         flex-direction: row;
-        gap: 8px;
+        gap: 3px;
     }
+
+    .ratings .ratingSection {
+        border-radius: 4px;
+        color: black;
+        padding: 2.5px 8px 2.5px 8px;
+        width: 67px;
+    }
+    .ratings .ratingSection .ratingLabel {
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .ratings .ratingSection .ratingValue {
+        font-size: 24px;
+        font-weight: 900;
+        margin: -6px 0px -4px 0px;
+    }
+
+    .combinedSections {
+        overflow: hidden;
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);;
+        gap: 3px;
+    }
+
+    .combinedSections > :global(*:last-child:nth-child(odd)) {
+        grid-column: span 2;
+    }
+
+    .associatedClasses {
+        border-radius: 8px;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: stretch;
+        gap: 3px;
+    }
+
     aside {
         position: sticky;
         top: 0px;
@@ -551,6 +658,7 @@
         flex-shrink: 0;
         overflow: hidden;
         height: fit-content;
+        padding-bottom: 100px;
     }
 
     aside iframe {
@@ -679,21 +787,10 @@
             flex-direction: column;
         }
     }
-    @media screen and (max-width: 1000px) {
+
+    @media screen and (max-width: 500px) {
         .associatedClasses {
-            overflow: auto;
-            flex-wrap: nowrap;
-            width: calc(100% + 40px);
-            transform: translateX(-20px);
-        }
-        :global(.associatedClasses > *) {
-            flex-shrink: 0;
-        }
-        :global(.associatedClasses > *:first-child) {
-            margin-left: 20px;
-        }
-        :global(.associatedClasses > *:last-child) {
-            margin-right: 20px;
+            grid-template-columns: 1fr;
         }
     }
 
@@ -702,7 +799,19 @@
             display: none;
         }
         .actionRow .text {
-            padding: 10px 20px 10px 20px;
+            padding: 14px 20px 10px 20px;
+        }
+    }
+    
+    @container header (width < 700px) {
+        .infoRow {
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .instructorRow {
+            min-width: 45%;
+            margin-left: 0px;
         }
     }
 </style>

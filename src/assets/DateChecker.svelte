@@ -7,6 +7,9 @@
     export let onlyShowConflict = false;
     export let meetingInfos: Array<{dayAndTime: string; location: string; dates: string}>;
     export let compressed: boolean = true;
+    export let noConflict: 'transparent' | 'indicate' = 'indicate';
+    export let icon: boolean = true;
+    export let background: boolean = true;
 
     let conflict: false|"close"|true = false;
     $: infoObject = MeetingInfos.parse(meetingInfos);
@@ -22,19 +25,19 @@
     }
 </script>
 
-<div class="fact {compressed ? "compressed" : ""} {conflict === true ? "red" : (conflict === "close" ? "orange" : "default")}">
+<div style="{background ? "" : "background: none;"}" class="fact {compressed ? "compressed" : ""} {conflict === true ? "red" : (conflict === "close" ? "orange" : (noConflict === "indicate" ? "green" : ""))}">
     {#if conflict === true}
-        <Clock />
+        {#if icon} <Clock /> {/if}
         <span title="This time conflicts with one or more classes in your schedule.">
             {meetingInfos.map(x => x.dayAndTime).join(", ")}
         </span>
     {:else if conflict === "close"}
-        <Clock />
+        {#if icon} <Clock /> {/if}
         <span title="This time is close to another class on your schedule (<30 min). You may have trouble commuting.">
             {meetingInfos.map(x => x.dayAndTime).join(", ")}
         </span>
     {:else if (!onlyShowConflict)}
-        <Clock />
+        {#if icon} <Clock /> {/if}
         <span>
             {meetingInfos.map(x => x.dayAndTime).join(", ")}
         </span>
@@ -62,8 +65,9 @@
         font-size: 16px;
     }
 
-    .default {
-        background-color: #0000002d;
+    .green {
+        background-color: #002608;
+        color: #99ffa8
     }
 
     .red {
