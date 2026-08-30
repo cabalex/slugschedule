@@ -6,6 +6,7 @@
   }
 </script>
 
+
 <script lang="ts">
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
@@ -32,70 +33,68 @@
         $scheduledClasses = [...item];
     }
 </script>
-
-<div
-  class="classItem"
-  class:focused={$smartClasses.every((x) => item.includes(x))}
-  on:click={focusClass}
+<button
+    class="classItem"
+    class:focused={$smartClasses.every(x => item.includes(x))}
+    on:click={focusClass}
 >
-  <div class="topBar">
-    <h2 title={`${code} - ${item.name}`}>
-      <span style="font-weight: bold">{code}</span>
-      <span>{item.name}</span>
-    </h2>
-    <button class="roundBtn" on:click={addToSchedule}>
-      {#if $listMode === "scheduler"}
-        {#if $scheduledClasses.includes(item.number)}
-          <Minus />
-        {:else}
-          <Plus />
+    <div class="topBar">
+        <h2 title={`${code} - ${item.name}`}>
+            <span style="font-weight: bold">{code}</span>
+            <span>{item.name}</span>
+        </h2>
+        <button class="roundBtn" on:click={addToSchedule}>
+            {#if $listMode === "scheduler"}
+                {#if $scheduledClasses.includes(item.number)}
+                    <Minus />
+                {:else}
+                    <Plus />
+                {/if}
+            {:else}
+                {#if $starredClasses.includes(item.number)}
+                    <Star />
+                {:else}
+                    <StarOutline />
+                {/if}
+            {/if}
+        </button>
+    </div>
+    <div class="body">
+        {#if item.meetingInfos.some(x => x.location && x.location !== "N/A")}
+        {#each item.meetingInfos as meetingInfo}
+            <div class="location">
+                {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
+                <Monitor />
+                {:else}
+                <MapMarker />
+                {/if}
+                {meetingInfo.location}
+            </div>
+        {/each}
         {/if}
-      {:else if $starredClasses.includes(item.number)}
-        <Star />
-      {:else}
-        <StarOutline />
-      {/if}
-    </button>
-  </div>
-  <div class="body">
-    {#if item.meetingInfos.some((x) => x.location && x.location !== "N/A")}
-      {#each item.meetingInfos as meetingInfo}
-        <div class="location">
-          {#if meetingInfo.location === "Online" || meetingInfo.location === "Remote Instruction"}
-            <Monitor />
-          {:else}
-            <MapMarker />
-          {/if}
-          {meetingInfo.location}
+        {#if item.meetingInfos.some(x => x.dayAndTime && x.dayAndTime !== "Cancelled")}
+        <div class="dayAndTime">
+            <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
         </div>
-      {/each}
-    {/if}
-    {#if item.meetingInfos.some((x) => x.dayAndTime && x.dayAndTime !== "Cancelled")}
-      <div class="dayAndTime">
-        <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
-      </div>
-    {/if}
-    {#if item.instructor.name && item.instructor.name !== "N/A"}
-      <div class="instructor">
-        <Account />
-        {item.instructor.name}
-        {#if item.instructor.id && item.instructor.id !== "-1" && item.instructor.numRatings > 0}
-          <div
-            class="rmpScore"
-            style={`background-color: ${rmpScoreColor(item.instructor.avgRating)}`}
-          >
-            {item.instructor.avgRating.toFixed(1)}
-          </div>
-          <div class="rmpScore" style={`background-color: #aaa`}>
-            {item.instructor.avgDifficulty.toFixed(1)}
-          </div>
-          ({item.instructor.numRatings} ratings)
         {/if}
-      </div>
-    {/if}
-  </div>
-  <ClassAllocation availability={item.availability} />
-</div>
+        {#if item.instructor.name && item.instructor.name !== "N/A"}
+        <div class="instructor">
+            <Account />
+            {item.instructor.name}
+            {#if item.instructor.id && item.instructor.id !== "-1" && item.instructor.numRatings > 0}
+                <div class="rmpScore" style={`background-color: ${rmpScoreColor(item.instructor.avgRating)}`}>
+                    {item.instructor.avgRating.toFixed(1)}
+                </div>
+                <div class="rmpScore" style={`background-color: #aaa`}>
+                    {item.instructor.avgDifficulty.toFixed(1)}
+                </div>
+                ({item.instructor.numRatings} ratings)
+            {/if}
+        </div>
+        {/if}
+    </div>
+    <ClassAllocation availability={item.availability} />
+</button>
 
 <style>
   .classItem {

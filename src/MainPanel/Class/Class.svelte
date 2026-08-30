@@ -397,7 +397,7 @@
             </button>
         {/each}
         {#if item.meetingInfos.some(x => x.dayAndTime)}
-        <DateChecker compressed={false} number={item.number} meetingInfos={item.meetingInfos} />
+        <DateChecker background compressed={false} number={item.number} meetingInfos={item.meetingInfos} />
         {/if}
         <div class="fact bottom">
             <CalendarRange />
@@ -734,6 +734,7 @@
         padding-top: 18px;
         padding-bottom: 18px;
         display: flex;
+        flex-wrap: wrap;
         gap: 20px;
     }
     .aboutFact {
@@ -776,7 +777,7 @@
         font-size: 2.5em;
         margin-bottom: 5px;
     }
-    @media screen and (max-width: 1400px) {
+    @media screen and (max-width: 1250px) {
         .class {
             flex-direction: column;
         }

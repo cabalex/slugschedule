@@ -6,10 +6,11 @@
     export let number;
     export let onlyShowConflict = false;
     export let meetingInfos: Array<{dayAndTime: string; location: string; dates: string}>;
+
     export let compressed: boolean = true;
-    export let noConflict: 'transparent' | 'indicate' = 'indicate';
     export let icon: boolean = true;
-    export let background: boolean = true;
+    export let background: boolean = false;
+    export let lightMode: boolean = false;
 
     let conflict: false|"close"|true = false;
     $: infoObject = MeetingInfos.parse(meetingInfos);
@@ -25,7 +26,7 @@
     }
 </script>
 
-<div style="{background ? "" : "background: none;"}" class="fact {compressed ? "compressed" : ""} {conflict === true ? "red" : (conflict === "close" ? "orange" : (noConflict === "indicate" ? "green" : ""))}">
+<div style="{background ? "" : "background: none;"}" class="fact {compressed ? "compressed" : ""} {conflict === true ? "red" : (conflict === "close" ? "orange" : "green")} {lightMode ? "light" : ""}">
     {#if conflict === true}
         {#if icon} <Clock /> {/if}
         <span title="This time conflicts with one or more classes in your schedule.">
@@ -67,16 +68,28 @@
 
     .green {
         background-color: #002608;
-        color: #99ffa8
+        color: #99ffa8;
+    }
+
+    .light.green {
+        color: #084411;
     }
 
     .red {
         background-color: #3a0000;
-        color: #ff9999
+        color: #ff9999;
+    }
+
+    .light.red {
+        color: #f00f0f;
     }
 
     .orange {
         background-color: #3a1c00;
         color: #ffc599
+    }
+
+    .light.orange {
+        color: #e86d10;
     }
 </style>
