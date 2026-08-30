@@ -93,7 +93,7 @@
 
 
                     {#if item.hover}
-                        <div transition:fly={{ duration: 100, y: -20 }} class="details">
+                        <div transition:fly={{ duration: 100, y: -5 }} class="details">
                             <div class="spacer"></div>
                             {#if item.meetingInfos.some(x => x.location && x.location !== "N/A")}
                                 {#each item.meetingInfos as meetingInfo}
@@ -203,7 +203,8 @@
     .sectionWidget:hover,.sectionWidget:focus-visible {
         background-color: #2c2c2c;
         border-radius: 8px 8px 0px 0px;
-        border: #2c2c2c;
+        border-color: #2c2c2c;
+        border-width: 1px;
         outline: none;
     }
     .sectionWidget span {
@@ -227,7 +228,7 @@
         height: fit-content;
         overflow: hidden;
         background-color: rgb(60, 60, 60); /* supposed to #0000002d, but since this can appear over other elements, can't use transparency. */
-        transform: translateY(5px) translateX(-10px);
+        transform: translateY(5px) translateX(-11px);
 
         display: flex;
         flex-direction: column;
