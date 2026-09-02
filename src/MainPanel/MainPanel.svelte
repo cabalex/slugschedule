@@ -128,17 +128,18 @@
 <style>
     main {
         flex-grow: 1;
+        overflow: hidden;
     }
     .mainInner {
         box-sizing: border-box;
         width: calc(100% - 10px);
         height: calc(100% - 10px);
         margin: 10px 10px 0 0;
-        padding: 20px;
-        border-radius: 10px 10px 0 0;
-        border: 1px solid #777;
+        padding: 15px;
+        border-radius: 16px 16px 0 0;
         border-bottom: 0;
-        background-color: #333;
+        border: 1px solid #6a6969;
+        background-color: #494949;
         overflow: auto;
     }
     .mainInner.initial {
@@ -190,6 +191,7 @@
             height: 100%;
             border-radius: 0;
             border: none;
+            padding: 10px;
         }
         .mainInner.initial {
             max-width: unset;
