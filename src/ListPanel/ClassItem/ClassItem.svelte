@@ -155,7 +155,7 @@
         {/if}
         {#if item.meetingInfos.some(x => x.dayAndTime && x.dayAndTime !== "Cancelled")}
         <div class="dayAndTime">
-            <DateChecker number={item.number} meetingInfos={item.meetingInfos} />
+            <DateChecker background={false} number={item.number} meetingInfos={item.meetingInfos} />
         </div>
         {/if}
         {#if item.instructor.name && item.instructor.name !== "N/A"}

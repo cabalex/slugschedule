@@ -5,6 +5,7 @@
         return "rgb(255, 156, 156)";
     }
 </script>
+
 <script lang="ts">
     import Star from "svelte-material-icons/Star.svelte";
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
@@ -31,7 +32,7 @@
         $scheduledClasses = [...item];
     }
 </script>
-<div
+<button
     class="classItem"
     class:focused={$smartClasses.every(x => item.includes(x))}
     on:click={focusClass}
@@ -92,7 +93,7 @@
         {/if}
     </div>
     <ClassAllocation availability={item.availability} />
-</div>
+</button>
 
 <style>
     .classItem {
