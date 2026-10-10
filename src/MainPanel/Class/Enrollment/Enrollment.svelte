@@ -95,7 +95,7 @@
             }
         ]
     }
-    let enrolledInLastDay = 0;
+    export let enrolledInLastDay = 0;
     let waitlistInLastDay = 0;
     let range = 0;
     $: {
@@ -231,47 +231,9 @@
 </script>
 
 <div class="enrollment">
-    {#if large && $db.term === detectTerm()}
-    <div class="text">
-        <h1 style="display: flex; gap: 20px; align-items: center">
-            <ClassStatusIcon status={availability.status} />
-            {#if availability.status === ClassStatus.Closed}
-                Closed
-            {:else if availability.capacity <= availability.enrolled || availability.status === ClassStatus.Waitlist}
-                Full
-            {:else if availability.capacity - availability.enrolled === 1}
-                One spot remaining!
-            {:else}
-                <span><RollingNumber number={availability.capacity - availability.enrolled} /> spots remaining</span>
-            {/if}
-        </h1>
-        {#if availability.status === ClassStatus.Waitlist}
-        <h1><RollingNumber number={availability.waitlist} /> on waitlist</h1>
-        {/if}
-        {#if enrolledInLastDay !== 0}
-        <h2 class="trend">
-            {#if enrolledInLastDay > 0}
-            <TrendingUp size="2em" />
-            {:else}
-            <TrendingDown size="2em" />
-            {/if}
-            <div>
-                <span><RollingNumber number={Math.abs(enrolledInLastDay)} /> {enrolledInLastDay < 0 ? "dropped" : "enrolled"} in last day</span>
-                <span style="font-size: 0.8em">({Math.round(Math.abs(enrolledInLastDay) / availability.capacity * 100)}% of capacity)</span>
-            </div>
-        </h2>        
-        {/if}
-        <div class="updatingLive">Updated {lastUpdate.toLocaleTimeString(navigator.language, {
-        hour: 'numeric',
-        minute: '2-digit'
-        })}</div>
-
-    </div>
-    {/if}
-    <div class="chart">
-        {#if range > 24 * 60 * 60 * 1000}
+    {#if range > 24 * 60 * 60 * 1000}
         <div class="chartViews">
-            <button on:click={() => chartView = "all"} class:active={chartView == "all"}>all</button>
+            <button on:click={() => chartView = "all"} class:active={chartView == "all"} class:left={true}>all</button>
             {#if range > 30 * 24 * 60 * 60 * 1000}
             <button on:click={() => chartView = "30d"} class:active={chartView == "30d"}>30d</button>
             {/if}
@@ -281,66 +243,64 @@
             {#if range > 3 * 24 * 60 * 60 * 1000}
             <button on:click={() => chartView = "3d"} class:active={chartView == "3d"}>3d</button>
             {/if}
-            <button on:click={() => chartView = "1d"} class:active={chartView == "1d"}>1d</button>
+            <button on:click={() => chartView = "1d"} class:active={chartView == "1d"} class:right={true}>1d</button>
         </div>
-        {/if}
-        <Line
-            data={data}
-            options={options}
-            plugins={[
-                {
-                    id: 'verticalLiner',
-                    afterDraw: chart => {
-                        // https://stackoverflow.com/questions/72998998/how-to-make-vertical-line-when-hovering-cursor-chart-js
-                        if (chart.tooltip?._active?.length) {
-                        let x = chart.tooltip._active[0].element.x;
-                        let yAxis = chart.scales.y;
-                        let ctx = chart.ctx;
-                        ctx.save();
-                        ctx.beginPath();
-                        ctx.moveTo(x, yAxis.top);
-                        ctx.lineTo(x, yAxis.bottom);
-                        ctx.lineWidth = 2;
-                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
-                        ctx.stroke();
-                        ctx.restore(); 
+    {/if}
+    <div class="chart">
+        <div>
+            <Line
+                data={data}
+                options={options}
+                plugins={[
+                    {
+                        id: 'verticalLiner',
+                        afterDraw: chart => {
+                            // https://stackoverflow.com/questions/72998998/how-to-make-vertical-line-when-hovering-cursor-chart-js
+                            if (chart.tooltip?._active?.length) {
+                            let x = chart.tooltip._active[0].element.x;
+                            let yAxis = chart.scales.y;
+                            let ctx = chart.ctx;
+                            ctx.save();
+                            ctx.beginPath();
+                            ctx.moveTo(x, yAxis.top);
+                            ctx.lineTo(x, yAxis.bottom);
+                            ctx.lineWidth = 2;
+                            ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                            ctx.stroke();
+                            ctx.restore(); 
+                            }
                         }
                     }
-                }
-            ]}
-        />
-    </div>
-</div>
-{#if large && $db.term === detectTerm() && availability.status === ClassStatus.Waitlist && availability.capacity > availability.enrolled}
-    <!-- waitlists can have empty spots even though you can't enroll in them. -->
-    <div class="note">
-        <Information size="24px" />
-        <div style="flex-grow: 1">
-            <h2>This class is still full, even though there's {availability.capacity - availability.enrolled} open {availability.capacity - availability.enrolled === 1 ? "seat" : "seats"}</h2>
-            <p>You can't enroll directly into a waitlisted class, even if it has empty seats. These seats will automatically be filled by the waitlist at <b>9:00 AM</b> each day. Use the waitlist to enroll.</p>
+                ]}
+            />
         </div>
     </div>
-
-{/if}
+</div>
 
 <style>
     .enrollment {
         display: flex;
-        flex-direction: row;
         gap: 10px;
-        height: 300px;
-        width: 100%;
         margin-bottom: 10px;
-        overflow: hidden;
-        max-height: 300px;
+        margin-top: -35px;
+        flex-direction: column;
+        height: auto;
+        width: 100%;
+        max-height: 600px;
     }
     .enrollment .chart {
-        width: 100%;
+        background-color: #0000002d;
+        border-radius: 8px;
+        padding: 8px 20px 0px 20px;
+    }
+    .enrollment .chart div {
+        height: 300px;
+        margin-bottom: -32px;
     }
     :global(.enrollment canvas) {
         position: relative;
-        max-height: 100% !important;
         max-width: 100% !important;
+        max-height: 300px !important;
     }
     .text {
         flex-grow: 1;
@@ -348,7 +308,7 @@
         background-color: #555;
         padding: 10px;
         border-radius: 10px;
-        width: 50%;
+        width: unset;
 
         display: flex;
         flex-direction: column;
@@ -357,13 +317,28 @@
     }
     .text h1 {
         margin: 10px;
+        font-size: 2em;
+    }
+    .chartViews {
+        margin-left: auto;
     }
     .chartViews button {
-        padding: 5px 10px;
+        font-size: 10px;
+        border-radius: 4px;
+        background-color: transparent;
+        border-color: #6a6969;
+        border-width: 1px;
+        margin-left: -1px;
+    }
+    .chartViews .left {
+        border-radius: 8px 4px 4px 8px;
+    }
+    .chartViews .right {
+        border-radius: 4px 8px 8px 4px;
     }
     .chartViews button.active {
-        background-color: var(--primary);
-        color: black;
+        background-color: #2c2c2c;
+        border-color: #2c2c2c;
     }
     h2.trend {
         display: flex;
@@ -381,38 +356,7 @@
         color: #ccc;
         font-size: 0.8em;
     }
-    .note {
-        display: flex;
-        gap: 10px;
-        padding: 10px;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--waitlist-dark);
-        border: 2px solid var(--waitlist);
-        border-radius: 10px;
-    }
-    .note h2, .note p {
-        margin: 0;
-    }
     :global(.note svg) {
         flex-shrink: 0;
-    }
-    @media screen and (max-width: 1600px) {
-        .enrollment {
-            flex-direction: column;
-            height: auto;
-            width: 100%;
-            max-height: 600px;
-        }
-        :global(.enrollment canvas) {
-            max-height: 300px !important;
-        }
-
-        .text {
-            width: unset;
-        }
-        .text h1 {
-            font-size: 2em;
-        }
     }
 </style>

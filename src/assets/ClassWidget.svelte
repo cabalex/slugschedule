@@ -14,7 +14,7 @@
 
     function focusClass() {
         $shouldAnimate = false;
-        $focusedClass = item;
+        $focusedClass = item;   
         setTimeout(() => $shouldAnimate = true, 0);
     }
 </script>
@@ -39,23 +39,27 @@
     h3, h4 {
         margin: 0;
     }
+    h4 {
+        padding-bottom: 6px;
+        color: lightgrey;
+    }
     .classWidget {
         text-align: left;
         cursor: pointer;
         user-select: none;
-        background-color: #222;
+        background-color: #0000002d;
         border-radius: 5px;
-        padding: 10px;
+        padding: 10px 14px 10px 14px;
         display: inline-block;
-        border: 2px solid #777;
-        transition: border-color 0.2s, background-color 0.2s;
     }
     .classWidget:hover {
-        background-color: #555;
-        border-color: #aaa;
+        background-color: #2c2c2c;
+        border-color: #2c2c2c;
     }
     .classWidget span {
-        color: "lightgrey";
+        color: lightgrey;
+        display: block;
+        margin-top: 4px;
     }
     .bar {
         position: relative;
@@ -63,6 +67,7 @@
         height: 5px;
         background-color: #777;
         border-radius: 5px;
+        margin-top: 14px;
         overflow: hidden;
     }
     .fill {

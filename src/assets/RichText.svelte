@@ -46,7 +46,7 @@
     $: parsedContent = parse(content);
 </script>
 
-<p class={$$props.class} class:empty={!content}>
+<span class={$$props.class} class:empty={!content}>
     {#each parsedContent as segment}
         {#if segment.text}
             {#if segment.class}
@@ -61,7 +61,7 @@
             {/if}
         {/if}
     {/each}
-</p>
+</span>
 
 <style>
     .deadLink {
@@ -72,7 +72,7 @@
     }
     p {
         margin-top: 5px;
-        line-height: 2em;
+        line-height: 1.75em;
         white-space: pre-line;
     }
 </style>
