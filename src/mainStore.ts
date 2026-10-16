@@ -1,4 +1,4 @@
-import DB, { type Class, type ClassStatus } from "../.server/db/DB";
+import DB, { type Class, type ClassStatus } from "./DB/DB;
 import { readable, writable, get } from 'svelte/store';
 import { ZstdInit } from '@oneidentity/zstd-js';
 import { openDB } from "idb";

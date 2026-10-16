@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Class } from "../../.server/db/DB";
+  import type { Class } from "../DB/DB;
   import { db, term, focusedClass, shouldAnimate } from "../mainStore";
 
     export let content = "";
@@ -47,32 +47,38 @@
 </script>
 
 <p class={$$props.class} class:empty={!content}>
-    {#each parsedContent as segment}
-        {#if segment.text}
-            {#if segment.class}
-                {@const targetClass = getTargetClass(segment.text)}
-                {#if targetClass !== null}
-                    <a on:click={navigateToClass.bind(null, targetClass)} href={`?class=${targetClass.number}&term=${$term}`}>{segment.text}</a>
-                {:else}    
-                    <span title="Not held this quarter" class="deadLink">{segment.text}</span>
-                {/if}
-            {:else}
-                <span>{segment.text}</span>
-            {/if}
+  {#each parsedContent as segment}
+    {#if segment.text}
+      {#if segment.class}
+        {@const targetClass = getTargetClass(segment.text)}
+        {#if targetClass !== null}
+          <a
+            on:click={navigateToClass.bind(null, targetClass)}
+            href={`?class=${targetClass.number}&term=${$term}`}
+            >{segment.text}</a
+          >
+        {:else}
+          <span title="Not held this quarter" class="deadLink"
+            >{segment.text}</span
+          >
         {/if}
-    {/each}
+      {:else}
+        <span>{segment.text}</span>
+      {/if}
+    {/if}
+  {/each}
 </p>
 
 <style>
-    .deadLink {
-        font-weight: 600;
-        color: #aaa;
-        cursor: not-allowed;
-        position: relative;
-    }
-    p {
-        margin-top: 5px;
-        line-height: 2em;
-        white-space: pre-line;
-    }
+  .deadLink {
+    font-weight: 600;
+    color: #aaa;
+    cursor: not-allowed;
+    position: relative;
+  }
+  p {
+    margin-top: 5px;
+    line-height: 2em;
+    white-space: pre-line;
+  }
 </style>

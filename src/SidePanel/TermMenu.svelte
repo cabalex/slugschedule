@@ -2,7 +2,7 @@
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
     import { BASE_URL, db, decompressZSTD, detectTerm, focusedClass, setDB, term as termStore } from "../mainStore";
     import { openDB } from "idb";
-    import DB from "../../.server/db/DB";
+    import DB from "../DB/DB;
     import { slide } from "svelte/transition";
 
     export let term = "Unknown";
@@ -76,103 +76,115 @@
     }
 </script>
 
-<div class="termMenu" transition:slide={{duration: 100, axis: window.innerWidth < 1000 ? 'y' : 'x'}}>
-    View schedule for:
-    <span class="termSelector">
-        <select bind:value={termQuarter}>
-            <option value="8">Fall</option>
-            <option value="0">Winter</option>
-            <option value="2">Spring</option>
-            <option value="4">Summer</option>
-        </select>
-        <input type="number" min="2000" max="2099" bind:value={termYear} />
-    </span>
-    {#if termLoadError}
-        <span style="color: orange; text-align: center">{termLoadError}</span>
-    {/if}
-    <div class="btnrow">
-        <button class="todayBtn" disabled={loading || ((detectTerm() % 10).toString() === termQuarter && parseInt("20" + detectTerm().toString().slice(1, 3)) === termYear)} on:click={setToday}>
-            Today
-        </button>
-        <button class="primaryBtn" disabled={loading} on:click={attemptLoad}>
-            {#if !loading}
-            Select
-            {:else}
-            <div class="loading">
-                <LoadingIcon size="2em" />
-            </div>
-            {/if}
-        </button>
-    </div>
+<div
+  class="termMenu"
+  transition:slide={{
+    duration: 100,
+    axis: window.innerWidth < 1000 ? "y" : "x",
+  }}
+>
+  View schedule for:
+  <span class="termSelector">
+    <select bind:value={termQuarter}>
+      <option value="8">Fall</option>
+      <option value="0">Winter</option>
+      <option value="2">Spring</option>
+      <option value="4">Summer</option>
+    </select>
+    <input type="number" min="2000" max="2099" bind:value={termYear} />
+  </span>
+  {#if termLoadError}
+    <span style="color: orange; text-align: center">{termLoadError}</span>
+  {/if}
+  <div class="btnrow">
+    <button
+      class="todayBtn"
+      disabled={loading ||
+        ((detectTerm() % 10).toString() === termQuarter &&
+          parseInt("20" + detectTerm().toString().slice(1, 3)) === termYear)}
+      on:click={setToday}
+    >
+      Today
+    </button>
+    <button class="primaryBtn" disabled={loading} on:click={attemptLoad}>
+      {#if !loading}
+        Select
+      {:else}
+        <div class="loading">
+          <LoadingIcon size="2em" />
+        </div>
+      {/if}
+    </button>
+  </div>
 </div>
 
 <svelte:body on:click={clickOut} />
 
 <style>
-    .termMenu {
-        position: absolute;
-        z-index: 50;
-        left: 100%;
-        background-color: #444 !important;
-        bottom: 0;
-        border-radius: 0 10px 10px 0;
-        padding: 10px;
-        width: unset !important;
-        height: unset !important;
+  .termMenu {
+    position: absolute;
+    z-index: 50;
+    left: 100%;
+    background-color: #444 !important;
+    bottom: 0;
+    border-radius: 0 10px 10px 0;
+    padding: 10px;
+    width: unset !important;
+    height: unset !important;
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        cursor: default !important;
-        box-shadow: 5px 0 5px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: default !important;
+    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.5);
+  }
+  .termSelector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .termSelector > * {
+    font-size: unset !important;
+  }
+  .termSelector input {
+    width: 8ch;
+  }
+  .todayBtn {
+    background-color: transparent;
+    border-width: none;
+    outline: none;
+  }
+  .todayBtn:disabled {
+    opacity: 0.5;
+  }
+  .todayBtn:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  .loading {
+    height: 1em;
+    width: 43px;
+    display: block;
+    transform: rotate(0deg);
+    animation: rotate 1s linear infinite;
+  }
+  @keyframes loading {
+    from {
+      transform: rotate(0deg);
     }
-    .termSelector {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+    to {
+      transform: rotate(360deg);
     }
-    .termSelector > * {
-        font-size: unset !important;
+  }
+  @media screen and (max-width: 1000px) {
+    .termMenu {
+      bottom: 100% !important;
+      right: 0;
+      left: unset !important;
+      box-shadow: -5px 0 5px rgba(0, 0, 0, 0.5);
+      border-radius: 10px 10px 0 0;
+      align-items: flex-end;
     }
-    .termSelector input {
-        width: 8ch;
-    }
-    .todayBtn {
-        background-color: transparent;
-        border-width: none;
-        outline: none;
-    }
-    .todayBtn:disabled {
-        opacity: 0.5;
-    }
-    .todayBtn:hover {
-        background-color: rgba(0, 0, 0, 0.2);
-    }
-    .loading {
-        height: 1em;
-        width: 43px;
-        display: block;
-        transform: rotate(0deg);
-        animation: rotate 1s linear infinite;
-    }
-    @keyframes loading {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-    @media screen and (max-width: 1000px) {
-        .termMenu {
-            bottom: 100% !important;
-            right: 0;
-            left: unset !important;
-            box-shadow: -5px 0 5px rgba(0, 0, 0, 0.5);
-            border-radius: 10px 10px 0 0;
-            align-items: flex-end;
-        }
-    }
+  }
 </style>

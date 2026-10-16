@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { ClassStatus } from "../../.server/db/DB";
+    import { ClassStatus } from "../DB/DB;
     import { searchFilters, listMode } from "../mainStore";
     import DropdownChip from "./DropdownChip.svelte";
   
@@ -36,6 +36,12 @@
     }
 
 
-  </script>
-  
-  <DropdownChip multiple={true} label="Status" bind:value={values} options={opts} onChange={onChange} />
+</script>
+
+<DropdownChip
+  multiple={true}
+  label="Status"
+  bind:value={values}
+  options={opts}
+  {onChange}
+/>

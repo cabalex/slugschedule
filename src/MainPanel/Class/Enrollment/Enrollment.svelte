@@ -6,7 +6,7 @@
     import { Chart as ChartJS, TimeScale, Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale } from "chart.js"
     import 'chartjs-adapter-moment';
     import { db, detectTerm } from "../../../mainStore";
-    import { ClassStatus } from '../../../../.server/db/DB';
+    import { ClassStatus } from '../../../DB/DB';
     import ClassStatusIcon from "../../../assets/ClassStatusIcon.svelte";
   import RollingNumber from "../../../assets/RollingNumber.svelte";
 
