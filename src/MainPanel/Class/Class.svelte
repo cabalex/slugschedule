@@ -11,7 +11,7 @@
     import StarOutline from "svelte-material-icons/StarOutline.svelte";
     import ShareVariant from "svelte-material-icons/ShareVariant.svelte";
 
-    import { type Class, ClassStatus } from "../../DB/DB;
+    import { type Class, ClassStatus } from "../../DB/DB";
     import { home, db, focusedClass, starredClasses, liveUpdates, detectTerm } from "../../mainStore";
     import ClassWidget from "../../assets/ClassWidget.svelte";
     import DonutChart from "../../assets/DonutChart.svelte";

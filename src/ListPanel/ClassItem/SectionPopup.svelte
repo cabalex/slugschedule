@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-    import type { Class } from "../../DB/DB;
+    import type { Class } from "../../DB/DB";
     import AssociatedClass from "../../assets/AssociatedClass.svelte";
   import { scheduledClasses } from "../../mainStore";
 

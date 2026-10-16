@@ -33,7 +33,7 @@
     import Poll from "svelte-material-icons/Poll.svelte";
 
     import { db, detectTerm, focusedClass, listMode, scheduledClasses, starredClasses, term } from "../../mainStore";
-    import { ClassStatus, type Class } from "../../DB/DB;
+    import { ClassStatus, type Class } from "../../DB/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
     import SectionPopup from "./SectionPopup.svelte";

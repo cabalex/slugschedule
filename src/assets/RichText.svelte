@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Class } from "../DB/DB;
+  import type { Class } from "../DB/DB";
   import { db, term, focusedClass, shouldAnimate } from "../mainStore";
 
     export let content = "";

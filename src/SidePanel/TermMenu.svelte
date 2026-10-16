@@ -2,7 +2,7 @@
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
     import { BASE_URL, db, decompressZSTD, detectTerm, focusedClass, setDB, term as termStore } from "../mainStore";
     import { openDB } from "idb";
-    import DB from "../DB/DB;
+    import DB from "../DB/DB";
     import { slide } from "svelte/transition";
 
     export let term = "Unknown";

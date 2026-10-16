@@ -5,7 +5,7 @@
     import Class from "./Class/Class.svelte";
     import Scheduler from "./Scheduler/Scheduler.svelte";
     import { openDB } from "idb";
-    import DB from "../DB/DB;
+    import DB from "../DB/DB";
     import { fade, fly } from "svelte/transition";
 
     let mainElem;

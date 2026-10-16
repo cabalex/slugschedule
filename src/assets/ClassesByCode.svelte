@@ -3,7 +3,7 @@
     import MapMarker from "svelte-material-icons/MapMarker.svelte";
     import Monitor from "svelte-material-icons/Monitor.svelte";
     import DateChecker from "./DateChecker.svelte";
-    import { ClassStatus } from "../DB/DB;
+    import { ClassStatus } from "../DB/DB";
     import { db, focusedClass } from "../mainStore";
     import { rmpScoreColor } from "../ListPanel/ClassItem/ClassItem.svelte";
   

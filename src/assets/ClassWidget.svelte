@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ClassStatus } from "../DB/DB;
+  import { ClassStatus } from "../DB/DB";
   import { db, focusedClass, shouldAnimate } from "../mainStore";
 
     export let number;

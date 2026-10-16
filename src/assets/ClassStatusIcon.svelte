@@ -1,6 +1,6 @@
 <script lang="ts">
     import { liveUpdates } from "../mainStore";
-    import { ClassStatus } from "../DB/DB;
+    import { ClassStatus } from "../DB/DB";
 
     export let status: ClassStatus;
 </script>

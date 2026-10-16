@@ -16,7 +16,7 @@
     import Account from "svelte-material-icons/Account.svelte";
 
     import { db, focusedClass, listMode, smartClasses, starredClasses } from "../../mainStore";
-    import { ClassStatus, type Class } from "../../DB/DB;
+    import { ClassStatus, type Class } from "../../DB/DB";
     import ClassAllocation from "../../assets/ClassAllocation.svelte";
     import DateChecker from "../../assets/DateChecker.svelte";
 
