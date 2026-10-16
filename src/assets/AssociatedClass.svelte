@@ -28,23 +28,16 @@
         {item.meetingInfo.location}
     </div>
     <div class="fact">
-        <DateChecker number={item.number} meetingInfos={[item.meetingInfo]} />
+        <DateChecker background={false} number={item.number} meetingInfos={[item.meetingInfo]} />
     </div>
     <div class="fact">
         <Account />
         {item.meetingInfo.instructor}
     </div>
-    <div role="button" aria-disabled={!onClick} tabindex={onClick ? 0 : -1} style="cursor: {onClick ? 'normal' : 'pointer'}; user-select: none" on:click={() => showEnrollment = onClick ? false : !showEnrollment} on:keypress={() => showEnrollment = onClick ? false : !showEnrollment} >
-        <div class="bar">
-            <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
-        </div>
-        <span style="color: lightgrey">{Math.round(item.availability.enrolled / item.availability.capacity * 100)}% full ({item.availability.enrolled}/{item.availability.capacity})</span>
+    <div class="bar">
+        <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
     </div>
-    {#if showEnrollment}
-        <div transition:slide={{duration: 100}}>
-            <Enrollment large={false} availability={item.availability} number={item.number} />
-        </div>
-    {/if}
+    <span style="color: lightgrey">{Math.round(item.availability.enrolled / item.availability.capacity * 100)}% full ({item.availability.enrolled}/{item.availability.capacity})</span>
 </div>
   
 <style>
@@ -60,18 +53,25 @@
         cursor: pointer;
     }
     .associatedClass {
-        background-color: #222;
-        border-radius: 5px;
-        padding: 10px;
+        background-color: #0000002d;
+        border-radius: 4px;
+        padding: 10px 14px 10px 14px;
         display: inline-block;
-        border: 2px solid #777;
         transition: border-color 0.2s, background-color 0.2s;
     }
     .fact {
         display: flex;
         align-items: center;
         gap: 5px;
-        margin-bottom: 10px;
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+    h3 {
+        margin-bottom: 4px;
+    }
+
+    .fact :global(svg) {
+        font-size: 18px;
     }
     .bar {
         width: 100%;
@@ -79,6 +79,7 @@
         background-color: #777;
         border-radius: 5px;
         overflow: hidden;
+        margin-top: 12px;
     }
     .fill {
         color: white;

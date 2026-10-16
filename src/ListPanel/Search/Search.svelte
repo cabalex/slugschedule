@@ -95,7 +95,7 @@
                             {/if}
                         </span>
                         <h2>{result.item.name}</h2>
-                        <DateChecker onlyShowConflict={true} number={result.item.number} meetingInfos={result.item.meetingInfos} />
+                        <DateChecker lightMode background={false} onlyShowConflict={true} number={result.item.number} meetingInfos={result.item.meetingInfos} />
                     </div>
                 </div>
                 {/each}
