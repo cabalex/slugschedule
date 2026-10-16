@@ -11,9 +11,17 @@
   import RollingNumber from "../../../assets/RollingNumber.svelte";
 
     export let availability;
+    export let item;
     export let number;
     export let large = true;
     export let lastUpdate: Date = new Date();
+
+    let color = "red";
+    $: {
+        item = $db ? $db.classes.find((item) => item.number === number) : null;
+        color = item?.availability.status === ClassStatus.Closed ? "var(--closed)" :
+            item?.availability.status === ClassStatus.Waitlist ? "var(--waitlist)" : "white";
+    }
 
     let chartView: "all" | "30d" | "7d" | "3d" | "1d" = "all";
 
@@ -230,22 +238,34 @@
     }
 </script>
 
-<div class="enrollment">
-    {#if range > 24 * 60 * 60 * 1000}
-        <div class="chartViews">
-            <button on:click={() => chartView = "all"} class:active={chartView == "all"} class:left={true}>all</button>
-            {#if range > 30 * 24 * 60 * 60 * 1000}
-            <button on:click={() => chartView = "30d"} class:active={chartView == "30d"}>30d</button>
-            {/if}
-            {#if range > 7 * 24 * 60 * 60 * 1000}
-            <button on:click={() => chartView = "7d"} class:active={chartView == "7d"}>7d</button>
-            {/if}
-            {#if range > 3 * 24 * 60 * 60 * 1000}
-            <button on:click={() => chartView = "3d"} class:active={chartView == "3d"}>3d</button>
-            {/if}
-            <button on:click={() => chartView = "1d"} class:active={chartView == "1d"} class:right={true}>1d</button>
-        </div>
+{#if range > 24 * 60 * 60 * 1000}
+    <div class="chartViews">
+        <button on:click={() => chartView = "all"} class:active={chartView == "all"} class:left={true}>all</button>
+        {#if range > 30 * 24 * 60 * 60 * 1000}
+        <button on:click={() => chartView = "30d"} class:active={chartView == "30d"}>30d</button>
+        {/if}
+        {#if range > 7 * 24 * 60 * 60 * 1000}
+        <button on:click={() => chartView = "7d"} class:active={chartView == "7d"}>7d</button>
+        {/if}
+        {#if range > 3 * 24 * 60 * 60 * 1000}
+        <button on:click={() => chartView = "3d"} class:active={chartView == "3d"}>3d</button>
+        {/if}
+        <button on:click={() => chartView = "1d"} class:active={chartView == "1d"} class:right={true}>1d</button>
+    </div>
+{/if}
+
+<div class="quickLook">
+    <div class="bar">
+        <div class="fill" style={`background-color: ${color}; width: ${item.availability.enrolled / item.availability.capacity * 100}%`} />
+        <div class="fill" style={`background-color: var(--waitlist-dark); width: ${item.availability.waitlist / item.availability.waitlistCapacity * 100}%`} />
+    </div>
+    {#if item.availability.capacity === 0}
+    <span>Temp. Closed ({item.availability.enrolled}/{item.availability.capacity})</span>
+    {:else}
+    <span>{Math.round(item.availability.enrolled / item.availability.capacity * 100)}% full ({item.availability.enrolled}/{item.availability.capacity})</span>
     {/if}
+</div>
+<div class="enrollment">
     <div class="chart">
         <div>
             <Line
@@ -278,11 +298,17 @@
 </div>
 
 <style>
+    .quickLook {
+        background-color: #0000002d;
+        border-radius: 8px 8px 4px 4px;
+        padding: 5px 20px 12px 20px;
+        margin-bottom: 4px;
+        margin-top: 10px;
+    }
     .enrollment {
         display: flex;
         gap: 10px;
         margin-bottom: 10px;
-        margin-top: -35px;
         flex-direction: column;
         height: auto;
         width: 100%;
@@ -290,7 +316,7 @@
     }
     .enrollment .chart {
         background-color: #0000002d;
-        border-radius: 8px;
+        border-radius: 4px 4px 8px 8px;
         padding: 8px 20px 0px 20px;
     }
     .enrollment .chart div {
@@ -358,5 +384,22 @@
     }
     :global(.note svg) {
         flex-shrink: 0;
+    }
+    .bar {
+        position: relative;
+        width: 100%;
+        height: 10px;
+        background-color: #777;
+        border-radius: 5px;
+        margin-top: 14px;
+        margin-bottom: 4px;
+        overflow: hidden;
+    }
+    .fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: white;
+        height: 100%;
     }
 </style>

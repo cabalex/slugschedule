@@ -14,8 +14,6 @@
     export let number;
     export let code;
 
-    export let reduced: boolean = false;
-
     let items = [];
     let trimmedCode = code.split(" - ")[0];
     $: {
@@ -28,8 +26,7 @@
     $: oneProfessor = items.length > 0 ? (items.find(item => item.instructor.name != items[0].instructor.name) == undefined) : false;
 </script>
   
-{#if items.length > 1 && (reduced ? items.length <= 4 : items.length > 4)}
-
+{#if items.length > 1}
     <div class="sectionTitle">
         <div class="icon">
             <BookVariant></BookVariant>
@@ -44,7 +41,7 @@
         </div>
     {/if}
     <div style="position: relative;">
-        <div style="{oneProfessor ? "border-radius: 4px 4px 8px 8px;" : ""}" class="widgetRow {reduced ? "reduced" : "main"}" >
+        <div style="{oneProfessor ? "border-radius: 4px 4px 8px 8px;" : ""}" class="widgetRow main" >
             {#each items as item, i}
                 {@const showRatings = oneProfessor == false && item.instructor.id && item.instructor.id !== "-1" && item.instructor.numRatings > 0}
                 <button 

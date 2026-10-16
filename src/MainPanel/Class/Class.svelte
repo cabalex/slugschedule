@@ -403,8 +403,6 @@
             <CalendarRange />
             {[...new Set(item.meetingInfos.map(x => x.dates))].join(", ")}
         </div>
-
-        <ClassesByCode reduced={true} code={item.code} number={item.number} />
     </aside>
 </div>
 <div class="">
