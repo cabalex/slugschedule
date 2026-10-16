@@ -1,6 +1,6 @@
 <script lang="ts">
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
-    import { db, decompressZSTD, detectTerm, focusedClass, setDB, term as termStore } from "../mainStore";
+    import { BASE_URL, db, decompressZSTD, detectTerm, focusedClass, setDB, term as termStore } from "../mainStore";
     import { openDB } from "idb";
     import DB from "../../.server/db/DB";
     import { slide } from "svelte/transition";
@@ -48,7 +48,7 @@
             }
         }
 
-        let resp = await fetch(`./db/${TERM}.yaucsccs.zstd`);
+        let resp = await fetch(`${BASE_URL}/${TERM}.yaucsccs.zstd`);
 
         if (!resp.ok) {
             termLoadError = `Couldn't load term ${TERM} (it may not exist yet).`;

@@ -3,6 +3,8 @@ import { readable, writable, get } from 'svelte/store';
 import { ZstdInit } from '@oneidentity/zstd-js';
 import { openDB } from "idb";
 
+export const BASE_URL = "https://cabalex.github.io/slugschedule-data"
+
 export function detectTerm(ignoreUrlParams=true) {
     // ABCD - A = first digit of year, BC = last two digits of year,
     // D: 8 = fall, 0 = winter, 2 = spring, 4 = summer 
@@ -62,7 +64,7 @@ async function fetchDBByYear(year: number) {
         return {arrayBuffer: cachedArrayBuffer, cached: true};
     }
 
-    let resp = await fetch(`./db/${year}.yaucsccs.zstd`);
+    let resp = await fetch(`${BASE_URL}/${year}.yaucsccs.zstd`);
     if (resp.ok) {
         term.set(year);
         return {arrayBuffer: await decompressZSTD(await resp.arrayBuffer()), cached: false};
@@ -121,7 +123,7 @@ export let db = readable(null, (set) => {
             console.log("Updating cached database...");
 
             let arrayBuffer;
-            let resp = await fetch(`./db/${TERM}.yaucsccs.zstd`);
+            let resp = await fetch(`${BASE_URL}/${TERM}.yaucsccs.zstd`);
             if (resp.ok) {
                 arrayBuffer = await decompressZSTD(await resp.arrayBuffer());
             }

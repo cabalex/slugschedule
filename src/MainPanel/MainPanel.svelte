@@ -1,12 +1,12 @@
 <script lang="ts">
     import ArrowLeft from "svelte-material-icons/ArrowLeft.svelte";
     import LoadingIcon from "svelte-material-icons/Loading.svelte";
-    import { db, focusedClass, home, listMode, liveUpdates, setDB, decompressZSTD, shouldAnimate } from "../mainStore";
+    import { db, focusedClass, home, listMode, liveUpdates, setDB, decompressZSTD, shouldAnimate, BASE_URL } from "../mainStore";
     import Class from "./Class/Class.svelte";
     import Scheduler from "./Scheduler/Scheduler.svelte";
     import { openDB } from "idb";
     import DB from "../../.server/db/DB";
-  import { fade, fly } from "svelte/transition";
+    import { fade, fly } from "svelte/transition";
 
     let mainElem;
 
@@ -20,7 +20,7 @@
         loading = true;
         let TERM = $db?.term;
 
-        let resp = await fetch(`./db/${TERM}.yaucsccs.zstd`);
+        let resp = await fetch(`${BASE_URL}/${TERM}.yaucsccs.zstd`);
 
         if (!resp.ok) {
             loading = false;
